@@ -35,6 +35,8 @@ repositories {
         name = "Fuzs Mod Resources"
         url = "https://raw.githubusercontent.com/Fuzss/modresources/main/maven/"
     }
+    maven { url = "https://maven.createmod.net" } // Create, Ponder, Flywheel
+    maven { url = "https://maven.ithundxr.dev/snapshots" }
 }
 
 base {
@@ -137,8 +139,8 @@ dependencies {
     // http://www.gradle.org/docs/current/userguide/artifact_dependencies_tutorial.html
     // http://www.gradle.org/docs/current/userguide/dependency_management.html
     implementation("maven.modrinth:touhou-little-maid:${touhou_little_maid_version}")
-    api("dev.ryanhcode.sable:sable-common-${project.minecraft_version}:${project.sable_version}")
-    api "me.shedaniel.cloth:cloth-config-neoforge:${cloth_config_version}"
+    implementation("dev.ryanhcode.sable:sable-neoforge-${project.minecraft_version}:${project.sable_version}")
+    implementation "me.shedaniel.cloth:cloth-config-neoforge:${cloth_config_version}"
 }
 
 // This block of code expands all declared replace properties in the specified resource targets.
