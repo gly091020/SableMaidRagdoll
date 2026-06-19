@@ -7,8 +7,13 @@ import com.google.gson.JsonElement;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.JsonOps;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import dev.ryanhcode.sable.companion.math.Pose3d;
+import dev.ryanhcode.sable.companion.math.Pose3dc;
+import dev.ryanhcode.sable.sublevel.ServerSubLevel;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.fml.loading.FMLPaths;
+import org.joml.Vector3d;
+import org.joml.Vector3dc;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -66,11 +71,15 @@ public class MaidPartDefFileLoader {
 
     public record DefFile(
             Map<String, MaidPartBlockEntity.MaidBlockShape> parts,
-            List<RenderDataWithoutModelName> renderData
+            List<RenderDataWithoutModelName> renderData,
+            List<PartPosData> partPosData,
+            List<JointData> jointData
     ){
         public static final Codec<DefFile> CODEC = RecordCodecBuilder.create(i -> i.group(
                 Codec.unboundedMap(Codec.STRING, MaidPartBlockEntity.MaidBlockShape.CODEC).fieldOf("parts").forGetter(DefFile::parts),
-                Codec.list(RenderDataWithoutModelName.CODEC).fieldOf("renderData").forGetter(DefFile::renderData)
+                Codec.list(RenderDataWithoutModelName.CODEC).fieldOf("renderData").forGetter(DefFile::renderData),
+                Codec.list(PartPosData.CODEC).fieldOf("partPosData").forGetter(DefFile::partPosData),
+                Codec.list(JointData.CODEC).fieldOf("jointData").forGetter(DefFile::jointData)
         ).apply(i, DefFile::new));
 
         public MaidPartBlockEntity.RenderData createRenderData(String modelName, String partName){
@@ -87,6 +96,13 @@ public class MaidPartDefFileLoader {
         public MaidPartBlockEntity.MaidBlockShape createShape(String partName){
             return parts.get(partName);
         }
+
+        public PartPosData getPartPosData(String partName){
+            for(PartPosData posData: partPosData)
+                if(posData.partName.equals(partName))
+                    return posData;
+            return null;
+        }
     }
 
     // 此处的transform以1/16个方块为单位，rotate是角度值
@@ -96,6 +112,64 @@ public class MaidPartDefFileLoader {
                 Vec3.CODEC.fieldOf("transform").forGetter(RenderDataWithoutModelName::transform),
                 Vec3.CODEC.fieldOf("rotate").forGetter(RenderDataWithoutModelName::rotate)
         ).apply(i, RenderDataWithoutModelName::new));
+    }
+
+    // 此处的position以1/16个方块为单位，rotate是角度值
+    public record PartPosData(String partName, Vec3 position, Vec3 rotate){
+        public static final Codec<PartPosData> CODEC = RecordCodecBuilder.create(i -> i.group(
+                Codec.STRING.fieldOf("partName").forGetter(PartPosData::partName),
+                Vec3.CODEC.fieldOf("pos").forGetter(PartPosData::position),
+                Vec3.CODEC.fieldOf("rotate").forGetter(PartPosData::rotate)
+        ).apply(i, PartPosData::new));
+
+        public Pose3d getPose(Vec3 origin){
+            Pose3d pose = new Pose3d();
+            pose.position().set(origin.add(position.scale(1 / 16f)).toVector3f());
+            pose.orientation().rotateXYZ(
+                    Math.toRadians(rotate.x),
+                    Math.toRadians(rotate.y),
+                    Math.toRadians(rotate.z)
+            );
+            return pose;
+        }
+    }
+
+    // pos为相对坐标，以1/16个方块为单位
+    // pos是相对坐标，原点在方块中心
+    public record JointData(String partA, String partB, Vec3 posA, Vec3 posB){
+        public static final Codec<JointData> CODEC = RecordCodecBuilder.create(i -> i.group(
+                Codec.STRING.fieldOf("partA").forGetter(JointData::partA),
+                Codec.STRING.fieldOf("partB").forGetter(JointData::partB),
+                Vec3.CODEC.fieldOf("posA").forGetter(JointData::posA),
+                Vec3.CODEC.fieldOf("posB").forGetter(JointData::posB)
+        ).apply(i, JointData::new));
+
+        public Vector3dc getVector3dcA(ServerSubLevel subLevel){
+            var p1 = new Pose3d(subLevel.logicalPose());
+            return localToWorld(p1, new Vector3d(posA.x, posA.y, posA.z).div(16));
+        }
+
+        public Vector3dc getVector3dcB(ServerSubLevel subLevel){
+            var p1 = subLevel.logicalPose();
+            return localToWorld(p1, new Vector3d(posB.x, posB.y, posB.z).div(16));
+        }
+
+        // 在碰Pose3dc.transformPosition我就是傻逼
+        public static Vector3d localToWorld(Pose3dc pose, Vector3dc local) {
+            var dest = new Vector3d();
+            double x = local.x();
+            double y = local.y();
+            double z = local.z();
+
+            Vector3dc s = pose.scale();
+            x *= s.x();
+            y *= s.y();
+            z *= s.z();
+
+            pose.orientation().transform(x, y, z, dest);
+
+            return dest.add(pose.rotationPoint());
+        }
     }
 
     public static Collection<DefFile> getAllDefFile(){
