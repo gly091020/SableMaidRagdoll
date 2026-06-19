@@ -29,7 +29,8 @@ public class GetPhysicsDataBEMixin {
         var p = instance.getPhysicsDataForBlock(state);
         if(be instanceof MaidPartBlockEntity blockEntity) {
             if(p == null)return null;
-            var r = MaidPartColliderBoxManager.getColliderData(blockEntity.getMaidBlockShape());
+            if(blockEntity.getRenderData() == null)return null;
+            var r = MaidPartColliderBoxManager.getColliderData(blockEntity.getRenderData());
             if(r.equals(RapierVoxelColliderData.EMPTY))return p;
             return r;
         }
@@ -42,7 +43,8 @@ public class GetPhysicsDataBEMixin {
         var p = instance.getPhysicsDataForBlock(state);
         if(be instanceof MaidPartBlockEntity blockEntity) {
             if(p == null)return null;
-            var r = MaidPartColliderBoxManager.getColliderData(blockEntity.getMaidBlockShape());
+            if(blockEntity.getRenderData() == null)return null;
+            var r = MaidPartColliderBoxManager.getColliderData(blockEntity.getRenderData());
             if(r.equals(RapierVoxelColliderData.EMPTY))return p;
             return r;
         }
@@ -55,7 +57,8 @@ public class GetPhysicsDataBEMixin {
         var p = instance.getPhysicsDataForBlock(state);
         if(be instanceof MaidPartBlockEntity blockEntity) {
             if(p == null)return null;
-            var r = MaidPartColliderBoxManager.getColliderData(blockEntity.getMaidBlockShape());
+            if(blockEntity.getRenderData() == null)return null;
+            var r = MaidPartColliderBoxManager.getColliderData(blockEntity.getRenderData());
             if(r.equals(RapierVoxelColliderData.EMPTY))return p;
             return r;
         }

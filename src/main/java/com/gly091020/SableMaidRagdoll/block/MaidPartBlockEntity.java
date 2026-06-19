@@ -3,6 +3,7 @@ package com.gly091020.SableMaidRagdoll.block;
 import com.gly091020.SableMaidRagdoll.SableMaidRagdoll;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import net.minecraft.Util;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
@@ -19,6 +20,7 @@ import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
+import java.util.stream.IntStream;
 
 public class MaidPartBlockEntity extends BlockEntity {
     private static final String DEFAULT_MODEL_ID = "touhou_little_maid:hakurei_reimu";
@@ -128,14 +130,17 @@ public class MaidPartBlockEntity extends BlockEntity {
 
     public record Box(float minX, float minY, float minZ,
                       float maxX, float maxY, float maxZ) {
-        public static final Codec<Box> CODEC = RecordCodecBuilder.create(i -> i.group(
-                Codec.FLOAT.fieldOf("minX").forGetter(Box::minX),
-                Codec.FLOAT.fieldOf("minY").forGetter(Box::minY),
-                Codec.FLOAT.fieldOf("minZ").forGetter(Box::minZ),
-                Codec.FLOAT.fieldOf("maxX").forGetter(Box::maxX),
-                Codec.FLOAT.fieldOf("maxY").forGetter(Box::maxY),
-                Codec.FLOAT.fieldOf("maxZ").forGetter(Box::maxZ)
-        ).apply(i, Box::new));
+        public static final Codec<Box> CODEC =
+                Codec.INT_STREAM.comapFlatMap(stream ->
+                                Util.fixedSize(stream, 3).map(arr ->
+                                        Box.fromSize(arr[0], arr[1], arr[2])
+                                ),
+                        box -> IntStream.of(
+                                (int) ((box.maxX - box.minX) * 16f),
+                                (int) ((box.maxY - box.minY) * 16f),
+                                (int) ((box.maxZ - box.minZ) * 16f)
+                        )
+                ).stable();
 
         public static Box fromSize(float xSize, float ySize, float zSize){
             return new Box((8 - xSize / 2f) / 16f, (8 - ySize / 2f) / 16f, (8 - zSize / 2f) / 16f, (8 + xSize / 2f) / 16f, (8 + ySize / 2f) / 16f, (8 + zSize / 2f) / 16f);

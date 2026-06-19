@@ -32,7 +32,7 @@ public class MaidPartRenderer implements BlockEntityRenderer<MaidPartBlockEntity
         }
         var model = r.get();
         var texture = r1.get().getTexture();
-        var vc = multiBufferSource.getBuffer(RenderType.entityCutout(texture));
+        var vc = multiBufferSource.getBuffer(RenderType.entityCutoutNoCull(texture));
         var parts = new ArrayList<BedrockPart>();
         var height = shape.bounds().maxY - shape.bounds().minY;
         if(renderData.partName().contains("|"))
@@ -55,7 +55,9 @@ public class MaidPartRenderer implements BlockEntityRenderer<MaidPartBlockEntity
         poseStack.mulPose(Axis.XP.rotationDegrees(180));
 
         poseStack.translate(renderData.transform().x, renderData.transform().y, renderData.transform().z);
-        poseStack.mulPose(new Quaternionf().rotateXYZ((float) renderData.rotate().x, (float) renderData.rotate().y, (float) renderData.rotate().z));
+        poseStack.mulPose(new Quaternionf().rotateXYZ((float) Math.toRadians(renderData.rotate().x),
+                (float) Math.toRadians(renderData.rotate().y),
+                (float) Math.toRadians(renderData.rotate().z)));
 
         parts.forEach(part -> part.render(poseStack, vc, i, i1));
         poseStack.popPose();

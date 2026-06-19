@@ -8,39 +8,29 @@ import dev.ryanhcode.sable.physics.chunk.VoxelNeighborhoodState;
 import dev.ryanhcode.sable.physics.config.block_properties.PhysicsBlockPropertyHelper;
 import dev.ryanhcode.sable.physics.impl.rapier.Rapier3D;
 import dev.ryanhcode.sable.physics.impl.rapier.collider.RapierVoxelColliderData;
-import net.minecraft.world.phys.shapes.BooleanOp;
-import net.minecraft.world.phys.shapes.Shapes;
-import net.minecraft.world.phys.shapes.VoxelShape;
 import org.joml.Vector3d;
 
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
+// 大力出奇迹
 public class MaidPartColliderBoxManager {
-    private static final Map<MaidPartBlockEntity.MaidBlockShape, RapierVoxelColliderData> data = new HashMap<>();
+    private static final Map<String, RapierVoxelColliderData> data = new HashMap<>();
 
     public static void init(){
-        final int count = 16;
-        for (int x = 0; x < count; x++) {
-            for (int y = 0; y < count; y++) {
-                for (int z = 0; z < count; z++) {
-                    var shape = new MaidPartBlockEntity.MaidBlockShape(
-                            Collections.singletonList(MaidPartBlockEntity.Box.fromSize(x, y, z))
-                    );
-                    data.put(shape, createOne(shape));
-                }
-            }
-        }
+        MaidPartDefFileLoader.getDefFileMap().forEach((k, v) -> v.parts().forEach((k1, v1) ->
+                data.put(k + "/" + k1, createOne(v1))));
+        SableMaidRagdoll.LOGGER.info("已创建全部方块属性");
     }
 
     public static void reset(){
         data.clear();
     }
 
-    public static RapierVoxelColliderData getColliderData(MaidPartBlockEntity.MaidBlockShape shape){
-        if(data.containsKey(shape))
-            return data.get(shape);
+    public static RapierVoxelColliderData getColliderData(MaidPartBlockEntity.RenderData renderData){
+        var k = renderData.modelName() + "/" + renderData.partName();
+        if(data.containsKey(k))
+            return data.get(k);
 
         return RapierVoxelColliderData.EMPTY;
     }
