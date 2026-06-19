@@ -124,6 +124,7 @@ public class MaidPartBlockEntity extends BlockEntity {
                         )
                 );
             }
+            if(shape.isEmpty())return Shapes.block();
             return shape;
         }
     }
