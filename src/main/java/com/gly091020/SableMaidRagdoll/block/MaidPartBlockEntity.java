@@ -102,6 +102,10 @@ public class MaidPartBlockEntity extends BlockEntity {
         return renderData;
     }
 
+    public MaidBlockShape getMaidBlockShape() {
+        return maidBlockShape;
+    }
+
     public record MaidBlockShape(List<MaidPartBlockEntity.Box> boxes){
         public static final Codec<MaidBlockShape> CODEC = RecordCodecBuilder.create(i -> i.group(
                 Codec.list(MaidPartBlockEntity.Box.CODEC).fieldOf("boxes").forGetter(MaidBlockShape::boxes)
@@ -132,6 +136,10 @@ public class MaidPartBlockEntity extends BlockEntity {
                 Codec.FLOAT.fieldOf("maxY").forGetter(Box::maxY),
                 Codec.FLOAT.fieldOf("maxZ").forGetter(Box::maxZ)
         ).apply(i, Box::new));
+
+        public static Box fromSize(float xSize, float ySize, float zSize){
+            return new Box((8 - xSize / 2f) / 16f, (8 - ySize / 2f) / 16f, (8 - zSize / 2f) / 16f, (8 + xSize / 2f) / 16f, (8 + ySize / 2f) / 16f, (8 + zSize / 2f) / 16f);
+        }
     }
 
     public record RenderData(String modelName, String partName, Vec3 transform, Vec3 rotate){

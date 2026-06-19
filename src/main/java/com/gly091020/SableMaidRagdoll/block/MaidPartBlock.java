@@ -1,8 +1,6 @@
 package com.gly091020.SableMaidRagdoll.block;
 
-import com.gly091020.SableMaidRagdoll.util.MixinUseGlobalBE;
 import com.mojang.serialization.MapCodec;
-import dev.ryanhcode.sable.api.block.BlockSubLevelCollisionShape;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.block.BaseEntityBlock;
@@ -17,7 +15,7 @@ import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public class MaidPartBlock extends BaseEntityBlock implements BlockSubLevelCollisionShape {
+public class MaidPartBlock extends BaseEntityBlock{
     public static final Properties PROPERTIES = Properties.ofFullCopy(Blocks.WHITE_WOOL).noLootTable().sound(SoundType.WOOL).dynamicShape();
 
     public MaidPartBlock(Properties properties) {
@@ -49,12 +47,5 @@ public class MaidPartBlock extends BaseEntityBlock implements BlockSubLevelColli
     @Override
     protected boolean isPathfindable(@NotNull BlockState p_60475_, @NotNull PathComputationType p_60478_) {
         return false;
-    }
-
-    @Override
-    public VoxelShape getSubLevelCollisionShape(BlockGetter blockGetter, BlockState state) {
-        if(MixinUseGlobalBE.blockEntity != null)
-            return MixinUseGlobalBE.blockEntity.getShape();
-        return Shapes.block();
     }
 }

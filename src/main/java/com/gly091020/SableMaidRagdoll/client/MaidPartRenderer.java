@@ -13,10 +13,13 @@ import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import org.jetbrains.annotations.NotNull;
 import org.joml.Quaternionf;
 
+import java.util.ArrayList;
+
 public class MaidPartRenderer implements BlockEntityRenderer<MaidPartBlockEntity> {
     @Override
     public void render(@NotNull MaidPartBlockEntity blockEntity, float v, @NotNull PoseStack poseStack, @NotNull MultiBufferSource multiBufferSource, int i, int i1) {
         var renderData = blockEntity.getRenderData();
+        var shape = blockEntity.getShape();
         if(renderData == null){
             drawLineBox(poseStack, multiBufferSource, blockEntity, 0, 1, 1);
             return;
@@ -30,21 +33,31 @@ public class MaidPartRenderer implements BlockEntityRenderer<MaidPartBlockEntity
         var model = r.get();
         var texture = r1.get().getTexture();
         var vc = multiBufferSource.getBuffer(RenderType.entityCutout(texture));
-        var part = model.getModelMap().get(renderData.partName());
-        if(part == null){
+        var parts = new ArrayList<BedrockPart>();
+        var height = shape.bounds().maxY - shape.bounds().minY;
+        if(renderData.partName().contains("|"))
+            for (String pName: renderData.partName().split("\\|")){
+                var p = model.getModelMap().get(pName);
+                if(p != null)parts.add(p);
+            }
+        else{
+            var p = model.getModelMap().get(renderData.partName());
+            if(p != null)parts.add(p);
+        }
+        if(parts.isEmpty()){
             drawLineBox(poseStack, multiBufferSource, blockEntity, 1, 0, 0);
             return;
         }
         resetModel(model);
 
         poseStack.pushPose();
-        poseStack.translate(0.5, 0.5, 0.5);
+        poseStack.translate(0.5, 1.5d + (1 - height) / 2, 0.5);
         poseStack.mulPose(Axis.XP.rotationDegrees(180));
 
         poseStack.translate(renderData.transform().x, renderData.transform().y, renderData.transform().z);
         poseStack.mulPose(new Quaternionf().rotateXYZ((float) renderData.rotate().x, (float) renderData.rotate().y, (float) renderData.rotate().z));
 
-        part.render(poseStack, vc, i, i1);
+        parts.forEach(part -> part.render(poseStack, vc, i, i1));
         poseStack.popPose();
     }
 
