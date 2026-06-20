@@ -16,7 +16,12 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public class MaidPartBlock extends BaseEntityBlock{
-    public static final Properties PROPERTIES = Properties.ofFullCopy(Blocks.WHITE_WOOL).noLootTable().sound(SoundType.WOOL).dynamicShape();
+    public static final Properties PROPERTIES = Properties.ofFullCopy(Blocks.WHITE_WOOL)
+            .noLootTable()
+            .sound(SoundType.WOOL)
+            .explosionResistance(3600000.0F)
+            .isValidSpawn(Blocks::never)
+            .dynamicShape();
 
     public MaidPartBlock(Properties properties) {
         super(properties);

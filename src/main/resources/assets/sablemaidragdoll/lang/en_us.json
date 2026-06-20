@@ -1,3 +1,6 @@
 {
-
+  "block.sablemaidragdoll.maid_part": "女仆部位",
+  "command.sablemaidragdoll.spawn.success": "已创建模型",
+  "command.sablemaidragdoll.spawn.failed": "找不到模型",
+  "command.sablemaidragdoll.reload.success": "已重新加载定义文件"
 }

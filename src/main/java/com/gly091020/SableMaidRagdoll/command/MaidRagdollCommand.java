@@ -10,6 +10,7 @@ import com.mojang.brigadier.suggestion.SuggestionsBuilder;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.commands.arguments.ResourceLocationArgument;
+import net.minecraft.network.chat.Component;
 
 import java.util.concurrent.CompletableFuture;
 
@@ -27,13 +28,18 @@ public class MaidRagdollCommand {
 
     public static int spawn(CommandContext<CommandSourceStack> context) {
         String modelName = ResourceLocationArgument.getId(context, "model").toString();
-        MaidRagdollHelper.create(context.getSource().getLevel(),
-                context.getSource().getPosition(), modelName);
-        return 1;
+        if(MaidRagdollHelper.create(context.getSource().getLevel(),
+                context.getSource().getPosition(), modelName)){
+            context.getSource().sendSuccess(() -> Component.translatable("command.sablemaidragdoll.spawn.success"), false);
+            return 1;
+        }
+        context.getSource().sendFailure(Component.translatable("command.sablemaidragdoll.spawn.failed"));
+        return 0;
     }
 
     public static int reload(CommandContext<CommandSourceStack> context){
         MaidPartDefFileLoader.init();
+        context.getSource().sendSuccess(() -> Component.translatable("command.sablemaidragdoll.reload.success"), false);
         return 1;
     }
 
