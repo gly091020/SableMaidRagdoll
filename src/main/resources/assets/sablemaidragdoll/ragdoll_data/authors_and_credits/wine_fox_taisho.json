@@ -1,0 +1,150 @@
+{
+  "parts": {
+    "head": {
+      "boxes": [
+        [8, 8, 8]
+      ]
+    },
+    "body|sittingRotationSkirt|tail": {
+      "boxes": [
+        [6, 9, 5]
+      ]
+    },
+    "armLeft": {
+      "boxes": [
+        [2, 8, 2]
+      ]
+    },
+    "armRight": {
+      "boxes": [
+        [2, 8, 2]
+      ]
+    },
+    "legLeft": {
+      "boxes": [
+        [3.6, 9, 3.6]
+      ]
+    },
+    "legRight": {
+      "boxes": [
+        [3.6, 9, 3.6]
+      ]
+    }
+  },
+  "renderData": [
+    {
+      "partName": "head",
+      "transform": [0, 18, 0],
+      "rotate": [0, 0, 0]
+    },
+    {
+      "partName": "body|sittingRotationSkirt|tail",
+      "transform": [0, 8.75, 0],
+      "rotate": [0, 0, 0]
+    },
+    {
+      "partName": "armLeft",
+      "transform": [-3, 9.5, 0],
+      "rotate": [0, 0, 10]
+    },
+    {
+      "partName": "armRight",
+      "transform": [3, 9.5, 0],
+      "rotate": [0, 0, -10]
+    },
+    {
+      "partName": "legLeft",
+      "transform": [-1.75, 0, 0],
+      "rotate": [0, 0, 0]
+    },
+    {
+      "partName": "legRight",
+      "transform": [1.75, 0, 0],
+      "rotate": [0, 0, 0]
+    }
+  ],
+  "partPosData": [
+    {
+      "partName": "head",
+      "pos": [0, 17.5, 0],
+      "rotate": [0, 0, 0]
+    },
+    {
+      "partName": "body|sittingRotationSkirt|tail",
+      "pos": [0, 8.75, 0],
+      "rotate": [0, 0, 0]
+    },
+    {
+      "partName": "armLeft",
+      "pos": [4, 9.5, 0],
+      "rotate": [0, 0, 10]
+    },
+    {
+      "partName": "armRight",
+      "pos": [-4, 9.5, 0],
+      "rotate": [0, 0, -10]
+    },
+    {
+      "partName": "legLeft",
+      "pos": [-1.75, 0, 0],
+      "rotate": [0, 0, 0]
+    },
+    {
+      "partName": "legRight",
+      "pos": [1.75, 0, 0],
+      "rotate": [0, 0, 0]
+    }
+  ],
+  "jointData": [
+    {
+      "partA": "head",
+      "partB": "body|sittingRotationSkirt|tail",
+      "posA": [0, -4, 0],
+      "posB": [0, 4.6, 0],
+      "motor": {
+        "stiffness": 20,
+        "damping": 20
+      }
+    },
+    {
+      "partA": "body|sittingRotationSkirt|tail",
+      "partB": "legLeft",
+      "posA": [1.5, -4.5, 0],
+      "posB": [0, 5, 0],
+      "motor": {
+        "stiffness": 0,
+        "damping": 20
+      }
+    },
+    {
+      "partA": "body|sittingRotationSkirt|tail",
+      "partB": "legRight",
+      "posA": [-1.5, -5, 0],
+      "posB": [0, 4.5, 0],
+      "motor": {
+        "stiffness": 0,
+        "damping": 20
+      }
+    },
+    {
+      "partA": "body|sittingRotationSkirt|tail",
+      "partB": "armLeft",
+      "posA": [3.5, 3.5, 0],
+      "posB": [0, 4, 0],
+      "motor": {
+        "stiffness": 0,
+        "damping": 20
+      }
+    },
+    {
+      "partA": "body|sittingRotationSkirt|tail",
+      "partB": "armRight",
+      "posA": [-3.5, 3.5, 0],
+      "posB": [0, 4, 0],
+      "motor": {
+        "stiffness": 0,
+        "damping": 20
+      }
+    }
+  ]
+}
