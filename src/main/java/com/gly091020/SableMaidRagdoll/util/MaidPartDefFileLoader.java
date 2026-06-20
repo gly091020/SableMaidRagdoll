@@ -135,13 +135,19 @@ public class MaidPartDefFileLoader {
     }
 
     // pos为相对坐标，以1/16个方块为单位
-    // pos是相对坐标，原点在方块中心
-    public record JointData(String partA, String partB, Vec3 posA, Vec3 posB){
+    // pos原点在方块中心
+    // contacts表示两者是否可以发生碰撞
+    public record JointData(String partA, String partB,
+                            Vec3 posA, Vec3 posB,
+                            Optional<JointMotorData> motor,
+                            Optional<Boolean> contacts){
         public static final Codec<JointData> CODEC = RecordCodecBuilder.create(i -> i.group(
                 Codec.STRING.fieldOf("partA").forGetter(JointData::partA),
                 Codec.STRING.fieldOf("partB").forGetter(JointData::partB),
                 Vec3.CODEC.fieldOf("posA").forGetter(JointData::posA),
-                Vec3.CODEC.fieldOf("posB").forGetter(JointData::posB)
+                Vec3.CODEC.fieldOf("posB").forGetter(JointData::posB),
+                Codec.optionalField("motor", JointMotorData.CODEC, false).forGetter(JointData::motor),
+                Codec.optionalField("contacts", Codec.BOOL, false).forGetter(JointData::contacts)
         ).apply(i, JointData::new));
 
         public Vector3dc getVector3dcA(ServerSubLevel subLevel){
@@ -170,6 +176,14 @@ public class MaidPartDefFileLoader {
 
             return dest.add(pose.rotationPoint());
         }
+    }
+
+    // 用于自动回正
+    public record JointMotorData(double stiffness, double damping){
+        public static final Codec<JointMotorData> CODEC = RecordCodecBuilder.create(i -> i.group(
+                Codec.DOUBLE.fieldOf("stiffness").forGetter(JointMotorData::stiffness),
+                Codec.DOUBLE.fieldOf("damping").forGetter(JointMotorData::damping)
+        ).apply(i, JointMotorData::new));
     }
 
     public static Collection<DefFile> getAllDefFile(){

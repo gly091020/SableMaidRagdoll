@@ -4,6 +4,7 @@ import com.gly091020.SableMaidRagdoll.SableMaidRagdoll;
 import com.gly091020.SableMaidRagdoll.block.MaidPartBlockEntity;
 import dev.ryanhcode.sable.api.physics.constraint.ConstraintJointAxis;
 import dev.ryanhcode.sable.api.physics.constraint.GenericConstraintConfiguration;
+import dev.ryanhcode.sable.api.physics.constraint.PhysicsConstraintHandle;
 import dev.ryanhcode.sable.api.sublevel.ServerSubLevelContainer;
 import dev.ryanhcode.sable.api.sublevel.SubLevelContainer;
 import dev.ryanhcode.sable.companion.math.Pose3d;
@@ -27,7 +28,6 @@ public class MaidRagdollHelper {
         var defFile = MaidPartDefFileLoader.getDefFile(modelName);
         ServerSubLevelContainer container = SubLevelContainer.getContainer(serverLevel);
         if(container == null)return;
-        container.getAllSubLevels().forEach(subLevel -> subLevel.getUniqueId());
 
         var allPart = new HashMap<String, ServerSubLevel>();
         var allBE = new HashMap<String, MaidPartBlockEntity>();
@@ -44,8 +44,7 @@ public class MaidRagdollHelper {
                 allPart.put(part, s);
         }
         if(allBE.isEmpty())return;
-        MaidPartBlockEntity body = allBE.get("body");
-        if(body == null)body = allBE.values().stream().toList().getFirst();
+        MaidPartBlockEntity body = allBE.values().stream().toList().getFirst();
 
         var data = new ArrayList<MaidPartBlockEntity.BEJointData>();
         for (MaidPartDefFileLoader.JointData jointData: defFile.jointData()){
@@ -55,7 +54,13 @@ public class MaidRagdollHelper {
 
             var pos1 = jointData.getVector3dcA(a);
             var pos2 = jointData.getVector3dcB(b);
-            data.add(new MaidPartBlockEntity.BEJointData(a.getUniqueId(), b.getUniqueId(), new Vec3(pos1.x(), pos1.y(), pos1.z()), new Vec3(pos2.x(), pos2.y(), pos2.z())));
+            data.add(new MaidPartBlockEntity.BEJointData(a.getUniqueId(),
+                    b.getUniqueId(),
+                    new Vec3(pos1.x(), pos1.y(), pos1.z()),
+                    new Vec3(pos2.x(), pos2.y(), pos2.z()),
+                    jointData.motor(),
+                    jointData.contacts()
+            ));
         }
         body.setJointData(data);
     }
@@ -79,14 +84,22 @@ public class MaidRagdollHelper {
         return (ServerSubLevel) subLevel;
     }
 
-    public static void createJoint(ServerSubLevelContainer container, ServerSubLevel subLevel1, ServerSubLevel subLevel2, Vector3dc pos1, Vector3dc pos2){
-        container.physicsSystem().getPipeline().addConstraint(subLevel1, subLevel2,
+    public static PhysicsConstraintHandle createJoint(ServerSubLevelContainer container,
+                                                      ServerSubLevel subLevel1,
+                                                      ServerSubLevel subLevel2,
+                                                      Vector3dc pos1,
+                                                      Vector3dc pos2){
+        return container.physicsSystem().getPipeline().addConstraint(subLevel1, subLevel2,
                 new GenericConstraintConfiguration(pos1, pos2, new Quaterniond(), new Quaterniond(),
                         Set.of(ConstraintJointAxis.LINEAR_X, ConstraintJointAxis.LINEAR_Y, ConstraintJointAxis.LINEAR_Z)));
     }
 
-    public static void createJoint(ServerSubLevelContainer container, ServerSubLevel subLevel1, ServerSubLevel subLevel2, Vec3 pos1, Vec3 pos2){
-        createJoint(container, subLevel1, subLevel2, new Vector3d(
+    public static PhysicsConstraintHandle createJoint(ServerSubLevelContainer container,
+                                   ServerSubLevel subLevel1,
+                                   ServerSubLevel subLevel2,
+                                   Vec3 pos1,
+                                   Vec3 pos2){
+        return createJoint(container, subLevel1, subLevel2, new Vector3d(
                 pos1.x, pos1.y, pos1.z
         ), new Vector3d(
                 pos2.x, pos2.y, pos2.z

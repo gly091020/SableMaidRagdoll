@@ -2,9 +2,12 @@ package com.gly091020.SableMaidRagdoll.block;
 
 import com.gly091020.SableMaidRagdoll.SableMaidRagdoll;
 import com.gly091020.SableMaidRagdoll.server.GlobalHandledMaidPart;
+import com.gly091020.SableMaidRagdoll.util.MaidPartDefFileLoader;
 import com.gly091020.SableMaidRagdoll.util.MaidRagdollHelper;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import dev.ryanhcode.sable.api.physics.constraint.ConstraintJointAxis;
+import dev.ryanhcode.sable.api.physics.constraint.PhysicsConstraintHandle;
 import dev.ryanhcode.sable.api.sublevel.ServerSubLevelContainer;
 import dev.ryanhcode.sable.companion.SableCompanion;
 import dev.ryanhcode.sable.sublevel.ServerSubLevel;
@@ -24,9 +27,12 @@ import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jetbrains.annotations.NotNull;
+import org.joml.Quaterniond;
+import org.joml.Vector3d;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.IntStream;
 
@@ -163,13 +169,29 @@ public class MaidPartBlockEntity extends BlockEntity {
             var b = (ServerSubLevel) container.getSubLevel(beJointData.subLevelB);
             if(a == null || b == null)return;
 
+            PhysicsConstraintHandle handle;
             try{
-                MaidRagdollHelper.createJoint(container, a, b, beJointData.posA, beJointData.posB);
+                handle = MaidRagdollHelper.createJoint(container, a, b, beJointData.posA, beJointData.posB);
             } catch (Exception e) {
                 SableMaidRagdoll.LOGGER.debug("连接时错误：", e);
+                continue;
             }
+            handle.setContactsEnabled(beJointData.contacts.orElse(true));
+            if(beJointData.motor.isEmpty())continue;
+            var motorData = beJointData.motor.get();
+            var target = computeAxisTargets(a.logicalPose().orientation(), b.logicalPose().orientation());
+            handle.setMotor(ConstraintJointAxis.ANGULAR_X, target.x, motorData.stiffness(), motorData.damping(), false, 0.0f);
+            handle.setMotor(ConstraintJointAxis.ANGULAR_Y, target.y, motorData.stiffness(), motorData.damping(), false, 0.0f);
+            handle.setMotor(ConstraintJointAxis.ANGULAR_Z, target.z, motorData.stiffness(), motorData.damping(), false, 0.0f);
+
         }
         GlobalHandledMaidPart.handle(self.getUniqueId());
+    }
+
+    public static Vec3 computeAxisTargets(Quaterniond from, Quaterniond to) {
+        Quaterniond delta = new Quaterniond(from).conjugate().mul(to);
+        Vector3d euler = delta.getEulerAnglesXYZ(new Vector3d());
+        return new Vec3(euler.x, euler.y, euler.z);
     }
 
     public record Box(float minX, float minY, float minZ,
@@ -200,12 +222,14 @@ public class MaidPartBlockEntity extends BlockEntity {
         ).apply(i, RenderData::new));
     }
 
-    public record BEJointData(UUID subLevelA, UUID subLevelB, Vec3 posA, Vec3 posB){
+    public record BEJointData(UUID subLevelA, UUID subLevelB, Vec3 posA, Vec3 posB, Optional<MaidPartDefFileLoader.JointMotorData> motor, Optional<Boolean> contacts){
         public static final Codec<BEJointData> CODEC = RecordCodecBuilder.create(i -> i.group(
                 UUIDUtil.CODEC.fieldOf("subLevelA").forGetter(BEJointData::subLevelA),
                 UUIDUtil.CODEC.fieldOf("subLevelB").forGetter(BEJointData::subLevelB),
                 Vec3.CODEC.fieldOf("posA").forGetter(BEJointData::posA),
-                Vec3.CODEC.fieldOf("posB").forGetter(BEJointData::posB)
+                Vec3.CODEC.fieldOf("posB").forGetter(BEJointData::posB),
+                Codec.optionalField("motor", MaidPartDefFileLoader.JointMotorData.CODEC, false).forGetter(BEJointData::motor),
+                Codec.optionalField("contacts", Codec.BOOL, false).forGetter(BEJointData::contacts)
         ).apply(i, BEJointData::new));
 
         public static final Codec<List<BEJointData>> LIST_CODEC = Codec.list(CODEC);
