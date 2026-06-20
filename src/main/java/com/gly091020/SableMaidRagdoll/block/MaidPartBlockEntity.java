@@ -1,7 +1,6 @@
 package com.gly091020.SableMaidRagdoll.block;
 
 import com.gly091020.SableMaidRagdoll.SableMaidRagdoll;
-import com.gly091020.SableMaidRagdoll.server.GlobalHandledMaidPart;
 import com.gly091020.SableMaidRagdoll.util.MaidPartDefFileLoader;
 import com.gly091020.SableMaidRagdoll.util.MaidRagdollHelper;
 import com.mojang.serialization.Codec;
@@ -130,6 +129,10 @@ public class MaidPartBlockEntity extends BlockEntity {
         return renderData;
     }
 
+    public List<BEJointData> getJointData() {
+        return jointData;
+    }
+
     public MaidBlockShape getMaidBlockShape() {
         return maidBlockShape;
     }
@@ -163,7 +166,6 @@ public class MaidPartBlockEntity extends BlockEntity {
         if(container == null)return;
         var self = (ServerSubLevel) SableCompanion.INSTANCE.getContaining(level, getBlockPos());
         if(self == null)return;
-        if(GlobalHandledMaidPart.handled(self.getUniqueId()))return;
         for (BEJointData beJointData: jointData){
             var a = (ServerSubLevel) container.getSubLevel(beJointData.subLevelA);
             var b = (ServerSubLevel) container.getSubLevel(beJointData.subLevelB);
@@ -185,7 +187,6 @@ public class MaidPartBlockEntity extends BlockEntity {
             handle.setMotor(ConstraintJointAxis.ANGULAR_Z, target.z, motorData.stiffness(), motorData.damping(), false, 0.0f);
 
         }
-        GlobalHandledMaidPart.handle(self.getUniqueId());
     }
 
     public static Vec3 computeAxisTargets(Quaterniond from, Quaterniond to) {

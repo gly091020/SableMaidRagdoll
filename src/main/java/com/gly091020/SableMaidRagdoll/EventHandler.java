@@ -1,7 +1,6 @@
 package com.gly091020.SableMaidRagdoll;
 
 import com.gly091020.SableMaidRagdoll.command.MaidRagdollCommand;
-import com.gly091020.SableMaidRagdoll.server.GlobalHandledMaidPart;
 import com.gly091020.SableMaidRagdoll.util.MaidPartColliderBoxManager;
 import com.gly091020.SableMaidRagdoll.util.MaidPartDefFileLoader;
 import net.neoforged.bus.api.SubscribeEvent;
@@ -21,7 +20,6 @@ public class EventHandler {
     @SubscribeEvent
     public static void onServerStop(ServerStoppingEvent event){
         MaidPartColliderBoxManager.reset();
-        GlobalHandledMaidPart.clear();
     }
 
     @SubscribeEvent

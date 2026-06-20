@@ -1,6 +1,7 @@
 package com.gly091020.SableMaidRagdoll.command;
 
 import com.gly091020.SableMaidRagdoll.SableMaidRagdoll;
+import com.gly091020.SableMaidRagdoll.util.GlobalDebugRenderEnable;
 import com.gly091020.SableMaidRagdoll.util.MaidPartDefFileLoader;
 import com.gly091020.SableMaidRagdoll.util.MaidRagdollHelper;
 import com.mojang.brigadier.CommandDispatcher;
@@ -23,6 +24,7 @@ public class MaidRagdollCommand {
                         .suggests(MaidRagdollCommand::suggestionModelNames)
                         .executes(MaidRagdollCommand::spawn)));
         root.then(Commands.literal("reload").executes(MaidRagdollCommand::reload));
+        root.then(Commands.literal("debugRender").executes(MaidRagdollCommand::debugRender));
         dispatcher.register(root);
     }
 
@@ -40,6 +42,12 @@ public class MaidRagdollCommand {
     public static int reload(CommandContext<CommandSourceStack> context){
         MaidPartDefFileLoader.init();
         context.getSource().sendSuccess(() -> Component.translatable("command.sablemaidragdoll.reload.success"), false);
+        return 1;
+    }
+
+    public static int debugRender(CommandContext<CommandSourceStack> context){
+        GlobalDebugRenderEnable.enable = !GlobalDebugRenderEnable.enable;
+        context.getSource().sendSuccess(() -> Component.translatable("command.sablemaidragdoll.debug_render.success"), false);
         return 1;
     }
 
