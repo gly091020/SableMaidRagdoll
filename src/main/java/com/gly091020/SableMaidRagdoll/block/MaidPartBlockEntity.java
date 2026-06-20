@@ -1,11 +1,17 @@
 package com.gly091020.SableMaidRagdoll.block;
 
 import com.gly091020.SableMaidRagdoll.SableMaidRagdoll;
+import com.gly091020.SableMaidRagdoll.server.GlobalHandledMaidPart;
+import com.gly091020.SableMaidRagdoll.util.MaidRagdollHelper;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import dev.ryanhcode.sable.api.sublevel.ServerSubLevelContainer;
+import dev.ryanhcode.sable.companion.SableCompanion;
+import dev.ryanhcode.sable.sublevel.ServerSubLevel;
 import net.minecraft.Util;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
+import net.minecraft.core.UUIDUtil;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtOps;
 import net.minecraft.nbt.Tag;
@@ -19,15 +25,16 @@ import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.Collections;
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.IntStream;
 
 public class MaidPartBlockEntity extends BlockEntity {
-    private static final String DEFAULT_MODEL_ID = "touhou_little_maid:hakurei_reimu";
-
     private VoxelShape shape;
     private MaidBlockShape maidBlockShape;
     private RenderData renderData;
+    private List<BEJointData> jointData;
     public MaidPartBlockEntity(BlockPos pos, BlockState state) {
         super(SableMaidRagdoll.MAID_PART_BLOCK_ENTITY.get(), pos, state);
     }
@@ -47,6 +54,10 @@ public class MaidPartBlockEntity extends BlockEntity {
             RenderData.CODEC.parse(NbtOps.INSTANCE, tag.get("renderData"))
                     .resultOrPartial(err -> SableMaidRagdoll.LOGGER.debug("decode failed: {}", err))
                     .ifPresent(renderData -> this.renderData = renderData);
+        if(tag.contains("jointData", Tag.TAG_LIST))
+            BEJointData.LIST_CODEC.parse(NbtOps.INSTANCE, tag.get("jointData"))
+                    .resultOrPartial(err -> SableMaidRagdoll.LOGGER.debug("decode failed: {}", err))
+                    .ifPresent(jointData -> this.jointData = jointData);
     }
 
     @Override
@@ -61,6 +72,10 @@ public class MaidPartBlockEntity extends BlockEntity {
             RenderData.CODEC.encodeStart(NbtOps.INSTANCE, renderData)
                     .resultOrPartial(err -> SableMaidRagdoll.LOGGER.debug("encode failed: {}", err))
                     .ifPresent(encoded -> tag.put("renderData", encoded));
+        if(jointData != null)
+            BEJointData.LIST_CODEC.encodeStart(NbtOps.INSTANCE, jointData)
+                    .resultOrPartial(err -> SableMaidRagdoll.LOGGER.debug("encode failed: {}", err))
+                    .ifPresent(encoded -> tag.put("jointData", encoded));
     }
 
     public VoxelShape getShape(){
@@ -82,6 +97,11 @@ public class MaidPartBlockEntity extends BlockEntity {
 
     public void setRenderData(RenderData renderData) {
         this.renderData = renderData;
+        setChanged();
+    }
+
+    public void setJointData(List<BEJointData> data){
+        this.jointData = Collections.unmodifiableList(data);
         setChanged();
     }
 
@@ -129,6 +149,29 @@ public class MaidPartBlockEntity extends BlockEntity {
         }
     }
 
+    @Override
+    public void onLoad() {
+        super.onLoad();
+        if(level == null || jointData == null || level.isClientSide)return;
+        var container = (ServerSubLevelContainer) ServerSubLevelContainer.getContainer(level);
+        if(container == null)return;
+        var self = (ServerSubLevel) SableCompanion.INSTANCE.getContaining(level, getBlockPos());
+        if(self == null)return;
+        if(GlobalHandledMaidPart.handled(self.getUniqueId()))return;
+        for (BEJointData beJointData: jointData){
+            var a = (ServerSubLevel) container.getSubLevel(beJointData.subLevelA);
+            var b = (ServerSubLevel) container.getSubLevel(beJointData.subLevelB);
+            if(a == null || b == null)return;
+
+            try{
+                MaidRagdollHelper.createJoint(container, a, b, beJointData.posA, beJointData.posB);
+            } catch (Exception e) {
+                SableMaidRagdoll.LOGGER.debug("连接时错误：", e);
+            }
+        }
+        GlobalHandledMaidPart.handle(self.getUniqueId());
+    }
+
     public record Box(float minX, float minY, float minZ,
                       float maxX, float maxY, float maxZ) {
         public static final Codec<Box> CODEC =
@@ -155,5 +198,16 @@ public class MaidPartBlockEntity extends BlockEntity {
                 Vec3.CODEC.fieldOf("transform").forGetter(RenderData::transform),
                 Vec3.CODEC.fieldOf("rotate").forGetter(RenderData::rotate)
         ).apply(i, RenderData::new));
+    }
+
+    public record BEJointData(UUID subLevelA, UUID subLevelB, Vec3 posA, Vec3 posB){
+        public static final Codec<BEJointData> CODEC = RecordCodecBuilder.create(i -> i.group(
+                UUIDUtil.CODEC.fieldOf("subLevelA").forGetter(BEJointData::subLevelA),
+                UUIDUtil.CODEC.fieldOf("subLevelB").forGetter(BEJointData::subLevelB),
+                Vec3.CODEC.fieldOf("posA").forGetter(BEJointData::posA),
+                Vec3.CODEC.fieldOf("posB").forGetter(BEJointData::posB)
+        ).apply(i, BEJointData::new));
+
+        public static final Codec<List<BEJointData>> LIST_CODEC = Codec.list(CODEC);
     }
 }

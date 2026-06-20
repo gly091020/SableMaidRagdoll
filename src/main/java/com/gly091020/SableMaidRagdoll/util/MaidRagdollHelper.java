@@ -3,7 +3,6 @@ package com.gly091020.SableMaidRagdoll.util;
 import com.gly091020.SableMaidRagdoll.SableMaidRagdoll;
 import com.gly091020.SableMaidRagdoll.block.MaidPartBlockEntity;
 import dev.ryanhcode.sable.api.physics.constraint.ConstraintJointAxis;
-import dev.ryanhcode.sable.api.physics.constraint.FixedConstraintConfiguration;
 import dev.ryanhcode.sable.api.physics.constraint.GenericConstraintConfiguration;
 import dev.ryanhcode.sable.api.sublevel.ServerSubLevelContainer;
 import dev.ryanhcode.sable.api.sublevel.SubLevelContainer;
@@ -15,8 +14,10 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
 import org.joml.Quaterniond;
+import org.joml.Vector3d;
 import org.joml.Vector3dc;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Set;
 import java.util.function.Consumer;
@@ -29,6 +30,7 @@ public class MaidRagdollHelper {
         container.getAllSubLevels().forEach(subLevel -> subLevel.getUniqueId());
 
         var allPart = new HashMap<String, ServerSubLevel>();
+        var allBE = new HashMap<String, MaidPartBlockEntity>();
         for (String part: defFile.parts().keySet()){
             var data = defFile.getPartPosData(part);
             if(data == null)continue;
@@ -36,25 +38,29 @@ public class MaidRagdollHelper {
             {
                 blockEntity.setMaidBlockShape(defFile.createShape(part));
                 blockEntity.setRenderData(defFile.createRenderData(modelName, part));
+                allBE.put(part, blockEntity);
             }, data.getPose(pos));
             if(s != null)
                 allPart.put(part, s);
         }
+        if(allBE.isEmpty())return;
+        MaidPartBlockEntity body = allBE.get("body");
+        if(body == null)body = allBE.values().stream().toList().getFirst();
 
+        var data = new ArrayList<MaidPartBlockEntity.BEJointData>();
         for (MaidPartDefFileLoader.JointData jointData: defFile.jointData()){
             var a = allPart.get(jointData.partA());
             var b = allPart.get(jointData.partB());
             if(a == null || b == null)continue;
 
-            try{
-                createJoint(container, a, b, jointData.getVector3dcA(a), jointData.getVector3dcB(b));
-            } catch (Exception e) {
-                SableMaidRagdoll.LOGGER.error("连接时错误：", e);
-            }
+            var pos1 = jointData.getVector3dcA(a);
+            var pos2 = jointData.getVector3dcB(b);
+            data.add(new MaidPartBlockEntity.BEJointData(a.getUniqueId(), b.getUniqueId(), new Vec3(pos1.x(), pos1.y(), pos1.z()), new Vec3(pos2.x(), pos2.y(), pos2.z())));
         }
+        body.setJointData(data);
     }
 
-    private static ServerSubLevel createBlock(ServerSubLevelContainer container,
+    public static ServerSubLevel createBlock(ServerSubLevelContainer container,
                                               Consumer<MaidPartBlockEntity> dataConsumer,
                                               Pose3d pose3d) {
         final BlockState blockState = SableMaidRagdoll.MAID_PART_BLOCK.get().defaultBlockState();
@@ -73,10 +79,17 @@ public class MaidRagdollHelper {
         return (ServerSubLevel) subLevel;
     }
 
-    // fixme:重进存档后连接消失
-    private static void createJoint(ServerSubLevelContainer container, ServerSubLevel subLevel1, ServerSubLevel subLevel2, Vector3dc pos1, Vector3dc pos2){
+    public static void createJoint(ServerSubLevelContainer container, ServerSubLevel subLevel1, ServerSubLevel subLevel2, Vector3dc pos1, Vector3dc pos2){
         container.physicsSystem().getPipeline().addConstraint(subLevel1, subLevel2,
                 new GenericConstraintConfiguration(pos1, pos2, new Quaterniond(), new Quaterniond(),
                         Set.of(ConstraintJointAxis.LINEAR_X, ConstraintJointAxis.LINEAR_Y, ConstraintJointAxis.LINEAR_Z)));
+    }
+
+    public static void createJoint(ServerSubLevelContainer container, ServerSubLevel subLevel1, ServerSubLevel subLevel2, Vec3 pos1, Vec3 pos2){
+        createJoint(container, subLevel1, subLevel2, new Vector3d(
+                pos1.x, pos1.y, pos1.z
+        ), new Vector3d(
+                pos2.x, pos2.y, pos2.z
+        ));
     }
 }
