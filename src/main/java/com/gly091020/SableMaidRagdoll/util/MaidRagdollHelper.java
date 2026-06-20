@@ -24,10 +24,11 @@ import java.util.Set;
 import java.util.function.Consumer;
 
 public class MaidRagdollHelper {
-    public static void create(ServerLevel serverLevel, Vec3 pos, String modelName){
+    public static boolean create(ServerLevel serverLevel, Vec3 pos, String modelName){
         var defFile = MaidPartDefFileLoader.getDefFile(modelName);
         ServerSubLevelContainer container = SubLevelContainer.getContainer(serverLevel);
-        if(container == null)return;
+        if(container == null)return false;
+        if(defFile == null)return false;
 
         var allPart = new HashMap<String, ServerSubLevel>();
         var allBE = new HashMap<String, MaidPartBlockEntity>();
@@ -43,7 +44,7 @@ public class MaidRagdollHelper {
             if(s != null)
                 allPart.put(part, s);
         }
-        if(allBE.isEmpty())return;
+        if(allBE.isEmpty())return false;
         MaidPartBlockEntity body = allBE.values().stream().toList().getFirst();
 
         var data = new ArrayList<MaidPartBlockEntity.BEJointData>();
@@ -63,6 +64,7 @@ public class MaidRagdollHelper {
             ));
         }
         body.setJointData(data);
+        return true;
     }
 
     public static ServerSubLevel createBlock(ServerSubLevelContainer container,
