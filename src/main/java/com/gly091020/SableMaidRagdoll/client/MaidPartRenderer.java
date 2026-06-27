@@ -1,10 +1,10 @@
 package com.gly091020.SableMaidRagdoll.client;
 
 import com.github.tartaricacid.simplebedrockmodel.client.bedrock.model.BedrockPart;
-import com.github.tartaricacid.touhoulittlemaid.client.model.bedrock.BedrockModel;
 import com.github.tartaricacid.touhoulittlemaid.client.resource.CustomPackLoader;
 import com.gly091020.SableMaidRagdoll.block.MaidPartBlockEntity;
 import com.gly091020.SableMaidRagdoll.util.GlobalDebugRenderEnable;
+import com.gly091020.SableMaidRagdoll.util.MaidModelHelper;
 import com.gly091020.SableMaidRagdoll.util.MaidPartDefFileLoader;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
@@ -95,7 +95,7 @@ public class MaidPartRenderer implements BlockEntityRenderer<MaidPartBlockEntity
             drawLineBox(poseStack, multiBufferSource, blockEntity, 1, 0, 0);
             return;
         }
-        resetModel(model);
+        MaidModelHelper.resetModel(model);
 
         poseStack.pushPose();
         poseStack.translate(0.5, 1.5d + (1 - height) / 2, 0.5);
@@ -126,33 +126,6 @@ public class MaidPartRenderer implements BlockEntityRenderer<MaidPartBlockEntity
                 new AABB(pos1, pos2),
                 r, g, b, 1
         );
-    }
-
-    private void resetModel(BedrockModel<?> model){
-        model.getModelMap().values().forEach(this::resetModel);
-
-        hidePart(model.getModelMap().get("ahoge"));
-        hidePart(model.getModelMap().get("begShow"));
-        showPart(model.getModelMap().get("blink"));
-        hidePart(model.getModelMap().get("blink2"));
-    }
-
-    private void hidePart(BedrockPart part){
-        if(part == null)return;
-        part.visible = false;
-    }
-
-    private void showPart(BedrockPart part){
-        if(part == null)return;
-        part.visible = true;
-    }
-
-    private void resetModel(BedrockPart part){
-        // 943写的怎么是全局共享模型的?
-        // 943的代码真让人着迷
-        part.xRot = part.initRotX;
-        part.yRot = part.initRotY;
-        part.zRot = part.initRotZ;
     }
 
     private void drawLine(PoseStack poseStack, VertexConsumer vc, Vec3 pos1, Vec3 pos2, float r, float g, float b) {

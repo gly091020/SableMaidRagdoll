@@ -1,6 +1,5 @@
 package com.gly091020.SableMaidRagdoll.command;
 
-import com.gly091020.SableMaidRagdoll.SableMaidRagdoll;
 import com.gly091020.SableMaidRagdoll.util.GlobalDebugRenderEnable;
 import com.gly091020.SableMaidRagdoll.util.MaidPartDefFileLoader;
 import com.gly091020.SableMaidRagdoll.util.MaidRagdollHelper;
@@ -16,15 +15,15 @@ import net.minecraft.network.chat.Component;
 import java.util.concurrent.CompletableFuture;
 
 public class MaidRagdollCommand {
+    private static final String COMMAND = "sable_maid_ragdoll";
     public static void registry(CommandDispatcher<CommandSourceStack> dispatcher) {
-        var root = Commands.literal(SableMaidRagdoll.MODID);
+        var root = Commands.literal(COMMAND);
         root.requires(source -> source.hasPermission(2));
         root.then(Commands.literal("spawn")
                 .then(Commands.argument("model", ResourceLocationArgument.id())
                         .suggests(MaidRagdollCommand::suggestionModelNames)
                         .executes(MaidRagdollCommand::spawn)));
         root.then(Commands.literal("reload").executes(MaidRagdollCommand::reload));
-        root.then(Commands.literal("debugRender").executes(MaidRagdollCommand::debugRender));
         dispatcher.register(root);
     }
 
@@ -42,12 +41,6 @@ public class MaidRagdollCommand {
     public static int reload(CommandContext<CommandSourceStack> context){
         MaidPartDefFileLoader.init();
         context.getSource().sendSuccess(() -> Component.translatable("command.sablemaidragdoll.reload.success"), false);
-        return 1;
-    }
-
-    public static int debugRender(CommandContext<CommandSourceStack> context){
-        GlobalDebugRenderEnable.enable = !GlobalDebugRenderEnable.enable;
-        context.getSource().sendSuccess(() -> Component.translatable("command.sablemaidragdoll.debug_render.success"), false);
         return 1;
     }
 
