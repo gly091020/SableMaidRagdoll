@@ -1,6 +1,5 @@
 package com.gly091020.SableMaidRagdoll.command;
 
-import com.gly091020.SableMaidRagdoll.util.GlobalDebugRenderEnable;
 import com.gly091020.SableMaidRagdoll.util.MaidPartDefFileLoader;
 import com.gly091020.SableMaidRagdoll.util.MaidRagdollHelper;
 import com.mojang.brigadier.CommandDispatcher;
@@ -15,7 +14,7 @@ import net.minecraft.network.chat.Component;
 import java.util.concurrent.CompletableFuture;
 
 public class MaidRagdollCommand {
-    private static final String COMMAND = "sable_maid_ragdoll";
+    public static final String COMMAND = "sable_maid_ragdoll";
     public static void registry(CommandDispatcher<CommandSourceStack> dispatcher) {
         var root = Commands.literal(COMMAND);
         root.requires(source -> source.hasPermission(2));

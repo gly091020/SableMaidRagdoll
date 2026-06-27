@@ -1,0 +1,160 @@
+{
+  "parts": {
+    "AllHead": {
+      "boxes": [
+        [7, 7, 7]
+      ]
+    },
+    "UpperBody|UpBody|clothe": {
+      "boxes": [
+        [8, 10, 4.5]
+      ]
+    },
+    "LeftArm": {
+      "boxes": [
+        [3, 15, 3.6]
+      ]
+    },
+    "RightArm": {
+      "boxes": [
+        [3, 15, 3.6]
+      ]
+    },
+    "LeftLeg": {
+      "boxes": [
+        [4, 20, 4],
+        [6, -2, 6, 10, 1, 12]
+      ]
+    },
+    "RightLeg": {
+      "boxes": [
+        [4, 20, 4],
+        [6, -2, 6, 10, 1, 12]
+      ]
+    }
+  },
+  "renderData": [
+    {
+      "partName": "AllHead",
+      "transform": [0.5, -56.5, 0.5],
+      "rotate": [0, 0, 0]
+    },
+    {
+      "partName": "UpperBody|UpBody|clothe",
+      "transform": [0, -45, 0],
+      "rotate": [0, 0, 0],
+      "flatChild": true,
+      "extraPart": ["clothe", "MTail"]
+    },
+    {
+      "partName": "LeftArm",
+      "transform": [13, -37, 0.5],
+      "rotate": [0, 0, 18]
+    },
+    {
+      "partName": "RightArm",
+      "transform": [-12, -37, 0.5],
+      "rotate": [0, 0, -18]
+    },
+    {
+      "partName": "LeftLeg",
+      "transform": [2, -24, 0],
+      "rotate": [0, 0, 0]
+    },
+    {
+      "partName": "RightLeg",
+      "transform": [-2, -24, 0],
+      "rotate": [0, 0, 0]
+    }
+  ],
+  "partPosData": [
+    {
+      "partName": "AllHead",
+      "pos": [0.5, 27.5, 0.5],
+      "rotate": [0, 0, 0]
+    },
+    {
+      "partName": "UpperBody|UpBody|clothe",
+      "pos": [0, 17.5, 0],
+      "rotate": [0, 0, 0]
+    },
+    {
+      "partName": "LeftArm",
+      "pos": [6, 14, 0],
+      "rotate": [0, 0, 18]
+    },
+    {
+      "partName": "RightArm",
+      "pos": [-5, 14, 0],
+      "rotate": [0, 0, -18]
+    },
+    {
+      "partName": "LeftLeg",
+      "pos": [2, 2, 0],
+      "rotate": [0, 0, 0]
+    },
+    {
+      "partName": "RightLeg",
+      "pos": [-2, 2, 0],
+      "rotate": [0, 0, 0]
+    }
+  ],
+  "jointData": [
+    {
+      "partA": "AllHead",
+      "partB": "UpperBody|UpBody|clothe",
+      "posA": [-0.5, -4.4, -0.5],
+      "posB": [0, 5, 0],
+      "contacts": false,
+      "motor": {
+        "stiffness": 300,
+        "damping": 20
+      }
+    },
+    {
+      "partA": "UpperBody|UpBody|clothe",
+      "partB": "LeftLeg",
+      "posA": [2, -5.5, 0],
+      "posB": [0, 10, 0],
+      "motor": {
+        "stiffness": 300,
+        "damping": 10
+      }
+    },
+    {
+      "partA": "UpperBody|UpBody|clothe",
+      "partB": "RightLeg",
+      "posA": [-2, -5.5, 0],
+      "posB": [0, 10, 0],
+      "motor": {
+        "stiffness": 300,
+        "damping": 10
+      }
+    },
+    {
+      "partA": "UpperBody|UpBody|clothe",
+      "partB": "LeftArm",
+      "posA": [3, 2.5, 0],
+      "posB": [0, 6, 0],
+      "contacts": false,
+      "motor": {
+        "stiffness": 300,
+        "damping": 10
+      }
+    },
+    {
+      "partA": "UpperBody|UpBody|clothe",
+      "partB": "RightArm",
+      "posA": [-2.5, 2.5, 0],
+      "posB": [-1, 6, 0],
+      "contacts": false,
+      "motor": {
+        "stiffness": 300,
+        "damping": 20
+      }
+    }
+  ],
+  "hidePart": [
+    "FOX"
+  ]
+}

@@ -2,6 +2,7 @@ package com.gly091020.SableMaidRagdoll.util;
 
 import com.gly091020.SableMaidRagdoll.SableMaidRagdoll;
 import com.gly091020.SableMaidRagdoll.block.MaidPartBlockEntity;
+import com.gly091020.SableMaidRagdoll.command.MaidRagdollCommand;
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.mojang.serialization.Codec;
@@ -16,17 +17,12 @@ import org.joml.Vector3d;
 import org.joml.Vector3dc;
 
 import java.io.IOException;
-import java.net.URI;
-import java.net.URL;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.nio.file.StandardCopyOption;
+import java.nio.file.*;
 import java.util.*;
 import java.util.stream.Stream;
 
 public class MaidPartDefFileLoader {
-    public static final Path BASE_PATH = FMLPaths.GAMEDIR.get().resolve(SableMaidRagdoll.MODID);
+    public static final Path BASE_PATH = FMLPaths.GAMEDIR.get().resolve(MaidRagdollCommand.COMMAND);
     private static final Map<String, DefFile> DEF_FILES = new HashMap<>();
     private static final Gson GSON = new Gson();
 
@@ -34,7 +30,6 @@ public class MaidPartDefFileLoader {
         if(!BASE_PATH.toFile().isDirectory()){
             try{
                 Files.createDirectories(BASE_PATH);
-                releaseFromJar();
             } catch (IOException e) {
                 SableMaidRagdoll.LOGGER.warn("创建文件夹时出错", e);
             }
@@ -45,6 +40,7 @@ public class MaidPartDefFileLoader {
     private static void load(){
         DEF_FILES.clear();
         SableMaidRagdoll.LOGGER.info("开始加载定义文件");
+        loadFromJar();
         try (Stream<Path> stream = Files.list(BASE_PATH)) {
             stream.filter(path -> path.toFile().isDirectory()).forEach(MaidPartDefFileLoader::loadDir);
         } catch (IOException e) {
@@ -76,45 +72,53 @@ public class MaidPartDefFileLoader {
                 .ifPresent(defFile -> DEF_FILES.put(id, defFile));
     }
 
-    private static void releaseFromJar(){
-        final String path = String.format("/assets/%s/ragdoll_data", SableMaidRagdoll.MODID);
+    private static void loadFromJar() {
+        final String base = "/assets/" + SableMaidRagdoll.MODID + "/ragdoll_data";
+
         try {
-            copyFolder(path, BASE_PATH);
+            var uri = Objects.requireNonNull(
+                    SableMaidRagdoll.class.getResource(base)
+            ).toURI();
+
+            FileSystem fs;
+            Path root;
+
+            if (uri.getScheme().equals("jar")) {
+                fs = FileSystems.newFileSystem(uri, Collections.emptyMap());
+                root = fs.getPath(base);
+            } else {
+                fs = null;
+                root = Paths.get(uri);
+            }
+
+            try (Stream<Path> stream = Files.walk(root)) {
+                stream.filter(Files::isRegularFile).forEach(path -> {
+                    String id = buildId(root, path);
+                    try {
+                        loadFile(id, GSON.fromJson(Files.readString(path), JsonElement.class));
+                    } catch (IOException e) {
+                        SableMaidRagdoll.LOGGER.warn("读取 jar 文件失败 {}", path, e);
+                    }
+                });
+            }
+
+            if (fs != null) fs.close();
+
         } catch (Exception e) {
-            SableMaidRagdoll.LOGGER.warn("提取默认数据失败：", e);
-            return;
+            SableMaidRagdoll.LOGGER.warn("加载 jar 内置数据失败", e);
         }
-        SableMaidRagdoll.LOGGER.info("释放默认文件成功");
     }
 
-    // 来自 GetJarResources.java 感谢 943
-    public static void copyFolder(String sourcePath, Path targetPath) throws Exception {
-        URL url = SableMaidRagdoll.class.getResource(sourcePath);
-        if (url == null) {
-            return;
-        }
-        URI uri = url.toURI();
-        Path sourceFolderPath = Paths.get(uri);
-        try (Stream<Path> stream = Files.walk(sourceFolderPath, Integer.MAX_VALUE)) {
-            stream.forEach(source -> {
-                Path relativePath = sourceFolderPath.relativize(source);
-                String relativePathString = relativePath.toString().replace('\\', '/');
-                Path target = targetPath.resolve(relativePathString);
-                try {
-                    if (Files.isDirectory(source)) {
-                        Files.createDirectories(target);
-                    } else {
-                        Path parentDir = target.getParent();
-                        if (parentDir != null && !Files.isDirectory(parentDir)) {
-                            Files.createDirectories(parentDir);
-                        }
-                        Files.copy(source, target, StandardCopyOption.REPLACE_EXISTING);
-                    }
-                } catch (Exception e) {
-                    SableMaidRagdoll.LOGGER.warn("读取时出现错误：", e);
-                }
-            });
-        }
+    private static String buildId(Path root, Path file) {
+        Path relative = root.relativize(file);
+
+        String dir = relative.getNameCount() > 1
+                ? relative.getName(0).toString()
+                : "default";
+
+        String name = file.getFileName().toString().replace(".json", "");
+
+        return dir + ":" + name;
     }
 
     public record DefFile(
