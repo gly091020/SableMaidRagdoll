@@ -12,6 +12,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 public class MaidRagdollProject implements IProject {
     private final Resources resources = Resources.of();
@@ -31,6 +32,7 @@ public class MaidRagdollProject implements IProject {
     public void initNewProject() {
         file = new MaidPartDefFileLoader.DefFile(
                 Map.of(),
+                List.of(),
                 List.of(),
                 List.of(),
                 List.of()

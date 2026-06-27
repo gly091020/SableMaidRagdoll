@@ -3,6 +3,7 @@ package com.gly091020.SableMaidRagdoll.client;
 import com.github.tartaricacid.simplebedrockmodel.client.bedrock.model.BedrockPart;
 import com.github.tartaricacid.touhoulittlemaid.client.resource.CustomPackLoader;
 import com.gly091020.SableMaidRagdoll.block.MaidPartBlockEntity;
+import com.gly091020.SableMaidRagdoll.geo.GeoMaidModelRenderer;
 import com.gly091020.SableMaidRagdoll.util.GlobalDebugRenderEnable;
 import com.gly091020.SableMaidRagdoll.util.MaidModelHelper;
 import com.gly091020.SableMaidRagdoll.util.MaidPartDefFileLoader;
@@ -73,6 +74,10 @@ public class MaidPartRenderer implements BlockEntityRenderer<MaidPartBlockEntity
 
         var r = CustomPackLoader.MAID_MODELS.getModel(renderData.modelName());
         var r1 = CustomPackLoader.MAID_MODELS.getInfo(renderData.modelName());
+
+        if(r1.isPresent() && GeoMaidModelRenderer.render(blockEntity, v, poseStack, multiBufferSource, i, i1, r1.get()))
+            return;
+
         if(r.isEmpty() || r1.isEmpty()){
             drawLineBox(poseStack, multiBufferSource, blockEntity, 0, 1, 0);
             return;
@@ -80,8 +85,9 @@ public class MaidPartRenderer implements BlockEntityRenderer<MaidPartBlockEntity
         var model = r.get();
         var texture = r1.get().getTexture();
         var vc = multiBufferSource.getBuffer(RenderType.entityCutoutNoCull(texture));
-        var parts = new ArrayList<BedrockPart>();
         var height = shape.bounds().maxY - shape.bounds().minY;
+
+        var parts = new ArrayList<BedrockPart>();
         if(renderData.partName().contains("|"))
             for (String pName: renderData.partName().split("\\|")){
                 var p = model.getModelMap().get(pName);
@@ -91,10 +97,18 @@ public class MaidPartRenderer implements BlockEntityRenderer<MaidPartBlockEntity
             var p = model.getModelMap().get(renderData.partName());
             if(p != null)parts.add(p);
         }
+
+        // fixme: flatChild未实现
+        var extraParts = new ArrayList<BedrockPart>();
+        for(String pName: renderData.extraPart()){
+            var p = model.getModelMap().get(pName);
+            if(p != null)extraParts.add(p);
+        }
         if(parts.isEmpty()){
             drawLineBox(poseStack, multiBufferSource, blockEntity, 1, 0, 0);
             return;
         }
+
         MaidModelHelper.resetModel(model);
 
         poseStack.pushPose();
@@ -107,6 +121,7 @@ public class MaidPartRenderer implements BlockEntityRenderer<MaidPartBlockEntity
                 (float) Math.toRadians(renderData.rotate().z)));
 
         parts.forEach(part -> part.render(poseStack, vc, i, i1));
+        extraParts.forEach(part -> part.render(poseStack, vc, i, i1));
         poseStack.popPose();
     }
 

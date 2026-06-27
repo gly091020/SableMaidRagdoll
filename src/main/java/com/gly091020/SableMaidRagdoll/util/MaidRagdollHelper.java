@@ -39,6 +39,7 @@ public class MaidRagdollHelper {
             {
                 blockEntity.setMaidBlockShape(defFile.createShape(part));
                 blockEntity.setRenderData(defFile.createRenderData(modelName, part));
+                blockEntity.setHidePart(defFile.hideParts());
                 allBE.put(part, blockEntity);
             }, data.getPose(pos));
             if(s != null)

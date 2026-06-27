@@ -4,6 +4,7 @@ import com.gly091020.SableMaidRagdoll.SableMaidRagdoll;
 import com.gly091020.SableMaidRagdoll.util.MaidPartDefFileLoader;
 import com.gly091020.SableMaidRagdoll.util.MaidRagdollHelper;
 import com.mojang.serialization.Codec;
+import com.mojang.serialization.DataResult;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import dev.ryanhcode.sable.api.physics.constraint.ConstraintJointAxis;
 import dev.ryanhcode.sable.api.physics.constraint.PhysicsConstraintHandle;
@@ -40,6 +41,7 @@ public class MaidPartBlockEntity extends BlockEntity {
     private MaidBlockShape maidBlockShape;
     private RenderData renderData;
     private List<BEJointData> jointData;
+    private List<String> hidePart;
     public MaidPartBlockEntity(BlockPos pos, BlockState state) {
         super(SableMaidRagdoll.MAID_PART_BLOCK_ENTITY.get(), pos, state);
     }
@@ -63,6 +65,11 @@ public class MaidPartBlockEntity extends BlockEntity {
             BEJointData.LIST_CODEC.parse(NbtOps.INSTANCE, tag.get("jointData"))
                     .resultOrPartial(err -> SableMaidRagdoll.LOGGER.debug("decode failed: {}", err))
                     .ifPresent(jointData -> this.jointData = jointData);
+        if(tag.contains("hidePart", Tag.TAG_LIST))
+            Codec.list(Codec.STRING).parse(NbtOps.INSTANCE, tag.get("hidePart"))
+                    .resultOrPartial(err -> SableMaidRagdoll.LOGGER.debug("decode failed: {}", err))
+                    .ifPresent(hidePart -> this.hidePart = hidePart);
+        else hidePart = Collections.emptyList();
     }
 
     @Override
@@ -81,6 +88,10 @@ public class MaidPartBlockEntity extends BlockEntity {
             BEJointData.LIST_CODEC.encodeStart(NbtOps.INSTANCE, jointData)
                     .resultOrPartial(err -> SableMaidRagdoll.LOGGER.debug("encode failed: {}", err))
                     .ifPresent(encoded -> tag.put("jointData", encoded));
+        if(hidePart != null && !hidePart.isEmpty())
+            Codec.list(Codec.STRING).encodeStart(NbtOps.INSTANCE, hidePart)
+                    .resultOrPartial(err -> SableMaidRagdoll.LOGGER.debug("encode failed: {}", err))
+                    .ifPresent(encoded -> tag.put("hidePart", encoded));
     }
 
     public VoxelShape getShape(){
@@ -113,6 +124,14 @@ public class MaidPartBlockEntity extends BlockEntity {
     @Override
     public @NotNull CompoundTag getUpdateTag(HolderLookup.@NotNull Provider provider) {
         return saveWithoutMetadata(provider);
+    }
+
+    public List<String> getHidePart() {
+        return hidePart;
+    }
+
+    public void setHidePart(List<String> hidePart) {
+        this.hidePart = hidePart;
     }
 
     @Override
@@ -197,29 +216,55 @@ public class MaidPartBlockEntity extends BlockEntity {
 
     public record Box(float minX, float minY, float minZ,
                       float maxX, float maxY, float maxZ) {
-        public static final Codec<Box> CODEC =
-                Codec.INT_STREAM.comapFlatMap(stream ->
-                                Util.fixedSize(stream, 3).map(arr ->
-                                        Box.fromSize(arr[0], arr[1], arr[2])
-                                ),
-                        box -> IntStream.of(
-                                (int) ((box.maxX - box.minX) * 16f),
-                                (int) ((box.maxY - box.minY) * 16f),
-                                (int) ((box.maxZ - box.minZ) * 16f)
-                        )
-                ).stable();
 
-        public static Box fromSize(float xSize, float ySize, float zSize){
-            return new Box((8 - xSize / 2f) / 16f, (8 - ySize / 2f) / 16f, (8 - zSize / 2f) / 16f, (8 + xSize / 2f) / 16f, (8 + ySize / 2f) / 16f, (8 + zSize / 2f) / 16f);
+        public static final Codec<Box> CODEC =
+                Codec.INT_STREAM.comapFlatMap(stream -> {
+                    int[] arr = stream.toArray();
+
+                    if (arr.length == 3) {
+                        return DataResult.success(
+                                Box.fromSize(arr[0], arr[1], arr[2])
+                        );
+                    } else if (arr.length == 6) {
+                        return DataResult.success(new Box(
+                                arr[0] / 16f, arr[1] / 16f, arr[2] / 16f,
+                                arr[3] / 16f, arr[4] / 16f, arr[5] / 16f
+                        ));
+                    } else {
+                        return DataResult.error(() ->
+                                "Box requires 3 (size) or 6 (min/max) integers, got: " + arr.length
+                        );
+                    }
+                }, box -> IntStream.of(
+                        (int) (box.minX * 16f),
+                        (int) (box.minY * 16f),
+                        (int) (box.minZ * 16f),
+                        (int) (box.maxX * 16f),
+                        (int) (box.maxY * 16f),
+                        (int) (box.maxZ * 16f)
+                )).stable();
+
+        public static Box fromSize(float xSize, float ySize, float zSize) {
+            return new Box(
+                    (8 - xSize / 2f) / 16f,
+                    (8 - ySize / 2f) / 16f,
+                    (8 - zSize / 2f) / 16f,
+                    (8 + xSize / 2f) / 16f,
+                    (8 + ySize / 2f) / 16f,
+                    (8 + zSize / 2f) / 16f
+            );
         }
     }
 
-    public record RenderData(String modelName, String partName, Vec3 transform, Vec3 rotate){
+    // 这么臃肿都是怪酒狐🙃
+    public record RenderData(String modelName, String partName, Vec3 transform, Vec3 rotate, List<String> extraPart, boolean flatChild){
         public static final Codec<RenderData> CODEC = RecordCodecBuilder.create(i -> i.group(
                 Codec.STRING.fieldOf("modelName").forGetter(RenderData::modelName),
                 Codec.STRING.fieldOf("partName").forGetter(RenderData::partName),
                 Vec3.CODEC.fieldOf("transform").forGetter(RenderData::transform),
-                Vec3.CODEC.fieldOf("rotate").forGetter(RenderData::rotate)
+                Vec3.CODEC.fieldOf("rotate").forGetter(RenderData::rotate),
+                Codec.list(Codec.STRING).optionalFieldOf("extraPart", List.of()).forGetter(RenderData::extraPart),
+                Codec.BOOL.optionalFieldOf("flatChild", false).forGetter(RenderData::flatChild)
         ).apply(i, RenderData::new));
     }
 

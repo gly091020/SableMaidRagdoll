@@ -121,13 +121,17 @@ public class MaidPartDefFileLoader {
             Map<String, MaidPartBlockEntity.MaidBlockShape> parts,
             List<RenderDataWithoutModelName> renderData,
             List<PartPosData> partPosData,
-            List<JointData> jointData
+            List<JointData> jointData,
+            List<String> hideParts
     ){
         public static final Codec<DefFile> CODEC = RecordCodecBuilder.create(i -> i.group(
                 Codec.unboundedMap(Codec.STRING, MaidPartBlockEntity.MaidBlockShape.CODEC).fieldOf("parts").forGetter(DefFile::parts),
                 Codec.list(RenderDataWithoutModelName.CODEC).fieldOf("renderData").forGetter(DefFile::renderData),
                 Codec.list(PartPosData.CODEC).fieldOf("partPosData").forGetter(DefFile::partPosData),
-                Codec.list(JointData.CODEC).fieldOf("jointData").forGetter(DefFile::jointData)
+                Codec.list(JointData.CODEC).fieldOf("jointData").forGetter(DefFile::jointData),
+                Codec.list(Codec.STRING)
+                        .optionalFieldOf("hideParts", List.of())
+                        .forGetter(DefFile::hideParts)
         ).apply(i, DefFile::new));
 
         public MaidPartBlockEntity.RenderData createRenderData(String modelName, String partName){
@@ -135,7 +139,9 @@ public class MaidPartDefFileLoader {
                 if(!Objects.equals(partName, renderDataWithoutModelName.partName))continue;
                 return new MaidPartBlockEntity.RenderData(modelName, partName,
                         renderDataWithoutModelName.transform.scale(1.0 / 16.0),
-                        renderDataWithoutModelName.rotate
+                        renderDataWithoutModelName.rotate,
+                        renderDataWithoutModelName.extraPart,
+                        renderDataWithoutModelName.flatChild
                 );
             }
             return null;
@@ -154,12 +160,14 @@ public class MaidPartDefFileLoader {
     }
 
     // 此处的transform以1/16个方块为单位，rotate是角度值
-    public record RenderDataWithoutModelName(String partName, Vec3 transform, Vec3 rotate){
+    public record RenderDataWithoutModelName(String partName, Vec3 transform, Vec3 rotate, List<String> extraPart, boolean flatChild){
         public static final Codec<RenderDataWithoutModelName> CODEC = RecordCodecBuilder.create(i -> i.group(
                 Codec.STRING.fieldOf("partName").forGetter(RenderDataWithoutModelName::partName),
                 Vec3.CODEC.fieldOf("transform").forGetter(RenderDataWithoutModelName::transform),
-                Vec3.CODEC.fieldOf("rotate").forGetter(RenderDataWithoutModelName::rotate)
-        ).apply(i, RenderDataWithoutModelName::new));
+                Vec3.CODEC.fieldOf("rotate").forGetter(RenderDataWithoutModelName::rotate),
+                Codec.list(Codec.STRING).optionalFieldOf("extraPart", List.of()).forGetter(RenderDataWithoutModelName::extraPart),
+                Codec.BOOL.optionalFieldOf("flatChild", false).forGetter(RenderDataWithoutModelName::flatChild)
+            ).apply(i, RenderDataWithoutModelName::new));
     }
 
     // 此处的position以1/16个方块为单位，rotate是角度值

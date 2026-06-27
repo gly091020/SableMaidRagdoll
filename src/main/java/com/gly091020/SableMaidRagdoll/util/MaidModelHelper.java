@@ -1,13 +1,10 @@
 package com.gly091020.SableMaidRagdoll.util;
 
-import com.github.tartaricacid.simplebedrockmodel.client.bedrock.AbstractBedrockEntityModel;
 import com.github.tartaricacid.simplebedrockmodel.client.bedrock.model.BedrockPart;
-import com.github.tartaricacid.simplebedrockmodel.client.bedrock.pojo.BonesItem;
 import com.github.tartaricacid.touhoulittlemaid.client.model.bedrock.BedrockModel;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.regex.Pattern;
 
@@ -15,7 +12,6 @@ public class MaidModelHelper {
     public static List<String> IGNORE_PART = List.of(
             "ahoge",
             "begShow",
-            "blink",
             "blink2",
             "hurtBlink",
             "danmakuAttackShow"
