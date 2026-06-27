@@ -9,7 +9,6 @@ import dev.ryanhcode.sable.api.sublevel.SubLevelContainer;
 import dev.ryanhcode.sable.companion.math.JOMLConversion;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.damagesource.DamageTypes;
-import net.minecraft.world.entity.Entity;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.event.RegisterCommandsEvent;
@@ -49,7 +48,6 @@ public class EventHandler {
         var system = container.physicsSystem();
         var parts = MaidRagdollHelper.create(level, event.getMaid().position().add(0, 0.5, 0), event.getMaid().getModelId());
         var maidMotion = JOMLConversion.toJOML(event.getMaid().getDeltaMovement()).mul(10);
-        event.getMaid().remove(Entity.RemovalReason.KILLED);
         // 等待 2tick 是为了等待刚体创建在施加推力
         scheduleDelayed(level, 2, () -> parts.forEach(subLevel -> {
             if (subLevel.isRemoved()) return;
