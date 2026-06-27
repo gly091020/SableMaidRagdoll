@@ -1,5 +1,6 @@
 package com.gly091020.SableMaidRagdoll.command;
 
+import com.github.tartaricacid.touhoulittlemaid.entity.passive.EntityMaid;
 import com.gly091020.SableMaidRagdoll.util.MaidPartDefFileLoader;
 import com.gly091020.SableMaidRagdoll.util.MaidRagdollHelper;
 import com.mojang.brigadier.CommandDispatcher;
@@ -23,13 +24,24 @@ public class MaidRagdollCommand {
                         .suggests(MaidRagdollCommand::suggestionModelNames)
                         .executes(MaidRagdollCommand::spawn)));
         root.then(Commands.literal("reload").executes(MaidRagdollCommand::reload));
+        root.then(Commands.literal("spawn_test_maid").executes(MaidRagdollCommand::spawnTestMaid));
         dispatcher.register(root);
+    }
+
+    public static int spawnTestMaid(CommandContext<CommandSourceStack> context){
+        var maid = new EntityMaid(context.getSource().getLevel());
+        maid.setPos(context.getSource().getPosition());
+        maid.setHealth(1);
+        maid.setModelId("authors_and_credits:wine_fox_taisho");
+
+        context.getSource().getLevel().addFreshEntity(maid);
+        return 1;
     }
 
     public static int spawn(CommandContext<CommandSourceStack> context) {
         String modelName = ResourceLocationArgument.getId(context, "model").toString();
-        if(MaidRagdollHelper.create(context.getSource().getLevel(),
-                context.getSource().getPosition(), modelName)){
+        if(!MaidRagdollHelper.create(context.getSource().getLevel(),
+                context.getSource().getPosition(), modelName).isEmpty()){
             context.getSource().sendSuccess(() -> Component.translatable("command.sablemaidragdoll.spawn.success"), false);
             return 1;
         }

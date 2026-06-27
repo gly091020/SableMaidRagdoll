@@ -16,11 +16,15 @@ public class MaidModelHelper {
             "hurtBlink",
             "danmakuAttackShow"
     );
+    public static List<String> SHOW_PART = List.of(
+            "blink"
+    );
 
     public static void resetModel(BedrockModel<?> model){
         model.getModelMap().values().forEach(MaidModelHelper::resetModel);
 
         IGNORE_PART.forEach(p -> hidePart(model.getModelMap().get(p)));
+        SHOW_PART.forEach(p -> showPart(model.getModelMap().get(p)));
     }
 
     public static void hidePart(BedrockPart part){

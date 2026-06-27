@@ -20,15 +20,16 @@ import org.joml.Vector3dc;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Set;
 import java.util.function.Consumer;
 
 public class MaidRagdollHelper {
-    public static boolean create(ServerLevel serverLevel, Vec3 pos, String modelName){
+    public static List<ServerSubLevel> create(ServerLevel serverLevel, Vec3 pos, String modelName){
         var defFile = MaidPartDefFileLoader.getDefFile(modelName);
         ServerSubLevelContainer container = SubLevelContainer.getContainer(serverLevel);
-        if(container == null)return false;
-        if(defFile == null)return false;
+        if(container == null)return List.of();
+        if(defFile == null)return List.of();
 
         var allPart = new HashMap<String, ServerSubLevel>();
         var allBE = new HashMap<String, MaidPartBlockEntity>();
@@ -45,7 +46,7 @@ public class MaidRagdollHelper {
             if(s != null)
                 allPart.put(part, s);
         }
-        if(allBE.isEmpty())return false;
+        if(allBE.isEmpty())return List.of();
         MaidPartBlockEntity body = allBE.values().stream().toList().getFirst();
 
         var data = new ArrayList<MaidPartBlockEntity.BEJointData>();
@@ -65,7 +66,7 @@ public class MaidRagdollHelper {
             ));
         }
         body.setJointData(data);
-        return true;
+        return allPart.values().stream().toList();
     }
 
     public static ServerSubLevel createBlock(ServerSubLevelContainer container,
