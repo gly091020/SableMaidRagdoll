@@ -7,6 +7,7 @@
     "GetPhysicsDataBEMixin"
   ],
   "client": [
+    "model.BedrockPartMixin"
   ],
   "injectors": {
     "defaultRequire": 1

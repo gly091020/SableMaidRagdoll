@@ -1,19 +1,30 @@
 package com.gly091020.SableMaidRagdoll.util;
 
+import com.github.tartaricacid.simplebedrockmodel.client.bedrock.AbstractBedrockEntityModel;
 import com.github.tartaricacid.simplebedrockmodel.client.bedrock.model.BedrockPart;
+import com.github.tartaricacid.simplebedrockmodel.client.bedrock.pojo.BonesItem;
 import com.github.tartaricacid.touhoulittlemaid.client.model.bedrock.BedrockModel;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
 
+import java.util.HashMap;
+import java.util.List;
 import java.util.regex.Pattern;
 
 public class MaidModelHelper {
+    public static List<String> IGNORE_PART = List.of(
+            "ahoge",
+            "begShow",
+            "blink",
+            "blink2",
+            "hurtBlink",
+            "danmakuAttackShow"
+    );
+
     public static void resetModel(BedrockModel<?> model){
         model.getModelMap().values().forEach(MaidModelHelper::resetModel);
 
-        hidePart(model.getModelMap().get("ahoge"));
-        hidePart(model.getModelMap().get("begShow"));
-        hidePart(model.getModelMap().get("blink"));
-        hidePart(model.getModelMap().get("blink2"));
+        IGNORE_PART.forEach(p -> hidePart(model.getModelMap().get(p)));
     }
 
     public static void hidePart(BedrockPart part){
@@ -34,7 +45,7 @@ public class MaidModelHelper {
         part.zRot = part.initRotZ;
     }
 
-    public static Component paste943String(String s){
+    public static MutableComponent paste943String(String s){
         final Pattern pattern = Pattern.compile("^\\{(.*)}$");
         var matcher = pattern.matcher(s);
         if(matcher.find())

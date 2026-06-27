@@ -56,6 +56,8 @@ public class MaidModelView extends View {
                 l.widthPercent(100);
                 l.heightPercent(100);
             });
+            scrollerView.scrollerStyle(scrollerViewStyle ->
+                    scrollerViewStyle.maxScrollPixel(20));
 
             var content = new UIElement();
             content.layout(l -> {
