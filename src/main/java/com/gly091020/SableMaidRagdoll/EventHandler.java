@@ -73,6 +73,7 @@ public class EventHandler {
             angularAxis.mul(angularStrength + jitter);
             system.getPhysicsHandle(subLevel).applyAngularImpulse(angularAxis.mul(-1, 1, 1));
         }));
+        scheduleDelayed(level, 4, () -> event.getMaid().setInvisible(true));
     }
 
     private static final List<DelayedTask> DELAYED_TASKS = new CopyOnWriteArrayList<>();

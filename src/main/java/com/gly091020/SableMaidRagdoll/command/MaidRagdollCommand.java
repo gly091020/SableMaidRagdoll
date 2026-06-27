@@ -1,5 +1,6 @@
 package com.gly091020.SableMaidRagdoll.command;
 
+import com.github.tartaricacid.touhoulittlemaid.client.resource.models.MaidModels;
 import com.github.tartaricacid.touhoulittlemaid.entity.passive.EntityMaid;
 import com.gly091020.SableMaidRagdoll.util.MaidPartDefFileLoader;
 import com.gly091020.SableMaidRagdoll.util.MaidRagdollHelper;
@@ -11,6 +12,7 @@ import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.commands.arguments.ResourceLocationArgument;
 import net.minecraft.network.chat.Component;
+import net.minecraft.world.entity.ai.attributes.Attributes;
 
 import java.util.concurrent.CompletableFuture;
 
@@ -32,7 +34,14 @@ public class MaidRagdollCommand {
         var maid = new EntityMaid(context.getSource().getLevel());
         maid.setPos(context.getSource().getPosition());
         maid.setHealth(1);
-        maid.setModelId("authors_and_credits:wine_fox_taisho");
+        var models = MaidPartDefFileLoader.getDefFileMap().keySet().stream().toList();
+        var modelID = models.get(context.getSource().getLevel().random.nextInt(models.size()));
+        var info = MaidModels.getInstance().getInfo(modelID);
+        if(info.isEmpty())return 0;
+        maid.setModelId(modelID);
+        var attr = maid.getAttribute(Attributes.SCALE);
+        if(attr != null)
+            attr.setBaseValue(info.get().getRenderEntityScale());
 
         context.getSource().getLevel().addFreshEntity(maid);
         return 1;

@@ -70,6 +70,8 @@ public class GeoMaidModelRenderer {
         poseStack.mulPose(new Quaternionf().rotateXYZ((float) Math.toRadians(renderData.rotate().x),
                 (float) Math.toRadians(renderData.rotate().y),
                 (float) Math.toRadians(renderData.rotate().z)));
+        var scale = maidModelInfo.getRenderEntityScale();
+        poseStack.scale(scale, scale, scale);
 
         HardCodeModelHandler.called(path, animated);
 

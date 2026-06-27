@@ -119,6 +119,8 @@ public class MaidPartRenderer implements BlockEntityRenderer<MaidPartBlockEntity
         poseStack.mulPose(new Quaternionf().rotateXYZ((float) Math.toRadians(renderData.rotate().x),
                 (float) Math.toRadians(renderData.rotate().y),
                 (float) Math.toRadians(renderData.rotate().z)));
+        var scale = r1.get().getRenderEntityScale();
+        poseStack.scale(scale, scale, scale);
 
         parts.forEach(part -> part.render(poseStack, vc, i, i1));
         extraParts.forEach(part -> part.render(poseStack, vc, i, i1));
