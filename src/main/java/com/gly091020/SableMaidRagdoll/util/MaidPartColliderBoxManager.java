@@ -17,22 +17,19 @@ import java.util.Map;
 public class MaidPartColliderBoxManager {
     private static final Map<String, RapierVoxelColliderData> data = new HashMap<>();
 
-    public static void init(){
-        MaidPartDefFileLoader.getDefFileMap().forEach((k, v) -> v.parts().forEach((k1, v1) ->
-                data.put(k + "/" + k1, createOne(v1))));
-        SableMaidRagdoll.LOGGER.info("已创建全部方块属性");
-    }
-
     public static void reset(){
         data.clear();
     }
 
-    public static RapierVoxelColliderData getColliderData(MaidPartBlockEntity.RenderData renderData){
+    public static RapierVoxelColliderData getColliderData(MaidPartBlockEntity.RenderData renderData,
+                                                          MaidPartBlockEntity.MaidBlockShape blockShape){
         var k = renderData.modelName() + "/" + renderData.partName();
         if(data.containsKey(k))
             return data.get(k);
 
-        return RapierVoxelColliderData.EMPTY;
+        var r = createOne(blockShape);
+        data.put(k, r);
+        return r;
     }
 
     public static RapierVoxelColliderData createOne(MaidPartBlockEntity.MaidBlockShape shape){
