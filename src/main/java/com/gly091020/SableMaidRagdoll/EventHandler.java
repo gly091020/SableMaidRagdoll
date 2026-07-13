@@ -1,10 +1,12 @@
 package com.gly091020.SableMaidRagdoll;
 
+import com.github.tartaricacid.touhoulittlemaid.api.event.MaidDamageEvent;
 import com.github.tartaricacid.touhoulittlemaid.api.event.MaidDeathEvent;
 import com.gly091020.SableMaidRagdoll.command.MaidRagdollCommand;
 import com.gly091020.SableRagdollLib.api.RagdollHelper;
 import dev.ryanhcode.sable.api.sublevel.SubLevelContainer;
 import dev.ryanhcode.sable.companion.math.JOMLConversion;
+import net.minecraft.nbt.Tag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.damagesource.DamageTypes;
@@ -20,6 +22,17 @@ import java.util.concurrent.CopyOnWriteArrayList;
 @EventBusSubscriber(modid = SableMaidRagdoll.MODID)
 public class EventHandler {
     @SubscribeEvent
+    public static void onMaidHurt(MaidDamageEvent event){
+        if(event.isCanceled())return;
+        if(event.getMaid().level().isClientSide)return;
+        float damage = event.getAmount();
+        float health = event.getMaid().getHealth();
+
+        if (health > damage)return;
+        event.getMaid().getPersistentData().putFloat("smr_last_damage", event.getAmount());
+    }
+
+    @SubscribeEvent
     public static void onMaidDie(MaidDeathEvent event){
         if(event.isCanceled())return;
         if(!(event.getMaid().level() instanceof ServerLevel level))return;
@@ -32,6 +45,14 @@ public class EventHandler {
                 id);
         if(parts == null)return;
         var maidMotion = JOMLConversion.toJOML(event.getMaid().getDeltaMovement()).mul(10);
+
+        float damage;
+        if(event.getMaid().getPersistentData().contains("smr_last_damage", Tag.TAG_FLOAT)) {
+            damage = event.getMaid().getPersistentData().getFloat("smr_last_damage");
+            event.getMaid().getPersistentData().remove("smr_last_damage");
+        }else damage = 1;
+        maidMotion.mul(Math.clamp(damage / 5, 0.3, 1.5));
+
         // 等待 2tick 是为了等待刚体创建在施加推力
         scheduleDelayed(level, 2, () -> parts.getSublevels(level).forEach(subLevel -> {
             if (subLevel.isRemoved()) return;
