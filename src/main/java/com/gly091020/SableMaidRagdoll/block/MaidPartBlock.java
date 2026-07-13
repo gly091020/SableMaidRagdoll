@@ -1,5 +1,7 @@
 package com.gly091020.SableMaidRagdoll.block;
 
+import com.gly091020.SableRagdollLib.block.AbstractPartBlock;
+import com.gly091020.SableRagdollLib.block.AbstractPartBlockEntity;
 import com.mojang.serialization.MapCodec;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.BlockGetter;
@@ -15,7 +17,9 @@ import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public class MaidPartBlock extends BaseEntityBlock{
+import java.util.function.Function;
+
+public class MaidPartBlock extends AbstractPartBlock {
     public static final Properties PROPERTIES = Properties.ofFullCopy(Blocks.WHITE_WOOL)
             .noLootTable()
             .sound(SoundType.WOOL)
@@ -28,29 +32,13 @@ public class MaidPartBlock extends BaseEntityBlock{
     }
 
     @Override
-    protected @NotNull MapCodec<? extends BaseEntityBlock> codec() {
-        return simpleCodec(MaidPartBlock::new);
+    public Function<Properties, AbstractPartBlock> createBlock() {
+        return MaidPartBlock::new;
     }
 
     @Override
-    public @Nullable BlockEntity newBlockEntity(@NotNull BlockPos blockPos, @NotNull BlockState blockState) {
+    public @NotNull AbstractPartBlockEntity newBlockEntity(BlockPos blockPos, BlockState blockState) {
         return new MaidPartBlockEntity(blockPos, blockState);
     }
 
-    @Override
-    protected @NotNull VoxelShape getShape(@NotNull BlockState blockState, @NotNull BlockGetter blockGetter, @NotNull BlockPos blockPos, @NotNull CollisionContext collisionContext) {
-        if(blockGetter.getBlockEntity(blockPos) instanceof MaidPartBlockEntity blockEntity)
-            return blockEntity.getShape();
-        return Shapes.block();
-    }
-
-    @Override
-    protected int getLightBlock(@NotNull BlockState p_60585_, @NotNull BlockGetter p_60586_, @NotNull BlockPos p_60587_) {
-        return 0;
-    }
-
-    @Override
-    protected boolean isPathfindable(@NotNull BlockState p_60475_, @NotNull PathComputationType p_60478_) {
-        return false;
-    }
 }

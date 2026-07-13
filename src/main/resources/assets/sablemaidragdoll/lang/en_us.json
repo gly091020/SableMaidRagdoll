@@ -1,10 +1,3 @@
 {
-  "block.sablemaidragdoll.maid_part": "女仆部位",
-  "command.sablemaidragdoll.spawn.success": "已创建模型",
-  "command.sablemaidragdoll.spawn.failed": "找不到模型",
-  "command.sablemaidragdoll.reload.success": "已重新加载定义文件",
-  "command.sablemaidragdoll.debug_render.success": "已切换调试渲染模式",
-  "text.sablemaidragdoll.model_view": "模型选择器",
-  "text.sablemaidragdoll.model_view.tip1": "名称：%s",
-  "text.sablemaidragdoll.model_preview": "模型预览"
+  "block.sablemaidragdoll.maid_part": "女仆部位"
 }

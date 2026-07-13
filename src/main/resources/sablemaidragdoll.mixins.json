@@ -4,10 +4,10 @@
   "package": "com.gly091020.SableMaidRagdoll.mixin",
   "compatibilityLevel": "JAVA_21",
   "mixins": [
-    "GetPhysicsDataBEMixin"
+
   ],
   "client": [
-    "model.BedrockPartMixin"
+
   ],
   "injectors": {
     "defaultRequire": 1

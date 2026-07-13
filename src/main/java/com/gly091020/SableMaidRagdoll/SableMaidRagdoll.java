@@ -2,8 +2,10 @@ package com.gly091020.SableMaidRagdoll;
 
 import com.gly091020.SableMaidRagdoll.block.MaidPartBlock;
 import com.gly091020.SableMaidRagdoll.block.MaidPartBlockEntity;
+import com.gly091020.SableRagdollLib.api.RagdollTypeRegistry;
 import com.mojang.logging.LogUtils;
 import net.minecraft.core.registries.Registries;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.neoforged.bus.api.IEventBus;
@@ -24,8 +26,12 @@ public class SableMaidRagdoll {
     public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<MaidPartBlockEntity>> MAID_PART_BLOCK_ENTITY = BLOCK_ENTITIES.register("maid_part", () ->
             BlockEntityType.Builder.of(MaidPartBlockEntity::new, MAID_PART_BLOCK.get()).build(null));
 
+    public static final ResourceLocation RAGDOLL_TYPE = ResourceLocation.fromNamespaceAndPath(MODID, "maid");
+
     public SableMaidRagdoll(IEventBus bus){
         BLOCKS.register(bus);
         BLOCK_ENTITIES.register(bus);
+
+        RagdollTypeRegistry.registry(RAGDOLL_TYPE, MAID_PART_BLOCK::get, MAID_PART_BLOCK_ENTITY::get);
     }
 }

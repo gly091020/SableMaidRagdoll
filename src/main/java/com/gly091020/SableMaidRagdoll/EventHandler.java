@@ -2,18 +2,15 @@ package com.gly091020.SableMaidRagdoll;
 
 import com.github.tartaricacid.touhoulittlemaid.api.event.MaidDeathEvent;
 import com.gly091020.SableMaidRagdoll.command.MaidRagdollCommand;
-import com.gly091020.SableMaidRagdoll.util.MaidPartColliderBoxManager;
-import com.gly091020.SableMaidRagdoll.util.MaidPartDefFileLoader;
-import com.gly091020.SableMaidRagdoll.util.MaidRagdollHelper;
+import com.gly091020.SableRagdollLib.api.RagdollHelper;
 import dev.ryanhcode.sable.api.sublevel.SubLevelContainer;
 import dev.ryanhcode.sable.companion.math.JOMLConversion;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.damagesource.DamageTypes;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.event.RegisterCommandsEvent;
-import net.neoforged.neoforge.event.server.ServerStartingEvent;
-import net.neoforged.neoforge.event.server.ServerStoppingEvent;
 import net.neoforged.neoforge.event.tick.ServerTickEvent;
 import org.joml.Vector3d;
 
@@ -23,33 +20,20 @@ import java.util.concurrent.CopyOnWriteArrayList;
 @EventBusSubscriber(modid = SableMaidRagdoll.MODID)
 public class EventHandler {
     @SubscribeEvent
-    public static void registerCommands(RegisterCommandsEvent event) {
-        var dispatcher = event.getDispatcher();
-        MaidRagdollCommand.registry(dispatcher);
-    }
-
-    @SubscribeEvent
-    public static void onServerStop(ServerStoppingEvent event){
-        MaidPartColliderBoxManager.reset();
-    }
-
-    @SubscribeEvent
-    public static void onServerStart(ServerStartingEvent event){
-        MaidPartDefFileLoader.init();
-    }
-
-    @SubscribeEvent
     public static void onMaidDie(MaidDeathEvent event){
         if(event.isCanceled())return;
         if(!(event.getMaid().level() instanceof ServerLevel level))return;
         if(event.getSource().is(DamageTypes.GENERIC_KILL) || event.getSource().is(DamageTypes.FELL_OUT_OF_WORLD))return;
         var container = SubLevelContainer.getContainer(level);
         if(container == null)return;
+        var id = ResourceLocation.fromNamespaceAndPath(SableMaidRagdoll.MODID, event.getMaid().getModelId().replace(":", "/"));
         var system = container.physicsSystem();
-        var parts = MaidRagdollHelper.create(level, event.getMaid().position().add(0, 0.5, 0), event.getMaid().getModelId());
+        var parts = RagdollHelper.createRagdoll(level, event.getMaid().position().add(0, 0.5, 0),
+                id);
+        if(parts == null)return;
         var maidMotion = JOMLConversion.toJOML(event.getMaid().getDeltaMovement()).mul(10);
         // 等待 2tick 是为了等待刚体创建在施加推力
-        scheduleDelayed(level, 2, () -> parts.forEach(subLevel -> {
+        scheduleDelayed(level, 2, () -> parts.getSublevels(level).forEach(subLevel -> {
             if (subLevel.isRemoved()) return;
 
             var f = subLevel.logicalPose().transformNormalInverse(new Vector3d(maidMotion));
@@ -94,5 +78,10 @@ public class EventHandler {
                 DELAYED_TASKS.remove(task);
             }
         }
+    }
+
+    @SubscribeEvent
+    public static void onRegistryCommand(RegisterCommandsEvent event){
+        MaidRagdollCommand.registry(event.getDispatcher());
     }
 }

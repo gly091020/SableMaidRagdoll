@@ -9,3 +9,10 @@ pluginManagement {
 plugins {
     id 'org.gradle.toolchains.foojay-resolver-convention' version '0.8.0'
 }
+
+includeBuild("../SableRagdollLib") {
+    dependencySubstitution {
+        substitute(module("com.gly091020:sableragdolllib"))
+                .using(project(":"))
+    }
+}
