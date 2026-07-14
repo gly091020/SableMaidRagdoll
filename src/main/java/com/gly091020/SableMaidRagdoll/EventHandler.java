@@ -54,7 +54,7 @@ public class EventHandler {
         maidMotion.mul(Math.clamp(damage / 5, 0.3, 1.5));
 
         // 等待 2tick 是为了等待刚体创建在施加推力
-        scheduleDelayed(level, 2, () -> parts.getSublevels(level).forEach(subLevel -> {
+        scheduleDelayed(level, 2, () -> parts.getSublevels().forEach(subLevel -> {
             if (subLevel.isRemoved()) return;
 
             var f = subLevel.logicalPose().transformNormalInverse(new Vector3d(maidMotion));
