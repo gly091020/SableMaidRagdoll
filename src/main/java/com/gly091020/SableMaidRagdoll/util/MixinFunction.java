@@ -1,8 +1,11 @@
 package com.gly091020.SableMaidRagdoll.util;
 
+import com.github.tartaricacid.simplebedrockmodel.client.bedrock.AbstractBedrockEntityModel;
+import com.github.tartaricacid.simplebedrockmodel.client.bedrock.model.BedrockPart;
 import com.github.tartaricacid.touhoulittlemaid.entity.item.EntityBox;
 import com.github.tartaricacid.touhoulittlemaid.entity.passive.EntityMaid;
 import com.gly091020.SableMaidRagdoll.SableMaidRagdoll;
+import com.gly091020.SableMaidRagdoll.mixin.BedrockModelAccessor;
 import com.gly091020.SableRagdollLib.api.Ragdoll;
 import com.gly091020.SableRagdollLib.api.RagdollHelper;
 import com.gly091020.SableRagdollLib.api.ScheduleManager;
@@ -10,6 +13,8 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.Nullable;
+
+import java.util.List;
 
 public class MixinFunction {
     public static @Nullable Ragdoll getRagdoll(EntityBox self, EntityMaid maid) {
@@ -53,5 +58,9 @@ public class MixinFunction {
         });
 
         return reg;
+    }
+
+    public static List<BedrockPart> getShouldRender(AbstractBedrockEntityModel<?> model){
+        return ((BedrockModelAccessor)model).getShouldRender();
     }
 }

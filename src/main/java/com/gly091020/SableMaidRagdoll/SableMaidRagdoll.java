@@ -2,6 +2,8 @@ package com.gly091020.SableMaidRagdoll;
 
 import com.gly091020.SableMaidRagdoll.block.MaidPartBlock;
 import com.gly091020.SableMaidRagdoll.block.MaidPartBlockEntity;
+import com.gly091020.SableMaidRagdoll.editor.MaidRagdollEditorRegistry;
+import com.gly091020.SableRagdollLib.SableRagdollLib;
 import com.gly091020.SableRagdollLib.api.RagdollTypeRegistry;
 import com.mojang.logging.LogUtils;
 import net.minecraft.core.registries.Registries;
@@ -33,5 +35,7 @@ public class SableMaidRagdoll {
         BLOCK_ENTITIES.register(bus);
 
         RagdollTypeRegistry.registry(RAGDOLL_TYPE, MAID_PART_BLOCK::get, MAID_PART_BLOCK_ENTITY::get);
+        if(SableRagdollLib.hasLDLib())
+            MaidRagdollEditorRegistry.init();
     }
 }
