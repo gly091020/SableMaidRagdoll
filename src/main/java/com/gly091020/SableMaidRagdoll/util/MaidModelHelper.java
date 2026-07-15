@@ -53,6 +53,9 @@ public class MaidModelHelper {
         part.xRot = part.initRotX;
         part.yRot = part.initRotY;
         part.zRot = part.initRotZ;
+        part.offsetX = 0;
+        part.offsetY = 0;
+        part.offsetZ = 0;
     }
 
     public static MutableComponent paste943String(String s){

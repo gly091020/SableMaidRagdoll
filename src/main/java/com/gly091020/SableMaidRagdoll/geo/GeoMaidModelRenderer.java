@@ -6,21 +6,24 @@ import com.github.tartaricacid.touhoulittlemaid.geckolib3.geo.render.built.GeoMo
 import com.github.tartaricacid.touhoulittlemaid.geckolib3.resource.GeckoLibCache;
 import com.gly091020.SableMaidRagdoll.block.MaidPartBlockEntity;
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.math.Axis;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.NotNull;
-import org.joml.Quaternionf;
+import org.joml.Vector3d;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
 public class GeoMaidModelRenderer {
     private static final Map<ResourceLocation, GeoModel> MODELS = new HashMap<>();
     private static final Map<ResourceLocation, GeoMaidRenderer> RENDERERS = new HashMap<>();
+
+    public static boolean isGeo(MaidPartBlockEntity blockEntity){
+        var path = ResourceLocation.tryParse(blockEntity.getPartData().defFile().getPath().replace("/", ":"));
+        if(path == null)return false;
+        return GeckoLibCache.getInstance().getGeoModels().get(path) != null;
+    }
 
     public static boolean render(@NotNull MaidPartBlockEntity blockEntity,
                                  float partialTick,
@@ -30,8 +33,8 @@ public class GeoMaidModelRenderer {
                                  int overlay,
                                  MaidModelInfo maidModelInfo) {
 
-        var renderData = blockEntity.getRenderData();
-        var path = ResourceLocation.tryParse(renderData.modelName());
+        var renderData = blockEntity.getPartData().renderData();
+        var path = ResourceLocation.tryParse(blockEntity.getPartData().defFile().getPath().replace("/", ":"));
         if (path == null) return false;
 
         GeoModel geoModel = MODELS.computeIfAbsent(
@@ -43,37 +46,30 @@ public class GeoMaidModelRenderer {
 
         GeoMaidRenderer renderer = RENDERERS.computeIfAbsent(
                 path,
-                p -> new GeoMaidRenderer(bufferSource, maidModelInfo.getTexture(), blockEntity.getHidePart())
+                p -> new GeoMaidRenderer(bufferSource, maidModelInfo.getTexture())
         );
 
-        var parts = new ArrayList<String>();
-        if(renderData.partName().contains("|"))
-            parts.addAll(Arrays.asList(renderData.partName().split("\\|")));
-        else{
-            parts.add(renderData.partName());
-        }
-        if(parts.isEmpty()){
-            return false;
-        }
-
         AnimatedGeoModel animated = new AnimatedGeoModel(geoModel);
+        blockEntity.getPartData().expressions().getExpression("init").ifPresent(expressionMap ->
+                expressionMap.forEach((partName, expression) -> {
+            var part = animated.bones().get(partName);
+            if(part == null)return;
+            switch (expression.actionType()){
+                case "hide": part.setHidden(true);
+                case "show": part.setHidden(false);
+            }
+            part.addPositionX((float) expression.transform().x);
+            part.addPositionY((float) expression.transform().y);
+            part.addPositionZ((float) expression.transform().z);
+            part.addRotation(new Vector3d(Math.toRadians(expression.rotation().x),
+                    Math.toRadians(expression.rotation().y),
+                    Math.toRadians(expression.rotation().z)));
+        }));
+
         var renderType = RenderType.entityCutoutNoCull(maidModelInfo.getTexture());
         var vc = bufferSource.getBuffer(renderType);
-        var shape = blockEntity.getShape();
-        var height = shape.bounds().maxY - shape.bounds().minY;
-
-        poseStack.pushPose();
-        poseStack.translate(0.5, 1.5d + (1 - height) / 2, 0.5);
-        poseStack.mulPose(Axis.YP.rotationDegrees(180));
-
-        poseStack.translate(renderData.transform().x, renderData.transform().y, renderData.transform().z);
-        poseStack.mulPose(new Quaternionf().rotateXYZ((float) Math.toRadians(renderData.rotate().x),
-                (float) Math.toRadians(renderData.rotate().y),
-                (float) Math.toRadians(renderData.rotate().z)));
         var scale = maidModelInfo.getRenderEntityScale();
         poseStack.scale(scale, scale, scale);
-
-        HardCodeModelHandler.called(path, animated);
 
         renderer.render(
                 animated,
@@ -86,12 +82,9 @@ public class GeoMaidModelRenderer {
                 light,
                 overlay,
                 1, 1, 1, 1,
-                parts,
-                renderData.flatChild(),
-                renderData.extraPart()
+                renderData.parts()
         );
 
-        poseStack.popPose();
         return true;
     }
 }

@@ -7,8 +7,10 @@ import com.github.tartaricacid.touhoulittlemaid.geckolib3.geo.animated.AnimatedG
 import com.github.tartaricacid.touhoulittlemaid.geckolib3.geo.animated.AnimatedGeoModel;
 import com.github.tartaricacid.touhoulittlemaid.geckolib3.util.EModelRenderCycle;
 import com.github.tartaricacid.touhoulittlemaid.geckolib3.util.RenderUtils;
+import com.gly091020.SableRagdollLib.resource.file.RagdollRenderData;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
+import com.mojang.datafixers.util.Pair;
 import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
@@ -17,7 +19,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
-public record GeoMaidRenderer(MultiBufferSource multiBufferSource, ResourceLocation resourceLocation, List<String> hideParts) implements IGeoRenderer<Void> {
+public record GeoMaidRenderer(MultiBufferSource multiBufferSource, ResourceLocation resourceLocation) implements IGeoRenderer<Void> {
     @Override
     public MultiBufferSource getCurrentRTB() {
         return multiBufferSource;
@@ -30,8 +32,6 @@ public record GeoMaidRenderer(MultiBufferSource multiBufferSource, ResourceLocat
 
     @Override
     public void renderCubesOfBone(AnimatedGeoBone bone, PoseStack poseStack, VertexConsumer buffer, int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {
-        if (hideParts.contains(bone.getName()))
-            bone.setHidden(true);
         IGeoRenderer.super.renderCubesOfBone(bone, poseStack, buffer, packedLight, packedOverlay, red, green, blue, alpha);
     }
 
@@ -40,7 +40,7 @@ public record GeoMaidRenderer(MultiBufferSource multiBufferSource, ResourceLocat
         IGeoRenderer.super.render(model, animatable, partialTick, type, poseStack, bufferSource, buffer, packedLight, packedOverlay, red, green, blue, alpha);
     }
 
-    public void render(AnimatedGeoModel model, Void animatable, float partialTick, RenderType type, PoseStack poseStack, @Nullable MultiBufferSource bufferSource, @Nullable VertexConsumer buffer, int packedLight, int packedOverlay, float red, float green, float blue, float alpha, List<String> renderParts, boolean flatChild, List<String> extraParts) {
+    public void render(AnimatedGeoModel model, Void animatable, float partialTick, RenderType type, PoseStack poseStack, @Nullable MultiBufferSource bufferSource, @Nullable VertexConsumer buffer, int packedLight, int packedOverlay, float red, float green, float blue, float alpha, List<RagdollRenderData.EveryPart> renderParts) {
         setCurrentRTB(bufferSource);
         renderEarly(animatable, poseStack, partialTick, bufferSource, buffer, packedLight,
                 packedOverlay, red, green, blue, alpha);
@@ -50,22 +50,15 @@ public record GeoMaidRenderer(MultiBufferSource multiBufferSource, ResourceLocat
         renderLate(animatable, poseStack, partialTick, bufferSource, buffer, packedLight,
                 packedOverlay, red, green, blue, alpha);
 
-        for (String renderPart: renderParts){
-            var p = model.bones().get(renderPart);
+        for (RagdollRenderData.EveryPart renderPart: renderParts){
+            var p = model.bones().get(renderPart.partName());
             if(p == null)continue;
-            if(flatChild)
+            if(renderPart.flatChild())
                 renderRecursivelyWithoutChild(p, poseStack, buffer, packedLight, packedOverlay, red, green, blue,
                         alpha);
             else
                 renderRecursively(p, poseStack, buffer, packedLight, packedOverlay, red, green, blue,
                         alpha);
-        }
-
-        for (String renderPart: extraParts){
-            var p = model.bones().get(renderPart);
-            if(p == null)continue;
-            renderRecursively(p, poseStack, buffer, packedLight, packedOverlay, red, green, blue,
-                    alpha);
         }
 
         setCurrentModelRenderCycle(EModelRenderCycle.REPEATED);

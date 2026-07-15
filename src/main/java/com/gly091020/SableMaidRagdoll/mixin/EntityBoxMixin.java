@@ -36,6 +36,7 @@ public abstract class EntityBoxMixin {
         }
         if(thirdStageTicks > 50 && sableMaidRagdoll$ragdoll != null){
             sableMaidRagdoll$ragdoll.remove();
+            sableMaidRagdoll$ragdoll = null;
         }
     }
 
@@ -44,5 +45,13 @@ public abstract class EntityBoxMixin {
         var reg = MixinFunction.getRagdoll(self, maid);
         if (reg == null) return;
         sableMaidRagdoll$ragdoll = reg;
+    }
+
+    @Inject(method = "kill", at = @At("RETURN"))
+    private void onKill(CallbackInfo ci){
+        var self = ((EntityBox)(Object)this);
+        if(self.level().isClientSide)return;
+        if(sableMaidRagdoll$ragdoll != null)
+            sableMaidRagdoll$ragdoll.remove();
     }
 }

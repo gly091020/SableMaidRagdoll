@@ -6,6 +6,8 @@ import com.gly091020.SableMaidRagdoll.editor.MaidRagdollEditorRegistry;
 import com.gly091020.SableRagdollLib.SableRagdollLib;
 import com.gly091020.SableRagdollLib.api.RagdollTypeRegistry;
 import com.mojang.logging.LogUtils;
+import dev.ryanhcode.sable.SableCommonEvents;
+import dev.ryanhcode.sable.platform.SableEventPlatform;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.Block;
