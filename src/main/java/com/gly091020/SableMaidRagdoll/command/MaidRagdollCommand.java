@@ -4,6 +4,7 @@ import com.github.tartaricacid.touhoulittlemaid.entity.item.EntityBox;
 import com.github.tartaricacid.touhoulittlemaid.entity.passive.EntityMaid;
 import com.gly091020.SableMaidRagdoll.SableMaidRagdoll;
 import com.gly091020.SableRagdollLib.api.RagdollHelper;
+import com.gly091020.SableRagdollLib.api.ScheduleManager;
 import com.gly091020.SableRagdollLib.common.DefFileLoader;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.context.CommandContext;
@@ -69,7 +70,8 @@ public class MaidRagdollCommand {
         var ragdoll = RagdollHelper.createRagdoll(context.getSource().getLevel(), context.getSource().getPosition(), ragdollID);
         if(ragdoll == null)return 0;
 
-        ragdoll.addEntity(context.getSource().getEntity());
+        ScheduleManager.scheduleDelayed(context.getSource().getLevel(), 2, () ->
+                ragdoll.addEntity(context.getSource().getEntity()));
         return 1;
     }
 
