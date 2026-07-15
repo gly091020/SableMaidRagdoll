@@ -5,6 +5,7 @@ import com.github.tartaricacid.touhoulittlemaid.entity.passive.EntityMaid;
 import com.gly091020.SableMaidRagdoll.SableMaidRagdoll;
 import com.gly091020.SableRagdollLib.api.Ragdoll;
 import com.gly091020.SableRagdollLib.api.RagdollHelper;
+import com.gly091020.SableRagdollLib.api.ScheduleManager;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.phys.Vec3;
@@ -28,26 +29,28 @@ public class MixinFunction {
         self.ejectPassengers();
         reg.addEntity(maid);
 
-        reg.addLinearImpulse(new Vec3(0, 10, 0));
+        ScheduleManager.scheduleDelayed((ServerLevel) maid.level(), 2, () -> {
+            reg.addLinearImpulse(new Vec3(0, 10, 0));
 
-        var level = (ServerLevel) maid.level();
-        var nearestPlayer = level.getNearestPlayer(maid, 10);
+            var level = (ServerLevel) maid.level();
+            var nearestPlayer = level.getNearestPlayer(maid, 10);
 
-        if (nearestPlayer != null) {
-            Vec3 dir = nearestPlayer.position().subtract(maid.position());
-            Vec3 horizontal = new Vec3(dir.x, 0, dir.z);
+            if (nearestPlayer != null) {
+                Vec3 dir = nearestPlayer.position().subtract(maid.position());
+                Vec3 horizontal = new Vec3(dir.x, 0, dir.z);
 
-            if (horizontal.lengthSqr() > 1e-4) {
-                horizontal = horizontal.normalize();
+                if (horizontal.lengthSqr() > 1e-4) {
+                    horizontal = horizontal.normalize();
 
-                double pushStrength = 2;
-                reg.addLinearImpulse(horizontal.scale(pushStrength));
+                    double pushStrength = 2;
+                    reg.addLinearImpulse(horizontal.scale(pushStrength));
 
-                Vec3 axis = horizontal.cross(new Vec3(0, 1, 0)).normalize();
-                double spinStrength = -6;
-                reg.addAngularImpulse(axis.scale(spinStrength));
+                    Vec3 axis = horizontal.cross(new Vec3(0, 1, 0)).normalize();
+                    double spinStrength = -6;
+                    reg.addAngularImpulse(axis.scale(spinStrength));
+                }
             }
-        }
+        });
 
         return reg;
     }
