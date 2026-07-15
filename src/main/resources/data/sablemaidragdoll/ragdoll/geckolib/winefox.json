@@ -1,0 +1,234 @@
+{
+  "allParts": [
+    "head",
+    "body",
+    "armLeft",
+    "armRight",
+    "legLeft",
+    "legRight"
+  ],
+  "type": "sablemaidragdoll:maid",
+  "hitbox": {
+    "head": [5, 5, 5],
+    "body": [6, 7, 3.5],
+    "armLeft": [2.34, 9.75, 2.34],
+    "armRight": [2.34, 9.75, 2.34],
+    "legLeft": [
+      [6, 2, 6, 9, 14.5, 9],
+      [6, 2, 6, 9, 4, 11]
+    ],
+    "legRight": [
+      [6, 2, 6, 9, 14.5, 9],
+      [6, 2, 6, 9, 4, 11]
+    ]
+  },
+  "render": {
+    "head": {
+      "parts": [
+        "AllHead"
+      ],
+      "transform": [0.5, -45, 0.5]
+    },
+    "body": {
+      "parts": [
+        {
+          "partName": "UpperBody",
+          "flatChild": true
+        },
+        {
+          "partName": "UpBody",
+          "flatChild": true
+        },
+        {
+          "partName": "clothe",
+          "flatChild": true
+        },
+        "clothe",
+        "MTail"
+      ],
+      "transform": [0, -37, 0]
+    },
+    "armLeft": {
+      "parts": [
+        "LeftArm"
+      ],
+      "transform": [8, -32.5, 0],
+      "rotation": [0, 0, 18]
+    },
+    "armRight": {
+      "parts": [
+        "RightArm"
+      ],
+      "transform": [-8, -32.5, 0],
+      "rotation": [0, 0, -18]
+    },
+    "legLeft": {
+      "parts": [
+        "LeftLeg"
+      ],
+      "transform": [2, -24, 0]
+    },
+    "legRight": {
+      "parts": [
+        "RightLeg"
+      ],
+      "transform": [-1, -24, 0]
+    }
+  },
+  "position": {
+    "head": {
+      "transform": [
+        0.5,
+        17,
+        0
+      ],
+      "rotation": [
+        0,
+        0,
+        0
+      ]
+    },
+    "body": {
+      "transform": [
+        0,
+        10.5,
+        0
+      ],
+      "rotation": [
+        0,
+        0,
+        0
+      ]
+    },
+    "armLeft": {
+      "transform": [
+        4,
+        8.5,
+        0
+      ],
+      "rotation": [
+        0,
+        0,
+        18
+      ]
+    },
+    "armRight": {
+      "transform": [
+        -4,
+        8.5,
+        0
+      ],
+      "rotation": [
+        0,
+        0,
+        -18
+      ]
+    },
+    "legLeft": {
+      "transform": [
+        2,
+        0,
+        0
+      ],
+      "rotation": [
+        0,
+        0,
+        0
+      ]
+    },
+    "legRight": {
+      "transform": [
+        -1,
+        0,
+        0
+      ],
+      "rotation": [
+        0,
+        0,
+        0
+      ]
+    }
+  },
+  "joints": [
+    {
+      "A": "head",
+      "B": "body",
+      "posA": [-0.5, -3, -0.5],
+      "posB": [0, 3, 0],
+      "settings": {
+        "contacts": false,
+        "motor": {
+          "stiffness": 300,
+          "damping": 20
+        }
+      }
+    },
+    {
+      "A": "body",
+      "B": "legLeft",
+      "posA": [2, -4, 0],
+      "posB": [0, 6.5, 0],
+      "settings": {
+        "motor": {
+          "stiffness": 300,
+          "damping": 10
+        }
+      }
+    },
+    {
+      "A": "body",
+      "B": "legRight",
+      "posA": [-2, -4, 0],
+      "posB": [-1, 6.5, 0],
+      "settings": {
+        "motor": {
+          "stiffness": 300,
+          "damping": 10
+        }
+      }
+    },
+    {
+      "A": "body",
+      "B": "armLeft",
+      "posA": [1, 1, 0],
+      "posB": [0, 4, 0],
+      "settings": {
+        "contacts": false,
+        "motor": {
+          "stiffness": 300,
+          "damping": 10
+        }
+      }
+    },
+    {
+      "A": "body",
+      "B": "armRight",
+      "posA": [-1, 1, 0],
+      "posB": [0, 4, 0],
+      "settings": {
+        "contacts": false,
+        "motor": {
+          "stiffness": 300,
+          "damping": 10
+        }
+      }
+    }
+  ],
+  "expressions": {
+    "init": {
+      "FOX": {
+        "actionType": "hide"
+      },
+      "EyeBrow": {
+        "transform": [0, -0.75, 0]
+      },
+      "Eyelid": {
+        "transform": [0, 0, 1]
+      },
+      "weixiao": {
+        "actionType": "show",
+        "transform": [0, 0.25, -1]
+      }
+    }
+  }
+}

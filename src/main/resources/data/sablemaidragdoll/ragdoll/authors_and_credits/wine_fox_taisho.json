@@ -169,7 +169,7 @@
     },
     "legRight": {
       "transform": [
-        1.75,
+        2,
         0,
         0
       ],
@@ -185,7 +185,14 @@
       "A": "head",
       "B": "body",
       "posA": [0, -4, 0],
-      "posB": [0, 4.4, 0]
+      "posB": [0, 4.4, 0],
+      "settings": {
+        "contacts": false,
+        "motor": {
+          "stiffness": 300,
+          "damping": 20
+        }
+      }
     },
     {
       "A": "body",
@@ -211,5 +218,12 @@
       "posA": [-4.5, 3.5, 0],
       "posB": [0, 3.5, 0]
     }
-  ]
+  ],
+  "expressions": {
+    "init": {
+      "blink": {
+        "actionType": "show"
+      }
+    }
+  }
 }
