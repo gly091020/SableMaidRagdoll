@@ -185,14 +185,7 @@
       "A": "head",
       "B": "body",
       "posA": [0, -4, 0],
-      "posB": [0, 4.4, 0],
-      "settings": {
-        "contacts": false,
-        "motor": {
-          "stiffness": 300,
-          "damping": 20
-        }
-      }
+      "posB": [0, 4.4, 0]
     },
     {
       "A": "body",

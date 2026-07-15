@@ -13,11 +13,9 @@ import net.minecraft.world.damagesource.DamageTypes;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.event.RegisterCommandsEvent;
-import net.neoforged.neoforge.event.tick.ServerTickEvent;
 import org.joml.Vector3d;
 
-import java.util.List;
-import java.util.concurrent.CopyOnWriteArrayList;
+import static com.gly091020.SableRagdollLib.api.ScheduleManager.scheduleDelayed;
 
 @EventBusSubscriber(modid = SableMaidRagdoll.MODID)
 public class EventHandler {
@@ -79,26 +77,6 @@ public class EventHandler {
             system.getPhysicsHandle(subLevel).applyAngularImpulse(angularAxis.mul(-1, 1, 1));
         }));
         scheduleDelayed(level, 4, () -> event.getMaid().setInvisible(true));
-    }
-
-    private static final List<DelayedTask> DELAYED_TASKS = new CopyOnWriteArrayList<>();
-
-    private record DelayedTask(long targetTick, Runnable runnable) {}
-
-    public static void scheduleDelayed(ServerLevel level, int delayTicks, Runnable runnable) {
-        long target = level.getServer().getTickCount() + delayTicks;
-        DELAYED_TASKS.add(new DelayedTask(target, runnable));
-    }
-
-    @SubscribeEvent
-    public static void onServerTick(ServerTickEvent.Pre event) {
-        long now = event.getServer().getTickCount();
-        for (DelayedTask task : DELAYED_TASKS) {
-            if (task.targetTick() <= now) {
-                task.runnable().run();
-                DELAYED_TASKS.remove(task);
-            }
-        }
     }
 
     @SubscribeEvent
