@@ -225,5 +225,6 @@
         "actionType": "show"
       }
     }
-  }
+  },
+  "mainBody": "body"
 }

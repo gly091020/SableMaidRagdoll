@@ -35,7 +35,7 @@ public class MixinFunction {
         reg.addEntity(maid);
 
         ScheduleManager.scheduleDelayed((ServerLevel) maid.level(), 2, () -> {
-            reg.addLinearImpulse(new Vec3(0, 10, 0));
+            reg.addLinearImpulse(new Vec3(0, 10, 0), false);
 
             var level = (ServerLevel) maid.level();
             var nearestPlayer = level.getNearestPlayer(maid, 10);
@@ -48,11 +48,11 @@ public class MixinFunction {
                     horizontal = horizontal.normalize();
 
                     double pushStrength = 2;
-                    reg.addLinearImpulse(horizontal.scale(pushStrength));
+                    reg.addLinearImpulse(horizontal.scale(pushStrength), false);
 
                     Vec3 axis = horizontal.cross(new Vec3(0, 1, 0)).normalize();
                     double spinStrength = -6;
-                    reg.addAngularImpulse(axis.scale(spinStrength));
+                    reg.addAngularImpulse(axis.scale(spinStrength), false);
                 }
             }
         });
