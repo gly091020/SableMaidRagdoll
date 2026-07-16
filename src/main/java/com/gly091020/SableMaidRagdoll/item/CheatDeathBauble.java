@@ -10,6 +10,8 @@ import com.gly091020.SableRagdollLib.entity.PartSeat;
 import dev.ryanhcode.sable.api.sublevel.SubLevelContainer;
 import dev.ryanhcode.sable.companion.math.JOMLConversion;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.particles.ColorParticleOption;
+import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.damagesource.DamageSource;
@@ -52,6 +54,8 @@ public class CheatDeathBauble implements IMaidBauble {
         if(maid.tickCount % 20 != 0)return;
         if(!(maid.level() instanceof ServerLevel serverLevel))return;
         maid.setHealth(maid.getHealth() + 2);
+        spawnParticles(serverLevel, maid);
+
         if(maid.getHealth() >= RECOVER_HEALTH && maid.getVehicle() instanceof PartSeat partSeat){
             var container = SubLevelContainer.getContainer(serverLevel);
             if(container == null)return;
@@ -62,6 +66,20 @@ public class CheatDeathBauble implements IMaidBauble {
             if(rag == null)return;
             rag.remove();
         }
+    }
+
+    public static void spawnParticles(ServerLevel serverLevel, EntityMaid maid){
+        float width = maid.getBbWidth();
+        float height = maid.getBbHeight();
+        serverLevel.sendParticles(
+                ColorParticleOption.create(ParticleTypes.ENTITY_EFFECT, 0.9f, 0.1f, 0.1f),
+                maid.getX(),
+                maid.getY() + height / 2,
+                maid.getZ(),
+                30,
+                width, height / 2, width,
+                0.0
+        );
     }
 
     public static boolean isCheatDeath(EntityMaid maid){
