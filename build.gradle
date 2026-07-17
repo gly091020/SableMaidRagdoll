@@ -38,6 +38,13 @@ repositories {
     maven { url = "https://maven.createmod.net" } // Create, Ponder, Flywheel
     maven { url = "https://maven.ithundxr.dev/snapshots" }
     maven { url = "https://maven.firstdark.dev/snapshots" }
+    maven {
+        url "https://cursemaven.com"
+        content {
+            includeGroup "curse.maven"
+        }
+    }
+    maven { url = "https://maven.bawnorton.com/releases" }
 }
 
 base {

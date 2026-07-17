@@ -48,10 +48,14 @@ public class CheatDeathBauble implements IMaidBauble {
         return false;
     }
 
+    // 不用女仆tickCount是因为某些情况下tickCount不增加
+    private long lastUpdate = 0;
     @Override
     public void onTick(EntityMaid maid, ItemStack baubleItem) {
+        long now = System.currentTimeMillis();
+        if (now - lastUpdate < 1000)return;
+        lastUpdate = now;
         if(!isCheatDeath(maid))return;
-        if(maid.tickCount % 20 != 0)return;
         if(!(maid.level() instanceof ServerLevel serverLevel))return;
         maid.setHealth(maid.getHealth() + 2);
         spawnParticles(serverLevel, maid);
