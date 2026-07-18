@@ -7,7 +7,10 @@ import com.gly091020.SableMaidRagdoll.SableMaidRagdoll;
 import com.gly091020.SableMaidRagdoll.util.MixinFunction;
 import com.gly091020.SableRagdollLib.editor.api.IModelSceneSupplier;
 import com.gly091020.SableRagdollLib.editor.api.AbstractModelSceneObject;
+import com.gly091020.SableRagdollLib.resource.file.RagdollRenderData;
 import com.lowdragmc.lowdraglib2.gui.util.TreeNode;
+import com.mojang.blaze3d.vertex.PoseStack;
+import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.Nullable;
 
