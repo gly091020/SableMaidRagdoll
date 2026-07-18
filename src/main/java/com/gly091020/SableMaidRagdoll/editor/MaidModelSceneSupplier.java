@@ -3,14 +3,13 @@ package com.gly091020.SableMaidRagdoll.editor;
 import com.github.tartaricacid.simplebedrockmodel.client.bedrock.model.BedrockPart;
 import com.github.tartaricacid.touhoulittlemaid.client.model.bedrock.BedrockModel;
 import com.github.tartaricacid.touhoulittlemaid.client.resource.models.MaidModels;
+import com.github.tartaricacid.touhoulittlemaid.geckolib3.geo.render.built.GeoBone;
+import com.github.tartaricacid.touhoulittlemaid.geckolib3.resource.GeckoLibCache;
 import com.gly091020.SableMaidRagdoll.SableMaidRagdoll;
 import com.gly091020.SableMaidRagdoll.util.MixinFunction;
-import com.gly091020.SableRagdollLib.editor.api.IModelSceneSupplier;
 import com.gly091020.SableRagdollLib.editor.api.AbstractModelSceneObject;
-import com.gly091020.SableRagdollLib.resource.file.RagdollRenderData;
+import com.gly091020.SableRagdollLib.editor.api.IModelSceneSupplier;
 import com.lowdragmc.lowdraglib2.gui.util.TreeNode;
-import com.mojang.blaze3d.vertex.PoseStack;
-import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.Nullable;
 
@@ -21,7 +20,8 @@ public class MaidModelSceneSupplier implements IModelSceneSupplier {
     public ResourceLocation getModel(Path path) {
         var id = toRL(path);
         if(id == null)return null;
-        if(MaidModels.getInstance().getModel(id.toString()).isEmpty())return null;
+        if(MaidModels.getInstance().getModel(id.toString()).isEmpty() &&
+                GeckoLibCache.getInstance().getGeoModels().get(id) == null)return null;
         return id;
     }
 
@@ -48,11 +48,30 @@ public class MaidModelSceneSupplier implements IModelSceneSupplier {
 
     @Override
     public void buildModelTree(ResourceLocation resourceLocation, TreeNode<String, String> root) {
+        buildGeoModelTree(resourceLocation, root);
         var model = MaidModels.getInstance().getModel(resourceLocation.toString()).orElse(null);
         if(model == null)return;
 
         for (BedrockPart part : MixinFunction.getShouldRender(model)){
             addChild(model, part, root);
+        }
+    }
+
+    public void buildGeoModelTree(ResourceLocation resourceLocation, TreeNode<String, String> root) {
+        var model = GeckoLibCache.getInstance().getGeoModels().get(resourceLocation);
+        if(model == null)return;
+
+        for (GeoBone bone : model.topLevelBones()){
+            addGeoChild(bone, root);
+        }
+    }
+
+    public void addGeoChild(GeoBone bone, TreeNode<String, String> root){
+        var name = bone.name();
+        if(name == null)return;
+        var node = root.createChild(name);
+        for (GeoBone bone1: bone.children()){
+            addGeoChild(bone1, node);
         }
     }
 
