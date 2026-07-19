@@ -38,29 +38,40 @@
       ],
       "transform": [
         0.5,
-        -45.0,
+        -46.20000076293945,
         0.5
       ]
     },
     "body": {
       "parts": [
         {
-          "partName": "UpperBody",
-          "flatChild": true
+          "partName": "bone11"
         },
         {
           "partName": "UpBody",
           "flatChild": true
         },
         {
-          "partName": "clothe",
-          "flatChild": true
+          "partName": "weioqun"
         },
         {
-          "partName": "clothe"
+          "partName": "YIFUSHANG6"
+        },
+        {
+          "partName": "HUDIEJIE2"
+        },
+        {
+          "partName": "qunzi4"
+        },
+        {
+          "partName": "DownBody"
         },
         {
           "partName": "MTail"
+        },
+        {
+          "partName": "UpperBody",
+          "flatChild": true
         }
       ],
       "transform": [
@@ -83,7 +94,7 @@
       "rotation": [
         0.0,
         0.0,
-        18.0
+        17.0
       ]
     },
     "armRight": {
@@ -100,7 +111,7 @@
       "rotation": [
         0.0,
         0.0,
-        -18.0
+        -17.0
       ]
     },
     "legLeft": {
@@ -261,7 +272,7 @@
     ],
     "armLeft": [
       7,
-      3,
+      6,
       7,
       9,
       12,
@@ -269,7 +280,7 @@
     ],
     "armRight": [
       7,
-      3,
+      6,
       7,
       9,
       12,
@@ -279,7 +290,7 @@
       [
         6,
         2,
-        6,
+        7,
         9,
         14,
         9
@@ -287,7 +298,7 @@
       [
         6,
         2,
-        6,
+        7,
         9,
         4,
         11
@@ -297,7 +308,7 @@
       [
         6,
         2,
-        6,
+        7,
         9,
         14,
         9
@@ -305,7 +316,7 @@
       [
         6,
         2,
-        6,
+        7,
         9,
         4,
         11
@@ -316,7 +327,7 @@
     "head": {
       "transform": [
         0.0,
-        23.0,
+        24.5,
         0.0
       ]
     },
@@ -330,39 +341,39 @@
     "armLeft": {
       "transform": [
         4.0,
-        14.5,
-        0.0
+        15.0,
+        0.20000000298023224
       ],
       "rotation": [
         0.0,
         0.0,
-        18.0
+        17.0
       ]
     },
     "armRight": {
       "transform": [
         -4.0,
-        14.5,
-        0.0
+        15.0,
+        0.20000000298023224
       ],
       "rotation": [
         0.0,
         0.0,
-        -18.0
+        -17.0
       ]
     },
     "legLeft": {
       "transform": [
         1.5,
         6.0,
-        1.0
+        1.2000000476837158
       ]
     },
     "legRight": {
       "transform": [
         -1.5,
         6.0,
-        1.0
+        1.2000000476837158
       ]
     }
   }

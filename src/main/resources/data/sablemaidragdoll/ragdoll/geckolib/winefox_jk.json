@@ -61,6 +61,15 @@
         },
         {
           "partName": "MTail"
+        },
+        {
+          "partName": "cloth"
+        },
+        {
+          "partName": "jk"
+        },
+        {
+          "partName": "bow"
         }
       ],
       "transform": [
