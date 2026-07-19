@@ -1,4 +1,6 @@
 {
   "block.sablemaidragdoll.maid_part": "女仆部位",
-  "item.sablemaidragdoll.cheat_death_bauble": "假死护符"
+  "item.sablemaidragdoll.cheat_death_bauble": "假死护符",
+  "text.sablemaidragdoll.supports_ragdoll": "支持布娃娃化",
+  "text.sablemaidragdoll.ragdoll_id": "布娃娃 ID:%s"
 }
