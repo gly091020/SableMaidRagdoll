@@ -107,7 +107,14 @@
         -0.5
       ],
       "A": "head",
-      "B": "body"
+      "B": "body",
+      "settings": {
+        "contacts": false,
+        "motor": {
+          "stiffness": 300,
+          "damping": 20
+        }
+      }
     },
     {
       "posA": [
