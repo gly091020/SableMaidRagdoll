@@ -2,6 +2,7 @@ package com.gly091020.SableMaidRagdoll;
 
 import com.github.tartaricacid.touhoulittlemaid.api.event.MaidDamageEvent;
 import com.github.tartaricacid.touhoulittlemaid.api.event.MaidDeathEvent;
+import com.github.tartaricacid.touhoulittlemaid.init.InitCreativeTabs;
 import com.gly091020.SableMaidRagdoll.command.MaidRagdollCommand;
 import com.gly091020.SableRagdollLib.api.RagdollHelper;
 import dev.ryanhcode.sable.api.sublevel.SubLevelContainer;
@@ -10,11 +11,14 @@ import net.minecraft.nbt.Tag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.damagesource.DamageTypes;
+import net.minecraft.world.item.CreativeModeTab;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
+import net.neoforged.neoforge.event.BuildCreativeModeTabContentsEvent;
 import net.neoforged.neoforge.event.RegisterCommandsEvent;
 import org.joml.Vector3d;
 
+import static com.github.tartaricacid.touhoulittlemaid.init.InitItems.MUTE_BAUBLE;
 import static com.gly091020.SableRagdollLib.api.ScheduleManager.scheduleDelayed;
 
 @EventBusSubscriber(modid = SableMaidRagdoll.MODID)
@@ -82,5 +86,12 @@ public class EventHandler {
     @SubscribeEvent
     public static void onRegistryCommand(RegisterCommandsEvent event){
         MaidRagdollCommand.registry(event.getDispatcher());
+    }
+
+    @SubscribeEvent
+    public static void addCreative(BuildCreativeModeTabContentsEvent event) {
+        if(event.getTabKey() == InitCreativeTabs.MAIN_TAB.getKey()){
+            event.insertAfter(MUTE_BAUBLE.get().getDefaultInstance(), SableMaidRagdoll.CHEAT_DEATH_BAUBLE_ITEM.get().getDefaultInstance(), CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
+        }
     }
 }
