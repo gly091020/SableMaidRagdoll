@@ -9,9 +9,11 @@ import com.gly091020.SableMaidRagdoll.command.MaidRagdollCommand;
 import com.gly091020.SableRagdollLib.api.RagdollHelper;
 import dev.ryanhcode.sable.companion.math.JOMLConversion;
 import net.minecraft.commands.arguments.EntityAnchorArgument;
+import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.Tag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.damagesource.DamageTypes;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.CreativeModeTab;
@@ -65,15 +67,25 @@ public class EventHandler {
         float damage = event.getAmount();
         float health = event.getMaid().getHealth();
         if (health < damage)return;
-        if(damage < 2)return;
+        if(damage < 0.1)return;
         var e1 = event.getMaid().getOwner();
         var e2 = event.getSource().getEntity();
         if(e1 instanceof Player player && player.isShiftKeyDown())return;
         if(e1 == null || e2 == null || !e1.is(e2))return;
-        var maidMotion = JOMLConversion.toJOML(event.getMaid().getDeltaMovement()).mul(10).add(0, 1, 0);
+        if(!(e2 instanceof Player player && player.getMainHandItem().is(SableMaidRagdoll.MAID_TO_RAGDOLL)))return;
+        Vec3 direction = event.getMaid()
+                .position()
+                .subtract(e2.position())
+                .normalize();
+        var maidMotion = JOMLConversion.toJOML(direction)
+                .mul(5)
+                .add(0, 1, 0);
+        Vector3d forward = JOMLConversion.toJOML(event.getMaid().getLookAngle());
+        Vector3d axis = forward.cross(new Vector3d(0,-5,0));
         event.getMaid().lookAt(EntityAnchorArgument.Anchor.EYES, e2.getEyePosition());
-        createRagdoll(level, event.getMaid(), maidMotion, true);
+        createRagdoll(level, event.getMaid(), maidMotion, axis, true);
         event.setCanceled(true);
+        event.getMaid().level().playSound(null, BlockPos.containing(event.getMaid().position()), SableMaidRagdoll.PIPE.get(), SoundSource.PLAYERS, 1, 1);
     }
 
     private static void createRagdoll(ServerLevel level, EntityMaid maid, Vector3d maidMotion, boolean addMaid){

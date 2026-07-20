@@ -1,0 +1,26 @@
+{
+  "replace": false,
+  "values": [
+    "minecraft:mace",
+    "#minecraft:beds",
+    "#minecraft:anvil",
+    "#minecraft:doors",
+    "#minecraft:shovels",
+    {
+      "id": "#superbwarfare:hammer",
+      "required": false
+    },
+    {
+      "id": "#c:tools/wrench",
+      "required": false
+    },
+    {
+      "id": "iammusicplayer:boombox",
+      "required": false
+    },
+    {
+      "id": "createtreadmill:treadmill",
+      "required": false
+    }
+  ]
+}
