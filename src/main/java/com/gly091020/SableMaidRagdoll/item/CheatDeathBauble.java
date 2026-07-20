@@ -12,6 +12,7 @@ import dev.ryanhcode.sable.companion.math.JOMLConversion;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ColorParticleOption;
 import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.nbt.Tag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.damagesource.DamageSource;
@@ -69,6 +70,9 @@ public class CheatDeathBauble implements IMaidBauble {
             var rag = RagdollManager.get(partBlockEntity.getPartData().ragdollUUID());
             if(rag == null)return;
             rag.remove();
+            if(maid.getPersistentData().contains("cheat_death", Tag.TAG_BYTE)){
+                maid.getPersistentData().remove("cheat_death");
+            }
         }
     }
 
@@ -87,7 +91,8 @@ public class CheatDeathBauble implements IMaidBauble {
     }
 
     public static boolean isCheatDeath(EntityMaid maid){
-        return maid.getVehicle() instanceof PartSeat;
+        return maid.getVehicle() instanceof PartSeat && maid.getPersistentData().contains("cheat_death", Tag.TAG_BYTE) &&
+                maid.getPersistentData().getBoolean("cheat_death");
     }
 
     public static boolean toRagdoll(EntityMaid maid, float damage){
@@ -137,6 +142,7 @@ public class CheatDeathBauble implements IMaidBauble {
             mob.setTarget(null);
         }
 
+        maid.getPersistentData().putBoolean("cheat_death", true);
         return true;
     }
 }
