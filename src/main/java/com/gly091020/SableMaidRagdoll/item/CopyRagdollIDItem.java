@@ -12,6 +12,8 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
 import org.jetbrains.annotations.NotNull;
 
 public class CopyRagdollIDItem extends Item {
@@ -27,6 +29,11 @@ public class CopyRagdollIDItem extends Item {
             @NotNull InteractionHand hand
     ) {
         if(!player.level().isClientSide)return InteractionResult.SUCCESS;
+        return interactionResult(target);
+    }
+
+    @OnlyIn(Dist.CLIENT)
+    public InteractionResult interactionResult(LivingEntity target){
         if(!(target instanceof EntityMaid maid))return InteractionResult.SUCCESS;
 
         var id = ResourceLocation.fromNamespaceAndPath(SableMaidRagdoll.MODID, maid.getModelId().replace(":", "/"));

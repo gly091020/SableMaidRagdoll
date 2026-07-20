@@ -42,7 +42,5 @@ public class SableMaidRagdoll {
         BLOCK_ENTITIES.register(bus);
 
         RagdollTypeRegistry.registry(RAGDOLL_TYPE, MAID_PART_BLOCK::get, MAID_PART_BLOCK_ENTITY::get);
-        if(SableRagdollLib.hasLDLib())
-            MaidRagdollEditorRegistry.init();
     }
 }
