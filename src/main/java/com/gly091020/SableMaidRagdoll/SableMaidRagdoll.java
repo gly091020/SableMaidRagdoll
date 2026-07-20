@@ -8,6 +8,8 @@ import com.gly091020.SableMaidRagdoll.item.CopyRagdollIDItem;
 import com.gly091020.SableRagdollLib.SableRagdollLib;
 import com.gly091020.SableRagdollLib.api.RagdollTypeRegistry;
 import com.mojang.logging.LogUtils;
+import me.shedaniel.autoconfig.AutoConfig;
+import me.shedaniel.autoconfig.serializer.Toml4jConfigSerializer;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
@@ -35,8 +37,10 @@ public class SableMaidRagdoll {
             BlockEntityType.Builder.of(MaidPartBlockEntity::new, MAID_PART_BLOCK.get()).build(null));
 
     public static final ResourceLocation RAGDOLL_TYPE = ResourceLocation.fromNamespaceAndPath(MODID, "maid");
+    public static SableMaidRagdollConfig CONFIG;
 
     public SableMaidRagdoll(IEventBus bus){
+        CONFIG = AutoConfig.register(SableMaidRagdollConfig.class, Toml4jConfigSerializer::new).getConfig();
         ITEMS.register(bus);
         BLOCKS.register(bus);
         BLOCK_ENTITIES.register(bus);

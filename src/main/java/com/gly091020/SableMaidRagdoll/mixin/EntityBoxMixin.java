@@ -2,6 +2,7 @@ package com.gly091020.SableMaidRagdoll.mixin;
 
 import com.github.tartaricacid.touhoulittlemaid.entity.item.EntityBox;
 import com.github.tartaricacid.touhoulittlemaid.entity.passive.EntityMaid;
+import com.gly091020.SableMaidRagdoll.SableMaidRagdoll;
 import com.gly091020.SableMaidRagdoll.util.MixinFunction;
 import com.gly091020.SableRagdollLib.api.Ragdoll;
 import org.spongepowered.asm.mixin.Mixin;
@@ -26,6 +27,7 @@ public abstract class EntityBoxMixin {
 
     @Inject(method = "baseTick", at = @At("RETURN"))
     public void tickBox(CallbackInfo ci){
+        if(!SableMaidRagdoll.CONFIG.ragdollOnBox)return;
         var self = ((EntityBox)(Object)this);
         if(self.level().isClientSide)return;
         if(!sableMaidRagdoll$dropped && getOpenStage() == 2 && thirdStageTicks > 1){

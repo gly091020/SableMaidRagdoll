@@ -40,6 +40,7 @@ public class EventHandler {
 
     @SubscribeEvent
     public static void onMaidDie(MaidDeathEvent event){
+        if(!SableMaidRagdoll.CONFIG.ragdollOnDeath)return;
         if(event.isCanceled())return;
         if(!(event.getMaid().level() instanceof ServerLevel level))return;
         if(event.getSource().is(DamageTypes.GENERIC_KILL) || event.getSource().is(DamageTypes.FELL_OUT_OF_WORLD))return;
@@ -59,6 +60,7 @@ public class EventHandler {
 
     @SubscribeEvent
     public static void onOwnerAttack(MaidHurtEvent event){
+        if(!SableMaidRagdoll.CONFIG.ragdollOnOwnerAttack)return;
         if(!(event.getMaid().level() instanceof ServerLevel level))return;
         float damage = event.getAmount();
         float health = event.getMaid().getHealth();
@@ -102,6 +104,7 @@ public class EventHandler {
     @SubscribeEvent
     public static void addCreative(BuildCreativeModeTabContentsEvent event) {
         if(event.getTabKey() == InitCreativeTabs.MAIN_TAB.getKey()){
+            if(!SableMaidRagdoll.CONFIG.cheatDeathBauble)return;
             event.insertAfter(MUTE_BAUBLE.get().getDefaultInstance(), SableMaidRagdoll.CHEAT_DEATH_BAUBLE_ITEM.get().getDefaultInstance(), CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
         }
     }
