@@ -1,0 +1,13 @@
+{
+  "block.sablemaidragdoll.maid_part": "女仆部位",
+  "item.sablemaidragdoll.cheat_death_bauble": "假死护符",
+  "item.sablemaidragdoll.copy_ragdoll_id": "女仆模型 ID 复制器",
+  "text.sablemaidragdoll.supports_ragdoll": "支持布娃娃化",
+  "text.sablemaidragdoll.ragdoll_id": "布娃娃 ID:%s",
+
+  "text.autoconfig.sablemaidragdoll.title": "Sable:女仆布娃娃 设置",
+  "text.autoconfig.sablemaidragdoll.option.ragdollOnDeath": "死亡时产生布娃娃",
+  "text.autoconfig.sablemaidragdoll.option.ragdollOnOwnerAttack": "主人攻击时变成布娃娃",
+  "text.autoconfig.sablemaidragdoll.option.ragdollOnBox": "蛋糕盒产生布娃娃",
+  "text.autoconfig.sablemaidragdoll.option.cheatDeathBauble": "假死护符"
+}
