@@ -6,6 +6,7 @@
     "#minecraft:anvil",
     "#minecraft:doors",
     "#minecraft:shovels",
+    "touhou_little_maid:maid_beacon",
     {
       "id": "#superbwarfare:hammer",
       "required": false
