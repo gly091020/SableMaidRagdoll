@@ -8,8 +8,10 @@
   "text.autoconfig.sablemaidragdoll.title": "Sable: Maid Ragdoll Settings",
   "text.autoconfig.sablemaidragdoll.option.ragdollOnDeath": "Spawn ragdoll on death",
   "text.autoconfig.sablemaidragdoll.option.ragdollOnOwnerAttack": "Turn into ragdoll when owner attacks",
+  "text.autoconfig.sablemaidragdoll.option.ragdollOnSpecialDamage": "Turn into a ragdoll when receiving special damage",
   "text.autoconfig.sablemaidragdoll.option.ragdollOnBox": "Spawn ragdoll from cake box",
   "text.autoconfig.sablemaidragdoll.option.cheatDeathBauble": "Cheat Death Bauble",
 
-  "sound.sablemaidragdoll.pipe": "Clang!"
+  "sound.sablemaidragdoll.pipe": "Clang!",
+  "text.autoconfig.sablemaidragdoll.option.metalPipe": "Pipe sounds"
 }

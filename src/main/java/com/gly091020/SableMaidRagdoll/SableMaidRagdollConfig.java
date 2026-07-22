@@ -8,5 +8,7 @@ public class SableMaidRagdollConfig implements ConfigData {
     public boolean ragdollOnDeath = true;
     public boolean ragdollOnOwnerAttack = true;
     public boolean ragdollOnBox = true;
+    public boolean ragdollOnSpecialDamage = false;
     public boolean cheatDeathBauble = true;
+    public boolean metalPipe = false;
 }

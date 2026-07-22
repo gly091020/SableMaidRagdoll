@@ -8,8 +8,10 @@
   "text.autoconfig.sablemaidragdoll.title": "Sable:女仆布娃娃 设置",
   "text.autoconfig.sablemaidragdoll.option.ragdollOnDeath": "死亡时产生布娃娃",
   "text.autoconfig.sablemaidragdoll.option.ragdollOnOwnerAttack": "主人用特定物品攻击时变成布娃娃",
+  "text.autoconfig.sablemaidragdoll.option.ragdollOnSpecialDamage": "收到特殊伤害时变成布娃娃",
   "text.autoconfig.sablemaidragdoll.option.ragdollOnBox": "蛋糕盒产生布娃娃",
   "text.autoconfig.sablemaidragdoll.option.cheatDeathBauble": "假死护符",
 
-  "sound.sablemaidragdoll.pipe": "咣当"
+  "sound.sablemaidragdoll.pipe": "咣当",
+  "text.autoconfig.sablemaidragdoll.option.metalPipe": "?!咣当!?"
 }

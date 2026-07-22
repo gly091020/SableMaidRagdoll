@@ -14,6 +14,7 @@ import net.minecraft.nbt.Tag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.damagesource.DamageTypes;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.CreativeModeTab;
@@ -62,30 +63,49 @@ public class EventHandler {
 
     @SubscribeEvent
     public static void onOwnerAttack(MaidHurtEvent event){
-        if(!SableMaidRagdoll.CONFIG.ragdollOnOwnerAttack)return;
         if(!(event.getMaid().level() instanceof ServerLevel level))return;
         float damage = event.getAmount();
         float health = event.getMaid().getHealth();
         if (health < damage)return;
-        if(damage < 0.1)return;
+
         var e1 = event.getMaid().getOwner();
         var e2 = event.getSource().getEntity();
-        if(e1 instanceof Player player && player.isShiftKeyDown())return;
-        if(e1 == null || e2 == null || !e1.is(e2))return;
-        if(!(e2 instanceof Player player && player.getMainHandItem().is(SableMaidRagdoll.MAID_TO_RAGDOLL)))return;
-        Vec3 direction = event.getMaid()
+
+        var flag1 = SableMaidRagdoll.CONFIG.ragdollOnOwnerAttack &&
+                e1 instanceof Player player &&
+                !player.isShiftKeyDown() &&
+                e2 != null &&
+                e1.is(e2) &&
+                player.getMainHandItem().is(SableMaidRagdoll.MAID_TO_RAGDOLL_TAG);
+        var flag2 = SableMaidRagdoll.CONFIG.ragdollOnSpecialDamage &&
+                event.getSource().is(SableMaidRagdoll.ALWAYS_TO_RAGDOLL_TAG);
+
+        if(!flag1 && !flag2)return;
+
+        ragdollOnDamage(level, event.getSource(), event.getMaid());
+        if(SableMaidRagdoll.CONFIG.metalPipe)
+            event.getMaid().level().playSound(null, BlockPos.containing(event.getMaid().position()), SableMaidRagdoll.PIPE.get(), SoundSource.PLAYERS, 1, 1);
+        event.setCanceled(true);
+    }
+
+    private static void ragdollOnDamage(ServerLevel level, DamageSource damageSource, EntityMaid maid){
+        var sourceEntity = damageSource.getEntity();
+        var position = damageSource.getSourcePosition();
+        Vec3 direction = maid
                 .position()
-                .subtract(e2.position())
+                .subtract(position == null ? Vec3.ZERO : position)
                 .normalize();
         var maidMotion = JOMLConversion.toJOML(direction)
                 .mul(5)
                 .add(0, 1, 0);
-        Vector3d forward = JOMLConversion.toJOML(event.getMaid().getLookAngle());
+        Vector3d forward = JOMLConversion.toJOML(maid.getLookAngle());
         Vector3d axis = forward.cross(new Vector3d(0,-5,0));
-        event.getMaid().lookAt(EntityAnchorArgument.Anchor.EYES, e2.getEyePosition());
-        createRagdoll(level, event.getMaid(), maidMotion, axis, true);
-        event.setCanceled(true);
-        event.getMaid().level().playSound(null, BlockPos.containing(event.getMaid().position()), SableMaidRagdoll.PIPE.get(), SoundSource.PLAYERS, 1, 1);
+        if (sourceEntity != null) {
+            maid.lookAt(EntityAnchorArgument.Anchor.EYES, sourceEntity.getEyePosition());
+        } else if (position != null) {
+            maid.lookAt(EntityAnchorArgument.Anchor.EYES, position);
+        }
+        createRagdoll(level, maid, maidMotion, axis, true);
     }
 
     private static void createRagdoll(ServerLevel level, EntityMaid maid, Vector3d maidMotion, boolean addMaid){
