@@ -6,6 +6,7 @@ import com.github.tartaricacid.touhoulittlemaid.api.event.MaidHurtEvent;
 import com.github.tartaricacid.touhoulittlemaid.entity.passive.EntityMaid;
 import com.github.tartaricacid.touhoulittlemaid.init.InitCreativeTabs;
 import com.gly091020.SableMaidRagdoll.command.MaidRagdollCommand;
+import com.gly091020.SableMaidRagdoll.compat.util.MaidRollManager;
 import com.gly091020.SableRagdollLib.api.RagdollHelper;
 import dev.ryanhcode.sable.companion.math.JOMLConversion;
 import net.minecraft.commands.arguments.EntityAnchorArgument;
@@ -23,6 +24,8 @@ import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.event.BuildCreativeModeTabContentsEvent;
 import net.neoforged.neoforge.event.RegisterCommandsEvent;
+import net.neoforged.neoforge.event.tick.ServerTickEvent;
+import org.joml.Quaterniond;
 import org.joml.Vector3d;
 
 import static com.github.tartaricacid.touhoulittlemaid.init.InitItems.MUTE_BAUBLE;
@@ -139,5 +142,10 @@ public class EventHandler {
             if(!SableMaidRagdoll.CONFIG.cheatDeathBauble)return;
             event.insertAfter(MUTE_BAUBLE.get().getDefaultInstance(), SableMaidRagdoll.CHEAT_DEATH_BAUBLE_ITEM.get().getDefaultInstance(), CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
         }
+    }
+
+    @SubscribeEvent
+    public static void onServerTick(ServerTickEvent.Pre event){
+        MaidRollManager.tick();
     }
 }

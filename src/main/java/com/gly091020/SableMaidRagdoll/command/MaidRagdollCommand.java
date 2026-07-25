@@ -5,6 +5,7 @@ import com.github.tartaricacid.touhoulittlemaid.entity.passive.EntityMaid;
 import com.github.tartaricacid.touhoulittlemaid.init.InitDataComponent;
 import com.github.tartaricacid.touhoulittlemaid.init.InitItems;
 import com.gly091020.SableMaidRagdoll.SableMaidRagdoll;
+import com.gly091020.SableMaidRagdoll.compat.util.MaidRollManager;
 import com.gly091020.SableRagdollLib.api.RagdollHelper;
 import com.gly091020.SableRagdollLib.api.ScheduleManager;
 import com.gly091020.SableRagdollLib.common.DefFileLoader;
@@ -34,6 +35,7 @@ public class MaidRagdollCommand {
         root.then(Commands.literal("spawn_test_maid_ragdoll_with_entity").then(Commands.argument("modelID", ResourceLocationArgument.id()).executes(MaidRagdollCommand::spawnTestMaidRagdollWithEntity)));
         root.then(Commands.literal("spawn_test_box").then(Commands.argument("modelID", ResourceLocationArgument.id()).executes(MaidRagdollCommand::spawnTestBox)));
         root.then(Commands.literal("give_garage_kit").then(Commands.argument("entity", EntityArgument.entity()).executes(MaidRagdollCommand::giveGarageKit)));
+        root.then(Commands.literal("start_roll").then(Commands.argument("entity", EntityArgument.entity()).executes(MaidRagdollCommand::startRoll)));
         dispatcher.register(root);
     }
 
@@ -115,6 +117,13 @@ public class MaidRagdollCommand {
 
         world.tryAddFreshEntityWithPassengers(box);
         maid.setModelId(modelID);
+        return 1;
+    }
+
+    public static int startRoll(CommandContext<CommandSourceStack> context) throws CommandSyntaxException {
+        if(!(EntityArgument.getEntity(context, "entity") instanceof EntityMaid maid))
+            return 0;
+        MaidRollManager.startRolling(maid);
         return 1;
     }
 }
