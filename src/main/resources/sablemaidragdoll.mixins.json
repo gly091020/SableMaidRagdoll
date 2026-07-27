@@ -4,11 +4,12 @@
   "package": "com.gly091020.SableMaidRagdoll.mixin",
   "compatibilityLevel": "JAVA_21",
   "mixins": [
-    "EntityBoxMixin"
+    "EntityBoxMixin",
+    "love_loathe.EmotionManagerMixin"
   ],
   "client": [
-    "MaidModelGuiMixin",
-    "BedrockModelAccessor"
+    "BedrockModelAccessor",
+    "MaidModelGuiMixin"
   ],
   "injectors": {
     "defaultRequire": 1

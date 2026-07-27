@@ -8,6 +8,7 @@ import com.github.tartaricacid.touhoulittlemaid.init.InitCreativeTabs;
 import com.gly091020.SableMaidRagdoll.command.MaidRagdollCommand;
 import com.gly091020.SableMaidRagdoll.compat.util.MaidRollManager;
 import com.gly091020.SableRagdollLib.api.RagdollHelper;
+import com.gly091020.SableRagdollLib.entity.PartSeat;
 import dev.ryanhcode.sable.companion.math.JOMLConversion;
 import net.minecraft.commands.arguments.EntityAnchorArgument;
 import net.minecraft.core.BlockPos;
@@ -67,6 +68,9 @@ public class EventHandler {
     @SubscribeEvent
     public static void onOwnerAttack(MaidHurtEvent event){
         if(!(event.getMaid().level() instanceof ServerLevel level))return;
+
+        if(event.getMaid().getVehicle() instanceof PartSeat)return;
+
         float damage = event.getAmount();
         float health = event.getMaid().getHealth();
         if (health < damage)return;
