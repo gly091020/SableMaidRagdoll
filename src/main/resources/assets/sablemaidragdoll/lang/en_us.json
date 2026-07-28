@@ -12,6 +12,17 @@
   "text.autoconfig.sablemaidragdoll.option.ragdollOnBox": "Spawn ragdoll from cake box",
   "text.autoconfig.sablemaidragdoll.option.cheatDeathBauble": "Cheat Death Bauble",
 
+  "text.autoconfig.sablemaidragdoll.option.playerCheatDeathItem": "Player Disguise Maid Item",
+  "item.sablemaidragdoll.player_cheat_death": "Player Disguise Maid Item",
+  "item.sablemaidragdoll.player_cheat_death.tip": "Sneak + Right Click to bind a maid model, use again to feign death as the maid model",
+  "item.sablemaidragdoll.player_cheat_death.connect": "Bound to %s model",
+  "item.sablemaidragdoll.player_cheat_death.clear": "Model cleared",
+
   "sound.sablemaidragdoll.pipe": "Clang!",
-  "text.autoconfig.sablemaidragdoll.option.metalPipe": "Pipe sounds"
+  "sound.sablemaidragdoll.hungry": "Ughh~",
+  "sound.sablemaidragdoll.drop": "Yeet~",
+  "text.autoconfig.sablemaidragdoll.option.sounds": "Spooky Tunes",
+  "text.autoconfig.sablemaidragdoll.option.sounds.metalPipe": "?!CLANG!?",
+  "text.autoconfig.sablemaidragdoll.option.sounds.hungry": "Starving",
+  "text.autoconfig.sablemaidragdoll.option.sounds.drop": "Pro Voice Actor"
 }

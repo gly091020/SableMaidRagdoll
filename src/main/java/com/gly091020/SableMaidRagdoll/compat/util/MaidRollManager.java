@@ -5,7 +5,6 @@ import com.gly091020.SableMaidRagdoll.SableMaidRagdoll;
 import com.gly091020.SableRagdollLib.api.Ragdoll;
 import com.gly091020.SableRagdollLib.api.RagdollHelper;
 import com.gly091020.SableRagdollLib.common.DefFileLoader;
-import com.gly091020.SableRagdollLib.common.ServerGetter;
 import dev.ryanhcode.sable.api.sublevel.ServerSubLevelContainer;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;

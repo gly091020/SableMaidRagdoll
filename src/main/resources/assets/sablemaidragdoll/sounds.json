@@ -4,5 +4,17 @@
       "sablemaidragdoll:pipe"
     ],
     "subtitle": "sound.sablemaidragdoll.pipe"
+  },
+  "hungry": {
+    "sounds": [
+      "sablemaidragdoll:hungry"
+    ],
+    "subtitle": "sound.sablemaidragdoll.hungry"
+  },
+  "drop": {
+    "sounds": [
+      "sablemaidragdoll:drop"
+    ],
+    "subtitle": "sound.sablemaidragdoll.drop"
   }
 }

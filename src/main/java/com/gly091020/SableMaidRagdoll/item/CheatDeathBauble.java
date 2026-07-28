@@ -15,6 +15,7 @@ import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.Tag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.item.ItemStack;
@@ -146,6 +147,9 @@ public class CheatDeathBauble implements IMaidBauble {
         }
 
         maid.getPersistentData().putBoolean("cheat_death", true);
+        if(SableMaidRagdoll.CONFIG.sounds.hungry)
+            maid.level().playSound(null, BlockPos.containing(maid.position()), SableMaidRagdoll.HUNGRY.get(), SoundSource.PLAYERS, 1,
+                    1f + level.random.nextFloat());
         return true;
     }
 }

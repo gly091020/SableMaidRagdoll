@@ -5,6 +5,7 @@ import com.github.tartaricacid.touhoulittlemaid.api.event.MaidDeathEvent;
 import com.github.tartaricacid.touhoulittlemaid.api.event.MaidHurtEvent;
 import com.github.tartaricacid.touhoulittlemaid.entity.passive.EntityMaid;
 import com.github.tartaricacid.touhoulittlemaid.init.InitCreativeTabs;
+import com.github.tartaricacid.touhoulittlemaid.init.InitItems;
 import com.gly091020.SableMaidRagdoll.command.MaidRagdollCommand;
 import com.gly091020.SableMaidRagdoll.compat.util.MaidRollManager;
 import com.gly091020.SableRagdollLib.api.RagdollHelper;
@@ -26,7 +27,6 @@ import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.event.BuildCreativeModeTabContentsEvent;
 import net.neoforged.neoforge.event.RegisterCommandsEvent;
 import net.neoforged.neoforge.event.tick.ServerTickEvent;
-import org.joml.Quaterniond;
 import org.joml.Vector3d;
 
 import static com.github.tartaricacid.touhoulittlemaid.init.InitItems.MUTE_BAUBLE;
@@ -63,6 +63,10 @@ public class EventHandler {
             event.getMaid().lookAt(EntityAnchorArgument.Anchor.EYES, event.getSource().getEntity().getEyePosition());
         createRagdoll(level, event.getMaid(), maidMotion, false);
         scheduleDelayed(level, 4, () -> event.getMaid().setInvisible(true));
+
+        if(SableMaidRagdoll.CONFIG.sounds.hungry)
+            event.getMaid().level().playSound(null, BlockPos.containing(event.getMaid().position()), SableMaidRagdoll.HUNGRY.get(), SoundSource.PLAYERS, 1,
+                    1f + level.random.nextFloat());
     }
 
     @SubscribeEvent
@@ -90,7 +94,7 @@ public class EventHandler {
         if(!flag1 && !flag2)return;
 
         ragdollOnDamage(level, event.getSource(), event.getMaid());
-        if(SableMaidRagdoll.CONFIG.metalPipe)
+        if(SableMaidRagdoll.CONFIG.sounds.metalPipe)
             event.getMaid().level().playSound(null, BlockPos.containing(event.getMaid().position()), SableMaidRagdoll.PIPE.get(), SoundSource.PLAYERS, 1, 1);
         event.setCanceled(true);
     }
@@ -143,8 +147,10 @@ public class EventHandler {
     @SubscribeEvent
     public static void addCreative(BuildCreativeModeTabContentsEvent event) {
         if(event.getTabKey() == InitCreativeTabs.MAIN_TAB.getKey()){
-            if(!SableMaidRagdoll.CONFIG.cheatDeathBauble)return;
-            event.insertAfter(MUTE_BAUBLE.get().getDefaultInstance(), SableMaidRagdoll.CHEAT_DEATH_BAUBLE_ITEM.get().getDefaultInstance(), CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
+            if(SableMaidRagdoll.CONFIG.playerCheatDeathItem)
+                event.insertAfter(MUTE_BAUBLE.get().getDefaultInstance(), SableMaidRagdoll.PLAYER_CHEAT_DEATH_ITEM.get().getDefaultInstance(), CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
+            if(SableMaidRagdoll.CONFIG.cheatDeathBauble)
+                event.insertAfter(InitItems.MUTE_BAUBLE.get().getDefaultInstance(), SableMaidRagdoll.CHEAT_DEATH_BAUBLE_ITEM.get().getDefaultInstance(), CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
         }
     }
 

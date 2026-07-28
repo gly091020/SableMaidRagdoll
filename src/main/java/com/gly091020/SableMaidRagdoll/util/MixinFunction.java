@@ -9,12 +9,16 @@ import com.gly091020.SableMaidRagdoll.mixin.BedrockModelAccessor;
 import com.gly091020.SableRagdollLib.api.Ragdoll;
 import com.gly091020.SableRagdollLib.api.RagdollHelper;
 import com.gly091020.SableRagdollLib.api.ScheduleManager;
+import dev.ryanhcode.sable.companion.math.JOMLConversion;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.Nullable;
+import org.joml.Vector3d;
 
 import java.util.List;
+
+import static com.gly091020.SableRagdollLib.api.ScheduleManager.scheduleDelayed;
 
 public class MixinFunction {
     public static @Nullable Ragdoll getRagdoll(EntityBox self, EntityMaid maid) {
@@ -62,5 +66,26 @@ public class MixinFunction {
 
     public static List<BedrockPart> getShouldRender(AbstractBedrockEntityModel<?> model){
         return ((BedrockModelAccessor)model).getShouldRender();
+    }
+
+    public static void createRagdoll(ServerLevel level, EntityMaid maid, Vector3d maidMotion, boolean addMaid){
+        Vector3d forward = JOMLConversion.toJOML(maid.getLookAngle());
+        Vector3d axis = forward.cross(new Vector3d(0,1,0));
+        createRagdoll(level, maid, maidMotion, axis, addMaid);
+    }
+
+    public static void createRagdoll(ServerLevel level, EntityMaid maid, Vector3d maidMotion, Vector3d rotation, boolean addMaid){
+        rotation.add(0, 0, 10);
+        var id = ResourceLocation.fromNamespaceAndPath(SableMaidRagdoll.MODID, maid.getModelId().replace(":", "/"));
+        var parts = RagdollHelper.createRagdoll(level, maid.position().add(0, 0.5, 0), new Vec3(-90, -maid.getYHeadRot(), 0),
+                id);
+        if(parts == null)return;
+        // 等待 2tick 是为了等待刚体创建在施加推力
+        scheduleDelayed(level, 2, () -> {
+            parts.addAngularImpulse(rotation, true);
+            parts.addLinearImpulse(maidMotion, true);
+        });
+        if(addMaid)
+            parts.addEntity(maid);
     }
 }
