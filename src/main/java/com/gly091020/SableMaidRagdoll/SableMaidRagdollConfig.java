@@ -1,5 +1,6 @@
 package com.gly091020.SableMaidRagdoll;
 
+import com.gly091020.SableRagdollLib.client.button.Button;
 import me.shedaniel.autoconfig.ConfigData;
 import me.shedaniel.autoconfig.annotation.Config;
 import me.shedaniel.autoconfig.annotation.ConfigEntry;
@@ -24,4 +25,7 @@ public class SableMaidRagdollConfig implements ConfigData {
         public boolean hungry = false;
         public boolean drop = false;
     }
+
+    @Button("open_lib_config")
+    public Void openLibConfig = null;
 }
