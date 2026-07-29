@@ -9,6 +9,7 @@ import com.github.tartaricacid.touhoulittlemaid.init.InitItems;
 import com.gly091020.SableMaidRagdoll.command.MaidRagdollCommand;
 import com.gly091020.SableMaidRagdoll.compat.util.MaidRollManager;
 import com.gly091020.SableRagdollLib.api.RagdollHelper;
+import com.gly091020.SableRagdollLib.api.ScheduleManager;
 import com.gly091020.SableRagdollLib.entity.PartSeat;
 import dev.ryanhcode.sable.companion.math.JOMLConversion;
 import net.minecraft.commands.arguments.EntityAnchorArgument;
@@ -50,6 +51,11 @@ public class EventHandler {
         if(!SableMaidRagdoll.CONFIG.ragdollOnDeath)return;
         if(event.isCanceled())return;
         if(!(event.getMaid().level() instanceof ServerLevel level))return;
+        if(event.getMaid().getVehicle() instanceof PartSeat){
+            event.getMaid().stopRiding();
+            ScheduleManager.scheduleDelayed(level, 4, () -> onMaidDie(event));
+            return;
+        }
         if(event.getSource().is(DamageTypes.GENERIC_KILL) || event.getSource().is(DamageTypes.FELL_OUT_OF_WORLD))return;
         var maidMotion = JOMLConversion.toJOML(event.getMaid().getDeltaMovement()).mul(3);
 
