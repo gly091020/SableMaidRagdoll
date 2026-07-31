@@ -17,7 +17,7 @@ public class SableMaidRagdollPlugin implements ILittleMaid {
 
     @Override
     public void registerAITool(ToolRegister register) {
-        if(CompatMods.LOVE_LOATHE)
+        if(SableMaidRagdoll.CONFIG.loveAndLoathe.moreAIFunction && CompatMods.LOVE_LOATHE)
             register.register(new RollTool());
     }
 }

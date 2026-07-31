@@ -11,19 +11,29 @@ public class SableMaidRagdollConfig implements ConfigData {
     public boolean ragdollOnOwnerAttack = true;
     public boolean ragdollOnBox = true;
     public boolean ragdollOnSpecialDamage = false;
+    public boolean maidKnockback = true;
+
     public boolean cheatDeathBauble = true;
-
-    @ConfigEntry.Gui.CollapsibleObject(startExpanded = true)
-    public Sounds sounds = new Sounds();
-
     // todo:未完成
     @ConfigEntry.Gui.Excluded
     public boolean playerCheatDeathItem = false;
+
+    @ConfigEntry.Gui.CollapsibleObject(startExpanded = true)
+    public LoveAndLoathe loveAndLoathe = new LoveAndLoathe();
+
+    @ConfigEntry.Gui.CollapsibleObject()
+    public Sounds sounds = new Sounds();
 
     public static class Sounds{
         public boolean metalPipe = false;
         public boolean hungry = false;
         public boolean drop = false;
+    }
+
+    public static class LoveAndLoathe{
+        @ConfigEntry.Gui.RequiresRestart
+        public boolean moreAIFunction = true;
+        public boolean drop = true;
     }
 
     @Button("open_lib_config")

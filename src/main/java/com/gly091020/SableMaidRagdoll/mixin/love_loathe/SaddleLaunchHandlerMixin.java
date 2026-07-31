@@ -21,6 +21,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 public class SaddleLaunchHandlerMixin {
     @Inject(method = "onRightClickItem", at = @At(value = "INVOKE", target = "Lcom/github/tartaricacid/touhoulittlemaid/entity/passive/EntityMaid;setDeltaMovement(DDD)V"))
     public void ragdoll(PlayerInteractEvent.RightClickItem event, CallbackInfo ci, @Local(name = "maid")EntityMaid maid, @Local(name = "player")Player player){
+        if(!SableMaidRagdoll.CONFIG.loveAndLoathe.drop)return;
         var level = event.getLevel();
         if(level.isClientSide)return;
         var look = player.getLookAngle();

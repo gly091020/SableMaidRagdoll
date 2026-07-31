@@ -169,6 +169,7 @@ public class EventHandler {
 
     @SubscribeEvent
     public static void onHitEntity(EntityHurtBySubLevelEvent event){
+        if(!(SableMaidRagdoll.CONFIG.maidKnockback))return;
         var r = RagdollManager.get(event.getSubLevel());
         if(r == null || !(r.getEntity() instanceof EntityMaid maid))return;
         float damage = (float) (event.getMagnitude() * 24 - 4);

@@ -24,5 +24,10 @@
   "text.autoconfig.sablemaidragdoll.option.sounds": "Spooky Tunes",
   "text.autoconfig.sablemaidragdoll.option.sounds.metalPipe": "?!CLANG!?",
   "text.autoconfig.sablemaidragdoll.option.sounds.hungry": "Starving",
-  "text.autoconfig.sablemaidragdoll.option.sounds.drop": "Pro Voice Actor"
+  "text.autoconfig.sablemaidragdoll.option.sounds.drop": "Pro Voice Actor",
+
+  "text.autoconfig.sablemaidragdoll.option.maidKnockback": "Allow maids to knockback players",
+  "text.autoconfig.sablemaidragdoll.option.loveAndLoathe": "Love & Loathe Integration Settings",
+  "text.autoconfig.sablemaidragdoll.option.loveAndLoathe.moreAIFunction": "More AI Functions",
+  "text.autoconfig.sablemaidragdoll.option.loveAndLoathe.drop": "Launch Ragdoll"
 }

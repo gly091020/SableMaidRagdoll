@@ -24,5 +24,10 @@
   "text.autoconfig.sablemaidragdoll.option.sounds": "阴啸",
   "text.autoconfig.sablemaidragdoll.option.sounds.metalPipe": "?!咣当!?",
   "text.autoconfig.sablemaidragdoll.option.sounds.hungry": "饿啊",
-  "text.autoconfig.sablemaidragdoll.option.sounds.drop": "专业配音员"
+  "text.autoconfig.sablemaidragdoll.option.sounds.drop": "专业配音员",
+
+  "text.autoconfig.sablemaidragdoll.option.maidKnockback": "允许女仆创人",
+  "text.autoconfig.sablemaidragdoll.option.loveAndLoathe": "爱憎分明联动设置",
+  "text.autoconfig.sablemaidragdoll.option.loveAndLoathe.moreAIFunction": "更多 AI 功能",
+  "text.autoconfig.sablemaidragdoll.option.loveAndLoathe.drop": "发射布娃娃"
 }
