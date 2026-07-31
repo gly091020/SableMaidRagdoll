@@ -19,15 +19,16 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 @Mixin(targets = "com.github.tartaricacid.callresponse.compat.emotion.SaddleLaunchHandler")
 @Pseudo
 public class SaddleLaunchHandlerMixin {
-    @Inject(method = "onRightClickItem", at = @At(value = "INVOKE", target = "Lcom/github/tartaricacid/touhoulittlemaid/entity/passive/EntityMaid;setDeltaMovement(DDD)V"))
-    public void ragdoll(PlayerInteractEvent.RightClickItem event, CallbackInfo ci, @Local(name = "maid")EntityMaid maid, @Local(name = "player")Player player){
+    @Inject(method = "dropMaid", at = @At(value = "INVOKE", target = "Lcom/github/tartaricacid/touhoulittlemaid/entity/passive/EntityMaid;setDeltaMovement(DDD)V"))
+    private static void ragdoll(EntityMaid maid, Player player, float chargePercent, CallbackInfo ci){
         if(!SableMaidRagdoll.CONFIG.loveAndLoathe.drop)return;
-        var level = event.getLevel();
+        var level = maid.level();
         if(level.isClientSide)return;
         var look = player.getLookAngle();
-        var m = new Vector3d(look.x * 2.0F, look.y * 2.0F + 0.8, look.z * 2.0F).mul(5);
+        double power = 1 + chargePercent * 2;
+        var m = new Vector3d(look.x * power, look.y * power + 0.8, look.z * power).mul(5);
         MixinFunction.createRagdoll((ServerLevel) level, maid, m, true);
-        if(SableMaidRagdoll.CONFIG.sounds.drop)
+        if(SableMaidRagdoll.CONFIG.sounds.drop && chargePercent == 0)
             player.level().playSound(null, BlockPos.containing(player.position()), SableMaidRagdoll.DROP.get(), SoundSource.PLAYERS, 1, 1);
     }
 }

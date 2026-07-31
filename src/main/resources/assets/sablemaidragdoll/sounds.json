@@ -16,5 +16,15 @@
       "sablemaidragdoll:drop"
     ],
     "subtitle": "sound.sablemaidragdoll.drop"
+  },
+  "big_dog": {
+    "sounds": [
+      "sablemaidragdoll:big_dog"
+    ]
+  },
+  "dog_call": {
+    "sounds": [
+      "sablemaidragdoll:dog_call"
+    ]
   }
 }

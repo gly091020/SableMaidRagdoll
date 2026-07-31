@@ -29,5 +29,6 @@
   "text.autoconfig.sablemaidragdoll.option.maidKnockback": "Allow maids to knockback players",
   "text.autoconfig.sablemaidragdoll.option.loveAndLoathe": "Love & Loathe Integration Settings",
   "text.autoconfig.sablemaidragdoll.option.loveAndLoathe.moreAIFunction": "More AI Functions",
-  "text.autoconfig.sablemaidragdoll.option.loveAndLoathe.drop": "Launch Ragdoll"
+  "text.autoconfig.sablemaidragdoll.option.loveAndLoathe.drop": "Launch Ragdoll",
+  "text.autoconfig.sablemaidragdoll.option.sounds.bigDog": "Big Dog Bark"
 }

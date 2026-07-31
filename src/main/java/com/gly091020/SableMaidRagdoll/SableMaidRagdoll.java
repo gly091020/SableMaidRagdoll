@@ -46,6 +46,10 @@ public class SableMaidRagdoll {
             SoundEvent.createVariableRangeEvent(ResourceLocation.fromNamespaceAndPath(MODID, "hungry")));
     public static final DeferredHolder<SoundEvent, SoundEvent> DROP = SOUNDS.register("drop", () ->
             SoundEvent.createVariableRangeEvent(ResourceLocation.fromNamespaceAndPath(MODID, "drop")));
+    public static final DeferredHolder<SoundEvent, SoundEvent> BIG_DOG = SOUNDS.register("big_dog", () ->
+            SoundEvent.createVariableRangeEvent(ResourceLocation.fromNamespaceAndPath(MODID, "big_dog")));
+    public static final DeferredHolder<SoundEvent, SoundEvent> DOG_CALL = SOUNDS.register("dog_call", () ->
+            SoundEvent.createVariableRangeEvent(ResourceLocation.fromNamespaceAndPath(MODID, "dog_call")));
 
     public static final DeferredHolder<Item, CheatDeathBaubleItem> CHEAT_DEATH_BAUBLE_ITEM = ITEMS.register("cheat_death_bauble", resourceLocation -> new CheatDeathBaubleItem());
     public static final DeferredHolder<Item, PlayerCheatDeathItem> PLAYER_CHEAT_DEATH_ITEM = ITEMS.register("player_cheat_death", resourceLocation -> new PlayerCheatDeathItem());
