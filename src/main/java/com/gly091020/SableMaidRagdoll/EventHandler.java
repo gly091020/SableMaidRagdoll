@@ -9,7 +9,9 @@ import com.github.tartaricacid.touhoulittlemaid.init.InitItems;
 import com.gly091020.SableMaidRagdoll.command.MaidRagdollCommand;
 import com.gly091020.SableMaidRagdoll.compat.util.MaidRollManager;
 import com.gly091020.SableRagdollLib.api.RagdollHelper;
+import com.gly091020.SableRagdollLib.api.RagdollManager;
 import com.gly091020.SableRagdollLib.api.ScheduleManager;
+import com.gly091020.SableRagdollLib.api.event.EntityHurtBySubLevelEvent;
 import com.gly091020.SableRagdollLib.entity.PartSeat;
 import dev.ryanhcode.sable.companion.math.JOMLConversion;
 import net.minecraft.commands.arguments.EntityAnchorArgument;
@@ -163,5 +165,15 @@ public class EventHandler {
     @SubscribeEvent
     public static void onServerTick(ServerTickEvent.Pre event){
         MaidRollManager.tick();
+    }
+
+    @SubscribeEvent
+    public static void onHitEntity(EntityHurtBySubLevelEvent event){
+        var r = RagdollManager.get(event.getSubLevel());
+        if(r == null || !(r.getEntity() instanceof EntityMaid maid))return;
+        float damage = (float) (event.getMagnitude() * 24 - 4);
+        if(damage <= 0)return;
+        event.getTarget().hurt(maid.level().damageSources().mobAttack(maid), damage);
+        event.setDamage(0);
     }
 }
