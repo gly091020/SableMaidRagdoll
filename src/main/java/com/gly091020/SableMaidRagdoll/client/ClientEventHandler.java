@@ -6,6 +6,7 @@ import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
+import net.neoforged.neoforge.event.AddReloadListenerEvent;
 
 @EventBusSubscriber(value = Dist.CLIENT, modid = SableMaidRagdoll.MODID)
 public class ClientEventHandler {
@@ -15,5 +16,10 @@ public class ClientEventHandler {
                 SableMaidRagdoll.MAID_PART_BLOCK_ENTITY.get(),
                 (context) -> new MaidPartRenderer()
         );
+    }
+
+    @SubscribeEvent
+    public static void onResourceReload(AddReloadListenerEvent event) {
+        MaidPartRenderCache.clear();
     }
 }

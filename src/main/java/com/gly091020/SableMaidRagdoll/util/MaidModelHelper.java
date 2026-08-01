@@ -136,6 +136,7 @@ public class MaidModelHelper {
 
     private static final Vector3f[] NORMALS = new Vector3f[6];
     private static void compileBedrockPart(BedrockPart bedrockPart, PoseStack.Pose pose, VertexConsumer consumer, int lightmap, int overlay) {
+        int packedLight = bedrockPart.illuminated ? LightTexture.pack(15, 15) : lightmap;
         Matrix3f normal = pose.normal();
         NORMALS[0].set(-normal.m10, -normal.m11, -normal.m12);
         NORMALS[1].set(normal.m10, normal.m11, normal.m12);
@@ -144,7 +145,7 @@ public class MaidModelHelper {
         NORMALS[4].set(-normal.m00, -normal.m01, -normal.m02);
         NORMALS[5].set(normal.m00, normal.m01, normal.m02);
         for (BedrockCube bedrockCube : bedrockPart.cubes) {
-            bedrockCube.compile(pose, NORMALS, consumer, lightmap, overlay, 1, 1, 1, 1);
+            bedrockCube.compile(pose, NORMALS, consumer, packedLight, overlay, 1, 1, 1, 1);
         }
     }
     static {
