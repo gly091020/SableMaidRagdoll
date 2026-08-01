@@ -8,11 +8,13 @@ import com.gly091020.SableMaidRagdoll.util.MaidModelHelper;
 import com.gly091020.SableRagdollLib.resource.file.RagdollExpressions;
 import com.gly091020.SableRagdollLib.resource.file.RagdollRenderData;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.Mob;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.IdentityHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -55,6 +57,10 @@ public final class MaidPartRenderCache {
         private final Map<String, List<PartRender>> partsCache = new HashMap<>();
         /** 解析后的 init 动作 */
         private @Nullable List<InitAction> initActions;
+        /** partName -> 该部位需要渲染的持物信息 */
+        private @Nullable Map<String, HandRender> handCache;
+        /** BedrockPart 实例 -> 部件名 */
+        private @Nullable Map<BedrockPart, String> partNameMap;
 
         private Entry(@Nullable BedrockModel<Mob> model, @Nullable MaidModelInfo info) {
             this.model = model;
@@ -127,6 +133,40 @@ public final class MaidPartRenderCache {
             });
         }
 
+        /**
+         * 获取该部位需要渲染手持物品的信息，没有则返回 null。
+         */
+        @Nullable
+        public HandRender handRender(String partName) {
+            if (handCache == null) {
+                handCache = new HashMap<>();
+                addHand(handCache, model.getLeftArm(), InteractionHand.OFF_HAND);
+                addHand(handCache, model.getRightArm(), InteractionHand.MAIN_HAND);
+            }
+            return handCache.get(partName);
+        }
+
+        private void addHand(Map<String, HandRender> map, @Nullable BedrockPart hand, InteractionHand interactionHand) {
+            if (hand == null) return;
+            // 手臂自身以及它的祖先部位都可以作为持物载体
+            for (var part = hand; part != null; part = part.parent) {
+                var name = partNameOf(part);
+                if (name != null) {
+                    map.putIfAbsent(name, new HandRender(hand, part, interactionHand));
+                }
+            }
+        }
+
+        @Nullable
+        private String partNameOf(BedrockPart part) {
+            if (partNameMap == null) {
+                var map = new IdentityHashMap<BedrockPart, String>();
+                model.getModelMap().forEach((name, p) -> map.put(p, name));
+                partNameMap = map;
+            }
+            return partNameMap.get(part);
+        }
+
         private List<InitAction> resolveInitActions(RagdollExpressions expressions) {
             var actions = new ArrayList<InitAction>();
             expressions.getExpression("init").ifPresent(expressionMap ->
@@ -152,6 +192,15 @@ public final class MaidPartRenderCache {
      * 需要渲染的模型部件，flatChild 为 true 时只画部件本身，不递归子部件（与 geo 渲染一致）。
      */
     public record PartRender(BedrockPart part, boolean flatChild) {
+    }
+
+    /**
+     * 手持物品渲染信息，hand 为实际手臂部件，parent 为与 ragdoll 部位匹配的部件。
+     */
+    public record HandRender(BedrockPart hand, BedrockPart parent, InteractionHand interactionHand) {
+        public boolean leftHand() {
+            return interactionHand == InteractionHand.OFF_HAND;
+        }
     }
 
     private record InitAction(

@@ -2,6 +2,7 @@ package com.gly091020.SableMaidRagdoll.mixin;
 
 import com.github.tartaricacid.touhoulittlemaid.client.resource.CustomPackLoader;
 import com.gly091020.SableMaidRagdoll.client.MaidPartRenderCache;
+import com.gly091020.SableMaidRagdoll.geo.GeoMaidModelRenderer;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -16,5 +17,6 @@ public class CustomPackLoaderMixin {
     @Inject(method = "reloadPacks", at = @At("TAIL"))
     private static void sableMaidRagdoll$clearRenderCache(CallbackInfo ci) {
         MaidPartRenderCache.clear();
+        GeoMaidModelRenderer.clear();
     }
 }

@@ -1,6 +1,7 @@
 package com.gly091020.SableMaidRagdoll.client;
 
 import com.gly091020.SableMaidRagdoll.SableMaidRagdoll;
+import com.gly091020.SableMaidRagdoll.geo.GeoMaidModelRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderers;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
@@ -14,12 +15,13 @@ public class ClientEventHandler {
     public static void onClientSetup(FMLClientSetupEvent event) {
         BlockEntityRenderers.register(
                 SableMaidRagdoll.MAID_PART_BLOCK_ENTITY.get(),
-                (context) -> new MaidPartRenderer()
+                (context) -> new MaidPartRenderer(context.getEntityRenderer().getItemInHandRenderer())
         );
     }
 
     @SubscribeEvent
     public static void onResourceReload(AddReloadListenerEvent event) {
         MaidPartRenderCache.clear();
+        GeoMaidModelRenderer.clear();
     }
 }
