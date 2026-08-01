@@ -4,6 +4,7 @@
   "package": "com.gly091020.SableMaidRagdoll.mixin",
   "compatibilityLevel": "JAVA_21",
   "mixins": [
+    "CallResponseHurtMixin",
     "EntityBoxMixin",
     "love_loathe.EmotionManagerMixin",
     "love_loathe.SaddleLaunchHandlerMixin"

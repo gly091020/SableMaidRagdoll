@@ -154,6 +154,9 @@ dependencies {
 
     implementation "com.gly091020:sableragdolllib"
     implementation "com.github.tartaricacid:callresponse"
+
+    // 仅编译期需要；运行时由 lib（SableRagdollLib）jarJar 提供
+    compileOnly(annotationProcessor("com.github.bawnorton.mixinsquared:mixinsquared-common:0.3.7-beta.3"))
 }
 
 // This block of code expands all declared replace properties in the specified resource targets.

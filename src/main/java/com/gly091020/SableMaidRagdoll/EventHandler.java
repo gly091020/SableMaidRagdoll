@@ -79,32 +79,44 @@ public class EventHandler {
 
     @SubscribeEvent
     public static void onOwnerAttack(MaidHurtEvent event){
-        if(!(event.getMaid().level() instanceof ServerLevel level))return;
-
-        if(event.getMaid().getVehicle() instanceof PartSeat)return;
+        if (!(event.getMaid().level() instanceof ServerLevel level)) return;
+        if (event.getMaid().getVehicle() instanceof PartSeat) return;
 
         float damage = event.getAmount();
         float health = event.getMaid().getHealth();
-        if (health < damage)return;
+        if (health < damage) return;
 
-        var e1 = event.getMaid().getOwner();
-        var e2 = event.getSource().getEntity();
+        if (!isOwnerAttackWithTag(event.getMaid(), event.getSource())
+                && !(SableMaidRagdoll.CONFIG.ragdollOnSpecialDamage && event.getSource().is(SableMaidRagdoll.ALWAYS_TO_RAGDOLL_TAG))) return;
 
-        var flag1 = SableMaidRagdoll.CONFIG.ragdollOnOwnerAttack &&
+        ragdollOnDamage(level, event.getSource(), event.getMaid());
+        if (SableMaidRagdoll.CONFIG.sounds.metalPipe)
+            event.getMaid().level().playSound(null, BlockPos.containing(event.getMaid().position()), SableMaidRagdoll.PIPE.get(), SoundSource.PLAYERS, 1, 1);
+        event.setCanceled(true);
+    }
+
+    private static boolean isOwnerAttackWithTag(EntityMaid maid, DamageSource source) {
+        var e1 = maid.getOwner();
+        var e2 = source.getEntity();
+        return SableMaidRagdoll.CONFIG.ragdollOnOwnerAttack &&
                 e1 instanceof Player player &&
                 !player.isShiftKeyDown() &&
                 e2 != null &&
                 e1.is(e2) &&
                 player.getMainHandItem().is(SableMaidRagdoll.MAID_TO_RAGDOLL_TAG);
-        var flag2 = SableMaidRagdoll.CONFIG.ragdollOnSpecialDamage &&
-                event.getSource().is(SableMaidRagdoll.ALWAYS_TO_RAGDOLL_TAG);
+    }
 
-        if(!flag1 && !flag2)return;
-
-        ragdollOnDamage(level, event.getSource(), event.getMaid());
-        if(SableMaidRagdoll.CONFIG.sounds.metalPipe)
-            event.getMaid().level().playSound(null, BlockPos.containing(event.getMaid().position()), SableMaidRagdoll.PIPE.get(), SoundSource.PLAYERS, 1, 1);
-        event.setCanceled(true);
+    /**
+     * 判断是否应跳过 callresponse 在 EntityMaid#hurt 入口的来源洗白。
+     * 由 MixinSquared 注入器调用：条件满足时取消 callresponse 的 handler，
+     * 让真实来源走完原版流程，MaidHurtEvent 里就能拿到攻击者。
+     * 这里不做血量判断，最终由 {@link #onOwnerAttack(MaidHurtEvent)} 用减免后的数值决定。
+     */
+    public static boolean shouldSkipCallResponseBypass(EntityMaid maid, DamageSource source) {
+        if (maid.level().isClientSide) return false;
+        if (maid.getVehicle() instanceof PartSeat) return false;
+        return isOwnerAttackWithTag(maid, source)
+                || (SableMaidRagdoll.CONFIG.ragdollOnSpecialDamage && source.is(SableMaidRagdoll.ALWAYS_TO_RAGDOLL_TAG));
     }
 
     private static void ragdollOnDamage(ServerLevel level, DamageSource damageSource, EntityMaid maid){
