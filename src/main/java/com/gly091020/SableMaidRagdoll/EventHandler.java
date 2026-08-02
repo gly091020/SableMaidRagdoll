@@ -1,17 +1,22 @@
 package com.gly091020.SableMaidRagdoll;
 
+import com.github.tartaricacid.touhoulittlemaid.api.block.IMaidEdibleBlock;
 import com.github.tartaricacid.touhoulittlemaid.api.event.MaidDamageEvent;
 import com.github.tartaricacid.touhoulittlemaid.api.event.MaidDeathEvent;
 import com.github.tartaricacid.touhoulittlemaid.api.event.MaidHurtEvent;
+import com.github.tartaricacid.touhoulittlemaid.entity.ai.edible.MaidEdibleBlockManager;
+import com.github.tartaricacid.touhoulittlemaid.entity.favorability.Type;
 import com.github.tartaricacid.touhoulittlemaid.entity.passive.EntityMaid;
 import com.github.tartaricacid.touhoulittlemaid.init.InitCreativeTabs;
 import com.github.tartaricacid.touhoulittlemaid.init.InitItems;
 import com.gly091020.SableMaidRagdoll.command.MaidRagdollCommand;
 import com.gly091020.SableMaidRagdoll.compat.util.MaidRollManager;
+import com.gly091020.SableMaidRagdoll.util.MixinFunction;
 import com.gly091020.SableRagdollLib.api.RagdollHelper;
 import com.gly091020.SableRagdollLib.api.RagdollManager;
 import com.gly091020.SableRagdollLib.api.ScheduleManager;
 import com.gly091020.SableRagdollLib.api.event.EntityHurtBySubLevelEvent;
+import com.gly091020.SableRagdollLib.api.event.RagdollPartCollisionEvent;
 import com.gly091020.SableRagdollLib.entity.PartSeat;
 import dev.ryanhcode.sable.companion.math.JOMLConversion;
 import net.minecraft.commands.arguments.EntityAnchorArgument;
@@ -188,5 +193,33 @@ public class EventHandler {
         if(damage <= 0)return;
         event.getTarget().hurt(maid.level().damageSources().mobAttack(maid), damage);
         event.setDamage(0);
+    }
+
+    @SubscribeEvent
+    public static void onPartCollision(RagdollPartCollisionEvent.Post event){
+        if(event.getLevel().isClientSide)return;
+        if(event.getImpactVelocity() * event.getImpactVelocity() < 9)return;
+        if(!event.getSelfBE().getPartData().partName().toLowerCase().contains("head"))return;
+        if(!(event.getSelfBE().getEntity() instanceof EntityMaid maid))return;
+        var level = event.getLevel();
+        var pos2 = event.getPos2();
+        if(pos2 == null)return;
+        var state = level.getBlockState(event.getPos2());
+
+        MixinFunction.alwaysCanEat = true;
+        IMaidEdibleBlock target = null;
+        for (IMaidEdibleBlock edibleBlock: MaidEdibleBlockManager.getEdibleBlocks())
+            if(edibleBlock.shouldMoveTo(maid, pos2, state))
+                target = edibleBlock;
+        if(target == null)return;
+        IMaidEdibleBlock finalTarget = target;
+        ScheduleManager.scheduleDelayed((ServerLevel) level, 0, () -> {
+            var result = finalTarget.consume(maid, pos2, state);
+            if (result) {
+                int points = finalTarget.getFavorabilityPoints(maid, pos2, state);
+                maid.getFavorabilityManager().apply(Type.STEAL_EDIBLE_BLOCK, points);
+            }
+        });
+        MixinFunction.alwaysCanEat = false;
     }
 }

@@ -6,6 +6,7 @@
   "mixins": [
     "CallResponseHurtMixin",
     "EntityBoxMixin",
+    "IMaidEdibleBlockMixin",
     "love_loathe.EmotionManagerMixin",
     "love_loathe.SaddleLaunchHandlerMixin"
   ],

@@ -21,6 +21,10 @@ import java.util.List;
 import static com.gly091020.SableRagdollLib.api.ScheduleManager.scheduleDelayed;
 
 public class MixinFunction {
+    // 很烂的写法
+    // 943 写死了蛋糕下必须有零食柜才能吃
+    public static boolean alwaysCanEat = false;
+
     public static @Nullable Ragdoll getRagdoll(EntityBox self, EntityMaid maid) {
         var id = ResourceLocation.fromNamespaceAndPath(
                 SableMaidRagdoll.MODID,
