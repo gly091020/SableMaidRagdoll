@@ -197,6 +197,7 @@ public class EventHandler {
 
     @SubscribeEvent
     public static void onPartCollision(RagdollPartCollisionEvent.Post event){
+        if(!SableMaidRagdoll.CONFIG.maidEat)return;
         if(event.getLevel().isClientSide)return;
         if(event.getImpactVelocity() * event.getImpactVelocity() < 9)return;
         if(!event.getSelfBE().getPartData().partName().toLowerCase().contains("head"))return;

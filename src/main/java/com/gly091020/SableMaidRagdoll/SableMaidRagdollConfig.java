@@ -12,6 +12,7 @@ public class SableMaidRagdollConfig implements ConfigData {
     public boolean ragdollOnBox = true;
     public boolean ragdollOnSpecialDamage = false;
     public boolean maidKnockback = true;
+    public boolean maidEat = true;
 
     public boolean cheatDeathBauble = true;
     // todo:未完成
