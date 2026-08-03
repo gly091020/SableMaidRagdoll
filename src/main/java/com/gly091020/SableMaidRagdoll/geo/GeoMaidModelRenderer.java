@@ -15,6 +15,7 @@ import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.InteractionHand;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemDisplayContext;
 import org.jetbrains.annotations.NotNull;
 import org.joml.Vector3d;
@@ -170,7 +171,7 @@ public class GeoMaidModelRenderer {
                                       PoseStack poseStack, MultiBufferSource bufferSource, int light,
                                       ItemInHandRenderer itemInHandRenderer) {
         var entity = blockEntity.getEntity();
-        if (!(entity instanceof EntityMaid maid)) return;
+        if (!(entity instanceof LivingEntity maid)) return;
         var stack = maid.getItemInHand(handRender.interactionHand());
         if (stack.isEmpty()) return;
 

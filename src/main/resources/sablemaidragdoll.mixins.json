@@ -7,8 +7,7 @@
     "CallResponseHurtMixin",
     "EntityBoxMixin",
     "IMaidEdibleBlockMixin",
-    "love_loathe.EmotionManagerMixin",
-    "love_loathe.SaddleLaunchHandlerMixin"
+    "love_loathe.EmotionManagerMixin"
   ],
   "client": [
     "BedrockModelAccessor",

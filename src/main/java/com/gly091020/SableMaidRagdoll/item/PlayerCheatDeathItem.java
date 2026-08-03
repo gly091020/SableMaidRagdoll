@@ -1,21 +1,27 @@
 package com.gly091020.SableMaidRagdoll.item;
 
+import com.github.tartaricacid.touhoulittlemaid.compat.ysm.YsmCompat;
 import com.github.tartaricacid.touhoulittlemaid.entity.passive.EntityMaid;
+import com.github.tartaricacid.touhoulittlemaid.inventory.tooltip.ItemMaidTooltip;
+import com.github.tartaricacid.touhoulittlemaid.inventory.tooltip.YsmMaidInfo;
 import com.gly091020.SableMaidRagdoll.SableMaidRagdoll;
 import com.gly091020.SableRagdollLib.api.RagdollHelper;
 import com.gly091020.SableRagdollLib.api.ScheduleManager;
 import com.gly091020.SableRagdollLib.entity.PartSeat;
 import dev.ryanhcode.sable.companion.math.JOMLConversion;
 import net.minecraft.ChatFormatting;
+import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.tooltip.TooltipComponent;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
@@ -25,6 +31,7 @@ import net.minecraft.world.phys.Vec3;
 import org.joml.Vector3d;
 
 import java.util.List;
+import java.util.Optional;
 
 public class PlayerCheatDeathItem extends Item {
     public PlayerCheatDeathItem() {
@@ -48,7 +55,10 @@ public class PlayerCheatDeathItem extends Item {
     @Override
     public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand) {
         var stack = player.getItemInHand(hand);
-        if(player.getVehicle() instanceof PartSeat)return InteractionResultHolder.pass(stack);
+        if(player.getVehicle() instanceof PartSeat){
+            player.stopRiding();
+            return InteractionResultHolder.success(stack);
+        }
         if(player.isShiftKeyDown() && !level.isClientSide){
             stack.remove(SableMaidRagdoll.MAID_MODEL.get());
             player.sendSystemMessage(Component.translatable("item.sablemaidragdoll.player_cheat_death.clear"));
@@ -63,7 +73,10 @@ public class PlayerCheatDeathItem extends Item {
 
     @Override
     public InteractionResult useOn(UseOnContext useOnContext) {
-        if(useOnContext.getPlayer() != null && useOnContext.getPlayer().getVehicle() instanceof PartSeat)return InteractionResult.PASS;
+        if(useOnContext.getPlayer() != null && useOnContext.getPlayer().getVehicle() instanceof PartSeat){
+            useOnContext.getPlayer().stopRiding();
+            return InteractionResult.SUCCESS;
+        }
         if(useOnContext.getPlayer() != null && useOnContext.getPlayer().isShiftKeyDown() && !useOnContext.getLevel().isClientSide){
             useOnContext.getItemInHand().remove(SableMaidRagdoll.MAID_MODEL.get());
             useOnContext.getPlayer().sendSystemMessage(Component.translatable("item.sablemaidragdoll.player_cheat_death.clear"));
@@ -88,6 +101,9 @@ public class PlayerCheatDeathItem extends Item {
             rag.addLinearImpulse(motion, false);
             rag.addAngularImpulse(axis, false);
         });
+        if(SableMaidRagdoll.CONFIG.sounds.hungry)
+            player.level().playSound(null, BlockPos.containing(player.position()), SableMaidRagdoll.HUNGRY.get(), SoundSource.PLAYERS, 1,
+                    1f + player.level().random.nextFloat());
         return true;
     }
 
@@ -95,5 +111,12 @@ public class PlayerCheatDeathItem extends Item {
     public void appendHoverText(ItemStack p_41421_, TooltipContext p_339594_, List<Component> p_41423_, TooltipFlag p_41424_) {
         super.appendHoverText(p_41421_, p_339594_, p_41423_, p_41424_);
         p_41423_.add(Component.translatable("item.sablemaidragdoll.player_cheat_death.tip").withStyle(ChatFormatting.GRAY));
+    }
+
+    @Override
+    public Optional<TooltipComponent> getTooltipImage(ItemStack stack) {
+        var modelID = stack.get(SableMaidRagdoll.MAID_MODEL.get());
+        if(modelID == null)return Optional.empty();
+        return Optional.of(new ItemMaidTooltip(modelID, "", YsmMaidInfo.EMPTY));
     }
 }

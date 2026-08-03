@@ -15,8 +15,6 @@ public class SableMaidRagdollConfig implements ConfigData {
     public boolean maidEat = true;
 
     public boolean cheatDeathBauble = true;
-    // todo:未完成
-    @ConfigEntry.Gui.Excluded
     public boolean playerCheatDeathItem = false;
 
     @ConfigEntry.Gui.CollapsibleObject(startExpanded = true)

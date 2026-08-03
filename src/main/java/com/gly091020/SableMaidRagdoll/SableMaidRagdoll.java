@@ -2,6 +2,8 @@ package com.gly091020.SableMaidRagdoll;
 
 import com.gly091020.SableMaidRagdoll.block.MaidPartBlock;
 import com.gly091020.SableMaidRagdoll.block.MaidPartBlockEntity;
+import com.gly091020.SableMaidRagdoll.compat.love_loathe.RagdollSaddleLaunch;
+import com.gly091020.SableMaidRagdoll.compat.util.CompatMods;
 import com.gly091020.SableMaidRagdoll.item.CheatDeathBaubleItem;
 import com.gly091020.SableMaidRagdoll.item.CopyRagdollIDItem;
 import com.gly091020.SableMaidRagdoll.item.PlayerCheatDeathItem;
@@ -73,5 +75,8 @@ public class SableMaidRagdoll {
         DATA_COMPONENTS.register(bus);
 
         RagdollTypeRegistry.registry(RAGDOLL_TYPE, MAID_PART_BLOCK::get, MAID_PART_BLOCK_ENTITY::get);
+
+        if(CompatMods.LOVE_LOATHE)
+            RagdollSaddleLaunch.init();
     }
 }
