@@ -12,8 +12,8 @@
   "text.autoconfig.sablemaidragdoll.option.ragdollOnBox": "蛋糕盒产生布娃娃",
   "text.autoconfig.sablemaidragdoll.option.cheatDeathBauble": "假死护符",
 
-  "text.autoconfig.sablemaidragdoll.option.playerCheatDeathItem": "替身女仆玩偶",
-  "item.sablemaidragdoll.player_cheat_death": "替身女仆玩偶物品",
+  "text.autoconfig.sablemaidragdoll.option.playerCheatDeathItem": "替身女仆玩偶物品",
+  "item.sablemaidragdoll.player_cheat_death": "替身女仆玩偶",
   "item.sablemaidragdoll.player_cheat_death.tip": "潜行右键绑定女仆模型，再次使用以女仆模型装死",
   "item.sablemaidragdoll.player_cheat_death.connect": "已绑定至 %s 模型",
   "item.sablemaidragdoll.player_cheat_death.clear": "已清除模型",

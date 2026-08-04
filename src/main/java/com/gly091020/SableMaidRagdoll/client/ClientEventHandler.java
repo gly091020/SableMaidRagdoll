@@ -2,12 +2,17 @@ package com.gly091020.SableMaidRagdoll.client;
 
 import com.gly091020.SableMaidRagdoll.SableMaidRagdoll;
 import com.gly091020.SableMaidRagdoll.geo.GeoMaidModelRenderer;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.BlockEntityWithoutLevelRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderers;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
+import net.neoforged.neoforge.client.extensions.common.IClientItemExtensions;
+import net.neoforged.neoforge.client.extensions.common.RegisterClientExtensionsEvent;
 import net.neoforged.neoforge.event.AddReloadListenerEvent;
+import org.jetbrains.annotations.NotNull;
 
 @EventBusSubscriber(value = Dist.CLIENT, modid = SableMaidRagdoll.MODID)
 public class ClientEventHandler {
@@ -23,5 +28,16 @@ public class ClientEventHandler {
     public static void onResourceReload(AddReloadListenerEvent event) {
         MaidPartRenderCache.clear();
         GeoMaidModelRenderer.clear();
+    }
+
+    @SubscribeEvent
+    public static void onRegistryItemExtension(RegisterClientExtensionsEvent event){
+        event.registerItem(new IClientItemExtensions() {
+            @Override
+            public @NotNull BlockEntityWithoutLevelRenderer getCustomRenderer() {
+                return new PlayerCheatDeathItemRenderer(Minecraft.getInstance().getBlockEntityRenderDispatcher(),
+                        Minecraft.getInstance().getEntityModels());
+            }
+        }, SableMaidRagdoll.PLAYER_CHEAT_DEATH_ITEM.get());
     }
 }

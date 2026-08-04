@@ -1,6 +1,5 @@
 package com.gly091020.SableMaidRagdoll.item;
 
-import com.github.tartaricacid.touhoulittlemaid.compat.ysm.YsmCompat;
 import com.github.tartaricacid.touhoulittlemaid.entity.passive.EntityMaid;
 import com.github.tartaricacid.touhoulittlemaid.inventory.tooltip.ItemMaidTooltip;
 import com.github.tartaricacid.touhoulittlemaid.inventory.tooltip.YsmMaidInfo;
@@ -24,6 +23,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.tooltip.TooltipComponent;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Rarity;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
@@ -35,7 +35,7 @@ import java.util.Optional;
 
 public class PlayerCheatDeathItem extends Item {
     public PlayerCheatDeathItem() {
-        super(new Properties().stacksTo(1));
+        super(new Properties().stacksTo(1).rarity(Rarity.RARE));
     }
 
     @Override
@@ -68,6 +68,7 @@ public class PlayerCheatDeathItem extends Item {
         if(id == null)return InteractionResultHolder.pass(stack);
         if(level.isClientSide)return InteractionResultHolder.success(stack);
         if(!toBeRagdoll((ServerPlayer) player, id))return InteractionResultHolder.pass(stack);
+        addCooldown(stack, player);
         return InteractionResultHolder.success(stack);
     }
 
@@ -86,7 +87,13 @@ public class PlayerCheatDeathItem extends Item {
         if(id == null)return InteractionResult.PASS;
         if(useOnContext.getLevel().isClientSide)return InteractionResult.SUCCESS;
         if(!toBeRagdoll((ServerPlayer) useOnContext.getPlayer(), id))return InteractionResult.PASS;
+        addCooldown(useOnContext.getItemInHand(), useOnContext.getPlayer());
         return InteractionResult.SUCCESS;
+    }
+
+    private void addCooldown(ItemStack stack, Player player){
+        if(player.isCreative())return;
+        player.getCooldowns().addCooldown(stack.getItem(), 20);
     }
 
     private boolean toBeRagdoll(ServerPlayer player, String id){
