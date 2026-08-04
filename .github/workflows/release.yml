@@ -1,0 +1,63 @@
+name: One-Click GitHub Release
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: '版本号（不含 v 前缀），例如 1.0.0'
+        required: true
+      prerelease:
+        description: '标记为预发布（Prerelease）'
+        type: boolean
+        default: false
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout SableMaidRagdoll
+        uses: actions/checkout@v4
+        with:
+          path: SableMaidRagdoll
+
+      - name: Checkout SableRagdollLib
+        uses: actions/checkout@v4
+        with:
+          repository: gly091020/SableRagdollLib
+          path: SableRagdollLib
+
+      - name: Checkout callresponse (Love-And-Loathe)
+        uses: actions/checkout@v4
+        with:
+          repository: 1819919010-star/callresponse
+          path: Love-And-Loathe
+
+      - name: Set up JDK 21
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 21
+
+      - name: Build mod jar
+        working-directory: SableMaidRagdoll
+        run: |
+          chmod +x gradlew
+          ./gradlew build -Pmod_version=${{ inputs.version }} --stacktrace
+
+      - name: Create tag
+        working-directory: SableMaidRagdoll
+        run: |
+          git tag "v${{ inputs.version }}"
+          git push origin "v${{ inputs.version }}"
+
+      - name: Create GitHub Release
+        working-directory: SableMaidRagdoll
+        run: |
+          gh release create "v${{ inputs.version }}" build/libs/*.jar \
+            --generate-notes \
+            --prerelease="${{ inputs.prerelease }}"
+        env:
+          GH_TOKEN: ${{ github.token }}
