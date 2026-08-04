@@ -55,6 +55,7 @@ public class PlayerCheatDeathItem extends Item {
     @Override
     public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand) {
         var stack = player.getItemInHand(hand);
+        if(!SableMaidRagdoll.CONFIG.items.playerCheatDeathItem)return InteractionResultHolder.pass(stack);
         if(player.getVehicle() instanceof PartSeat){
             player.stopRiding();
             return InteractionResultHolder.success(stack);
@@ -74,6 +75,7 @@ public class PlayerCheatDeathItem extends Item {
 
     @Override
     public InteractionResult useOn(UseOnContext useOnContext) {
+        if(!SableMaidRagdoll.CONFIG.items.playerCheatDeathItem)return InteractionResult.PASS;
         if(useOnContext.getPlayer() != null && useOnContext.getPlayer().getVehicle() instanceof PartSeat){
             useOnContext.getPlayer().stopRiding();
             return InteractionResult.SUCCESS;

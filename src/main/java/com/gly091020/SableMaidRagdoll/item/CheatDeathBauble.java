@@ -29,7 +29,7 @@ public class CheatDeathBauble implements IMaidBauble {
     public static final int RECOVER_HEALTH = 20;
     @Override
     public boolean onInjured(EntityMaid maid, ItemStack baubleItem, DamageSource source, MutableFloat damage) {
-        if(!SableMaidRagdoll.CONFIG.cheatDeathBauble)return false;
+        if(!SableMaidRagdoll.CONFIG.items.cheatDeathBauble)return false;
         if(isCheatDeath(maid))return true;
         if(maid.getHealth() < MIN_HEALTH){
             if(maid.level() instanceof ServerLevel serverLevel && toRagdoll(maid, damage.floatValue())){
@@ -42,7 +42,7 @@ public class CheatDeathBauble implements IMaidBauble {
 
     @Override
     public boolean onDeath(EntityMaid maid, ItemStack baubleItem, DamageSource source) {
-        if(!SableMaidRagdoll.CONFIG.cheatDeathBauble)return false;
+        if(!SableMaidRagdoll.CONFIG.items.cheatDeathBauble)return false;
         if(isCheatDeath(maid))return true;
         maid.setHealth(1);
         if(maid.level() instanceof ServerLevel serverLevel && toRagdoll(maid, 100)){
@@ -56,7 +56,7 @@ public class CheatDeathBauble implements IMaidBauble {
     private long lastUpdate = 0;
     @Override
     public void onTick(EntityMaid maid, ItemStack baubleItem) {
-        if(!SableMaidRagdoll.CONFIG.cheatDeathBauble)return;
+        if(!SableMaidRagdoll.CONFIG.items.cheatDeathBauble)return;
         long now = System.currentTimeMillis();
         if (now - lastUpdate < 1000)return;
         lastUpdate = now;

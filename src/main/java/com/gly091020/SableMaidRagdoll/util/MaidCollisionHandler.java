@@ -6,13 +6,22 @@ import com.github.tartaricacid.touhoulittlemaid.entity.favorability.Type;
 import com.github.tartaricacid.touhoulittlemaid.entity.passive.EntityMaid;
 import com.github.tartaricacid.touhoulittlemaid.tileentity.TileEntityPicnicMat;
 import com.github.tartaricacid.touhoulittlemaid.tileentity.TileEntitySnackCabinet;
+import com.gly091020.SableMaidRagdoll.SableMaidRagdoll;
+import com.gly091020.SableRagdollLib.api.RagdollManager;
 import com.gly091020.SableRagdollLib.api.ScheduleManager;
 import com.gly091020.SableRagdollLib.block.AbstractPartBlockEntity;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.component.DataComponents;
+import net.minecraft.nbt.Tag;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.Container;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.BlockGetter;
+import net.minecraft.world.level.Explosion;
+import net.minecraft.world.level.ExplosionDamageCalculator;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.items.ItemStackHandler;
 
 import java.util.HashMap;
@@ -29,6 +38,32 @@ public class MaidCollisionHandler {
             maidEatCake(maid, pos2);
             maidEatSnackCabinet(maid, pos2);
             maidEatPicnicMat(maid, pos2);
+        }
+        var rag = RagdollManager.get(blockEntity);
+        if(blockEntity.getLevel() != null &&
+                (!(blockEntity.getLevel().getBlockEntity(pos2) instanceof AbstractPartBlockEntity other) ||
+                other.getEntity() != blockEntity.getEntity()) &&
+                rag.getExtraData().contains("explosion", Tag.TAG_BYTE) &&
+                rag.getExtraData().getBoolean("explosion")) {
+            var level = 2 + maid.getFavorability() / 384 * 5;
+            ScheduleManager.scheduleDelayed((ServerLevel) maid.level(), 0, () ->
+                    blockEntity.getLevel().explode(maid, null, MaidExplosionDamageCalculator.INSTANCE,
+                    maid.position().add(0, 1, 0), level, false, Level.ExplosionInteraction.MOB));
+//            rag.remove();
+            // todo:不稳定的 java.lang.RuntimeException: Body has been removed
+            // fuck Sable
+            rag.getExtraData().remove("explosion");
+
+            if(SableMaidRagdoll.CONFIG.sounds.metalPipe)
+                maid.level().playSound(null, BlockPos.containing(maid.position()), SableMaidRagdoll.PIPE.get(), SoundSource.PLAYERS, 1, 1f);
+        }
+    }
+
+    private static class MaidExplosionDamageCalculator extends ExplosionDamageCalculator {
+        public static final MaidExplosionDamageCalculator INSTANCE = new MaidExplosionDamageCalculator();
+        @Override
+        public boolean shouldBlockExplode(Explosion p_46094_, BlockGetter p_46095_, BlockPos p_46096_, BlockState p_46097_, float p_46098_) {
+            return false;
         }
     }
 

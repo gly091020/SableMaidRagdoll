@@ -4,8 +4,6 @@ import com.github.tartaricacid.touhoulittlemaid.api.event.MaidDamageEvent;
 import com.github.tartaricacid.touhoulittlemaid.api.event.MaidDeathEvent;
 import com.github.tartaricacid.touhoulittlemaid.api.event.MaidHurtEvent;
 import com.github.tartaricacid.touhoulittlemaid.entity.passive.EntityMaid;
-import com.github.tartaricacid.touhoulittlemaid.init.InitCreativeTabs;
-import com.github.tartaricacid.touhoulittlemaid.init.InitItems;
 import com.gly091020.SableMaidRagdoll.command.MaidRagdollCommand;
 import com.gly091020.SableMaidRagdoll.compat.util.MaidRollManager;
 import com.gly091020.SableMaidRagdoll.util.MaidCollisionHandler;
@@ -25,16 +23,13 @@ import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.damagesource.DamageTypes;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
-import net.neoforged.neoforge.event.BuildCreativeModeTabContentsEvent;
 import net.neoforged.neoforge.event.RegisterCommandsEvent;
 import net.neoforged.neoforge.event.tick.ServerTickEvent;
 import org.joml.Vector3d;
 
-import static com.github.tartaricacid.touhoulittlemaid.init.InitItems.MUTE_BAUBLE;
 import static com.gly091020.SableRagdollLib.api.ScheduleManager.scheduleDelayed;
 
 @EventBusSubscriber(modid = SableMaidRagdoll.MODID)
@@ -164,16 +159,6 @@ public class EventHandler {
     @SubscribeEvent
     public static void onRegistryCommand(RegisterCommandsEvent event){
         MaidRagdollCommand.registry(event.getDispatcher());
-    }
-
-    @SubscribeEvent
-    public static void addCreative(BuildCreativeModeTabContentsEvent event) {
-        if(event.getTabKey() == InitCreativeTabs.MAIN_TAB.getKey()){
-            if(SableMaidRagdoll.CONFIG.playerCheatDeathItem)
-                event.insertAfter(MUTE_BAUBLE.get().getDefaultInstance(), SableMaidRagdoll.PLAYER_CHEAT_DEATH_ITEM.get().getDefaultInstance(), CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
-            if(SableMaidRagdoll.CONFIG.cheatDeathBauble)
-                event.insertAfter(InitItems.MUTE_BAUBLE.get().getDefaultInstance(), SableMaidRagdoll.CHEAT_DEATH_BAUBLE_ITEM.get().getDefaultInstance(), CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
-        }
     }
 
     @SubscribeEvent

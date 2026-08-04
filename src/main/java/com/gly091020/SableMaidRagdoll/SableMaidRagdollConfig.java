@@ -14,14 +14,22 @@ public class SableMaidRagdollConfig implements ConfigData {
     public boolean maidKnockback = true;
     public boolean maidEat = true;
 
-    public boolean cheatDeathBauble = true;
-    public boolean playerCheatDeathItem = false;
+    @ConfigEntry.Gui.CollapsibleObject(startExpanded = true)
+    public Items items = new Items();
 
     @ConfigEntry.Gui.CollapsibleObject(startExpanded = true)
     public LoveAndLoathe loveAndLoathe = new LoveAndLoathe();
 
     @ConfigEntry.Gui.CollapsibleObject()
     public Sounds sounds = new Sounds();
+
+    public static class Items{
+        @ConfigEntry.Gui.RequiresRestart
+        public boolean enableDollTab = false;
+        public boolean cheatDeathBauble = true;
+        public boolean playerCheatDeathItem = true;
+        public boolean maidMace = true;
+    }
 
     public static class Sounds{
         public boolean metalPipe = false;

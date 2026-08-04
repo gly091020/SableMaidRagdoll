@@ -10,9 +10,7 @@
   "text.autoconfig.sablemaidragdoll.option.ragdollOnOwnerAttack": "主人用特定物品攻击时变成布娃娃",
   "text.autoconfig.sablemaidragdoll.option.ragdollOnSpecialDamage": "收到特殊伤害时变成布娃娃",
   "text.autoconfig.sablemaidragdoll.option.ragdollOnBox": "蛋糕盒产生布娃娃",
-  "text.autoconfig.sablemaidragdoll.option.cheatDeathBauble": "假死护符",
 
-  "text.autoconfig.sablemaidragdoll.option.playerCheatDeathItem": "替身女仆玩偶物品",
   "item.sablemaidragdoll.player_cheat_death": "替身女仆玩偶",
   "item.sablemaidragdoll.player_cheat_death.tip": "潜行右键绑定女仆模型，再次使用以女仆模型装死",
   "item.sablemaidragdoll.player_cheat_death.connect": "已绑定至 %s 模型",
@@ -32,5 +30,17 @@
   "text.autoconfig.sablemaidragdoll.option.loveAndLoathe.drop": "发射布娃娃",
   "text.autoconfig.sablemaidragdoll.option.sounds.bigDog": "可观测宇宙中最爽的一声大狗叫",
 
-  "text.autoconfig.sablemaidragdoll.option.maidEat": "允许女仆被迫进食"
+  "text.autoconfig.sablemaidragdoll.option.maidEat": "允许女仆被迫进食",
+
+  "text.autoconfig.sablemaidragdoll.option.items": "物品",
+  "text.autoconfig.sablemaidragdoll.option.items.playerCheatDeathItem": "替身女仆玩偶",
+  "text.autoconfig.sablemaidragdoll.option.items.cheatDeathBauble": "假死护符",
+  "text.autoconfig.sablemaidragdoll.option.items.maidMace": "女仆重锤",
+  "text.autoconfig.sablemaidragdoll.option.items.enableDollTab": "启用替身女仆玩偶标签页",
+  "item.sablemaidragdoll.maid_mace": "女仆重锤",
+  "item.sablemaidragdoll.maid_mace.tip1": "右键女仆来发射，落地时产生冲击波",
+  "item.sablemaidragdoll.maid_mace.tip2": "跟你爆了……",
+  "item.sablemaidragdoll.mod_icon": "模组图标",
+  "itemGroup.sable_maid_ragdoll.doll": "替身女仆玩偶",
+  "itemGroup.sable_maid_ragdoll.main": "女仆布娃娃"
 }
