@@ -34,6 +34,7 @@ jobs:
         with:
           repository: 1819919010-star/callresponse
           path: Love-And-Loathe
+          ref: 1.21.1
 
       - name: Set up JDK 21
         uses: actions/setup-java@v4
