@@ -48,10 +48,12 @@ public class PlayerCheatDeathItemRenderer extends BlockEntityWithoutLevelRendere
         poseStack.translate(1, 0, 1);
         EntityRenderDispatcher render = Minecraft.getInstance().getEntityRenderDispatcher();
         boolean isShowHitBox = render.shouldRenderHitBoxes();
+        render.setRenderShadow(false);
         render.setRenderHitBoxes(false);
         render.render(maid, 0, 0, 0, 0, 0,
                 poseStack, bufferSource, light);
         render.setRenderHitBoxes(isShowHitBox);
+        render.setRenderShadow(true);
         poseStack.popPose();
     }
 }

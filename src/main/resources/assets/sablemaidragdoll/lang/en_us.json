@@ -11,8 +11,9 @@
   "text.autoconfig.sablemaidragdoll.option.ragdollOnSpecialDamage": "Turn into a ragdoll when receiving special damage",
   "text.autoconfig.sablemaidragdoll.option.ragdollOnBox": "Spawn ragdoll from cake box",
 
-  "item.sablemaidragdoll.player_cheat_death": "Decoy Maid Doll",
+  "block.sablemaidragdoll.maid_doll": "Decoy Maid Doll",
   "item.sablemaidragdoll.player_cheat_death.tip": "Sneak + Right Click to bind a maid model, use again to feign death as the maid model",
+  "item.sablemaidragdoll.player_cheat_death.tip1": "Sneak + Right Click to place",
   "item.sablemaidragdoll.player_cheat_death.connect": "Bound to %s model",
   "item.sablemaidragdoll.player_cheat_death.clear": "Model cleared",
 
@@ -33,14 +34,14 @@
   "text.autoconfig.sablemaidragdoll.option.maidEat": "Allow maid to be force-fed",
 
   "text.autoconfig.sablemaidragdoll.option.items": "Items",
-  "text.autoconfig.sablemaidragdoll.option.items.playerCheatDeathItem": "Substitute Maid Doll",
+  "text.autoconfig.sablemaidragdoll.option.items.playerCheatDeathItem": "Decoy Maid Doll",
   "text.autoconfig.sablemaidragdoll.option.items.cheatDeathBauble": "Cheat Death Charm",
   "text.autoconfig.sablemaidragdoll.option.items.maidMace": "Maid Mace",
-  "text.autoconfig.sablemaidragdoll.option.items.enableDollTab": "Enable Substitute Maid Doll Tab",
+  "text.autoconfig.sablemaidragdoll.option.items.enableDollTab": "Enable Decoy Maid Doll Tab",
   "item.sablemaidragdoll.maid_mace": "Maid Mace",
   "item.sablemaidragdoll.maid_mace.tip1": "Right-click the maid to launch it, generating a shockwave upon landing.",
   "item.sablemaidragdoll.maid_mace.tip2": "I'll take you down with me...",
   "item.sablemaidragdoll.mod_icon": "Mod Icon",
-  "itemGroup.sable_maid_ragdoll.doll": "Substitute Maid Doll",
+  "itemGroup.sable_maid_ragdoll.doll": "Sable: Maid Ragdoll | Decoy Maid Doll",
   "itemGroup.sable_maid_ragdoll.main": "Sable: Maid Ragdoll"
 }

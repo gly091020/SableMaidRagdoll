@@ -1,6 +1,8 @@
 package com.gly091020.SableMaidRagdoll;
 
 import com.github.tartaricacid.touhoulittlemaid.init.InitCreativeTabs;
+import com.gly091020.SableMaidRagdoll.block.MaidDollBlock;
+import com.gly091020.SableMaidRagdoll.block.MaidDollBlockEntity;
 import com.gly091020.SableMaidRagdoll.block.MaidPartBlock;
 import com.gly091020.SableMaidRagdoll.block.MaidPartBlockEntity;
 import com.gly091020.SableMaidRagdoll.compat.love_loathe.RagdollSaddleLaunch;
@@ -26,7 +28,9 @@ import net.minecraft.world.damagesource.DamageType;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.common.Mod;
 import net.neoforged.neoforge.registries.DeferredHolder;
@@ -67,8 +71,14 @@ public class SableMaidRagdoll {
     public static final DeferredHolder<Block, MaidPartBlock> MAID_PART_BLOCK = BLOCKS.register("maid_part", () -> new MaidPartBlock(MaidPartBlock.PROPERTIES));
     public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<MaidPartBlockEntity>> MAID_PART_BLOCK_ENTITY = BLOCK_ENTITIES.register("maid_part", () ->
             BlockEntityType.Builder.of(MaidPartBlockEntity::new, MAID_PART_BLOCK.get()).build(null));
+    public static final DeferredHolder<Block, MaidDollBlock> MAID_DOLL_BLOCK = BLOCKS.register("maid_doll", () -> new MaidDollBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.WHITE_WOOL).isValidSpawn(Blocks::never)));
+    public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<MaidDollBlockEntity>> MAID_DOLL_BLOCK_ENTITY = BLOCK_ENTITIES.register("maid_doll", () ->
+            BlockEntityType.Builder.of(MaidDollBlockEntity::new, MAID_DOLL_BLOCK.get()).build(null));
     public static final DeferredHolder<DataComponentType<?>, DataComponentType<String>> MAID_MODEL = DATA_COMPONENTS.register("maid_model", r ->
        DataComponentType.<String>builder().persistent(Codec.STRING).networkSynchronized(ByteBufCodecs.STRING_UTF8).build()
+    );
+    public static final DeferredHolder<DataComponentType<?>, DataComponentType<String>> MAID_SOUND = DATA_COMPONENTS.register("maid_sound", r ->
+            DataComponentType.<String>builder().persistent(Codec.STRING).networkSynchronized(ByteBufCodecs.STRING_UTF8).build()
     );
 
     public static final DeferredHolder<CreativeModeTab, CreativeModeTab> MAIN_TAB = CREATIVE_TABS.register("main",

@@ -4,6 +4,9 @@ import com.github.tartaricacid.touhoulittlemaid.api.block.IMaidEdibleBlock;
 import com.github.tartaricacid.touhoulittlemaid.entity.ai.edible.MaidEdibleBlockManager;
 import com.github.tartaricacid.touhoulittlemaid.entity.favorability.Type;
 import com.github.tartaricacid.touhoulittlemaid.entity.passive.EntityMaid;
+import com.github.tartaricacid.touhoulittlemaid.init.InitSounds;
+import com.github.tartaricacid.touhoulittlemaid.network.NetworkHandler;
+import com.github.tartaricacid.touhoulittlemaid.network.message.PlayMaidSoundAtPosPackage;
 import com.github.tartaricacid.touhoulittlemaid.tileentity.TileEntityPicnicMat;
 import com.github.tartaricacid.touhoulittlemaid.tileentity.TileEntitySnackCabinet;
 import com.gly091020.SableMaidRagdoll.SableMaidRagdoll;
@@ -16,6 +19,7 @@ import net.minecraft.nbt.Tag;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.Container;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Explosion;
@@ -23,6 +27,7 @@ import net.minecraft.world.level.ExplosionDamageCalculator;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.items.ItemStackHandler;
+import net.neoforged.neoforge.network.PacketDistributor;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -32,30 +37,41 @@ public class MaidCollisionHandler {
     private static final long COLLISION_COOLDOWN_MILLIS = 100;
     private static final Map<UUID, Long> LAST_COLLISION_TIME = new HashMap<>();
 
-    public static void onCollision(EntityMaid maid, BlockPos pos2, AbstractPartBlockEntity blockEntity){
-        if(!isCollisionReady(maid))return;
-        if(blockEntity.getPartData().partName().toLowerCase().contains("head")) {
-            maidEatCake(maid, pos2);
-            maidEatSnackCabinet(maid, pos2);
-            maidEatPicnicMat(maid, pos2);
-        }
+    public static void onCollision(Entity entity, BlockPos pos2, AbstractPartBlockEntity blockEntity){
+        if(!isCollisionReady(entity))return;
         var rag = RagdollManager.get(blockEntity);
-        if(blockEntity.getLevel() != null &&
-                (!(blockEntity.getLevel().getBlockEntity(pos2) instanceof AbstractPartBlockEntity other) ||
-                other.getEntity() != blockEntity.getEntity()) &&
-                rag.getExtraData().contains("explosion", Tag.TAG_BYTE) &&
-                rag.getExtraData().getBoolean("explosion")) {
-            var level = 2 + maid.getFavorability() / 384 * 5;
-            ScheduleManager.scheduleDelayed((ServerLevel) maid.level(), 0, () ->
-                    blockEntity.getLevel().explode(maid, null, MaidExplosionDamageCalculator.INSTANCE,
-                    maid.position().add(0, 1, 0), level, false, Level.ExplosionInteraction.MOB));
-//            rag.remove();
-            // todo:不稳定的 java.lang.RuntimeException: Body has been removed
-            // fuck Sable
-            rag.getExtraData().remove("explosion");
 
-            if(SableMaidRagdoll.CONFIG.sounds.metalPipe)
-                maid.level().playSound(null, BlockPos.containing(maid.position()), SableMaidRagdoll.PIPE.get(), SoundSource.PLAYERS, 1, 1f);
+        if(entity instanceof EntityMaid maid){
+            if(blockEntity.getPartData().partName().toLowerCase().contains("head")) {
+                maidEatCake(maid, pos2);
+                maidEatSnackCabinet(maid, pos2);
+                maidEatPicnicMat(maid, pos2);
+            }
+            if(blockEntity.getLevel() != null &&
+                    (!(blockEntity.getLevel().getBlockEntity(pos2) instanceof AbstractPartBlockEntity other) ||
+                            other.getEntity() != blockEntity.getEntity()) &&
+                    rag.getExtraData().contains("explosion", Tag.TAG_BYTE) &&
+                    rag.getExtraData().getBoolean("explosion")) {
+                var level = 2 + maid.getFavorability() / 384 * 5;
+                ScheduleManager.scheduleDelayed((ServerLevel) maid.level(), 0, () ->
+                        blockEntity.getLevel().explode(maid, null, MaidExplosionDamageCalculator.INSTANCE,
+                                maid.position().add(0, 1, 0), level, false, Level.ExplosionInteraction.MOB));
+                // rag.remove();
+                // todo:不稳定的 java.lang.RuntimeException: Body has been removed
+                // fuck Sable
+                rag.getExtraData().remove("explosion");
+
+                if(SableMaidRagdoll.CONFIG.sounds.metalPipe)
+                    maid.level().playSound(null, BlockPos.containing(maid.position()), SableMaidRagdoll.PIPE.get(), SoundSource.PLAYERS, 1, 1f);
+            }
+        }
+
+        if(blockEntity.getLevel() != null && rag.getExtraData().contains("PCDI_soundID", Tag.TAG_STRING) && entity.invulnerableTime > 0){
+            var soundID = rag.getExtraData().getString("PCDI_soundID");
+            PacketDistributor.sendToAllPlayers(new PlayMaidSoundAtPosPackage(
+                    InitSounds.MAID_HURT.getId(), soundID,
+                    entity.getX(), entity.getY(), entity.getZ(), 1, 1
+                    ));
         }
     }
 
@@ -67,7 +83,7 @@ public class MaidCollisionHandler {
         }
     }
 
-    private static boolean isCollisionReady(EntityMaid maid){
+    private static boolean isCollisionReady(Entity maid){
         long now = System.currentTimeMillis();
         Long last = LAST_COLLISION_TIME.get(maid.getUUID());
         if(last != null && now - last < COLLISION_COOLDOWN_MILLIS)return false;

@@ -74,6 +74,7 @@ neoForge {
         server {
             server()
             programArgument '--nogui'
+            setGameDirectory(file("run/server"))
             systemProperty 'neoforge.enabledGameTestNamespaces', project.mod_id
         }
 
@@ -82,6 +83,7 @@ neoForge {
         // The gametest system is also enabled by default for other run configs under the /test command.
         gameTestServer {
             type = "gameTestServer"
+            setGameDirectory(file("run/server"))
             systemProperty 'neoforge.enabledGameTestNamespaces', project.mod_id
         }
 
@@ -154,7 +156,7 @@ dependencies {
     implementation("com.lowdragmc.ldlib2:ldlib2-neoforge-${minecraft_version}:${ldlib2_version}:all")
 
     implementation "com.gly091020:sableragdolllib"
-    implementation "com.github.tartaricacid:callresponse"
+    compileOnly "com.github.tartaricacid:callresponse"
 
     // 仅编译期需要；运行时由 lib（SableRagdollLib）jarJar 提供
     compileOnly(annotationProcessor("com.github.bawnorton.mixinsquared:mixinsquared-common:0.3.7-beta.3"))

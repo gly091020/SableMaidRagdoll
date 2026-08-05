@@ -22,6 +22,10 @@ public class ClientEventHandler {
                 SableMaidRagdoll.MAID_PART_BLOCK_ENTITY.get(),
                 (context) -> new MaidPartRenderer(context.getEntityRenderer().getItemInHandRenderer())
         );
+        BlockEntityRenderers.register(
+                SableMaidRagdoll.MAID_DOLL_BLOCK_ENTITY.get(),
+                MaidDollRenderer::new
+        );
     }
 
     @SubscribeEvent

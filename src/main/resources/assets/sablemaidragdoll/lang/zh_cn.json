@@ -11,8 +11,9 @@
   "text.autoconfig.sablemaidragdoll.option.ragdollOnSpecialDamage": "收到特殊伤害时变成布娃娃",
   "text.autoconfig.sablemaidragdoll.option.ragdollOnBox": "蛋糕盒产生布娃娃",
 
-  "item.sablemaidragdoll.player_cheat_death": "替身女仆玩偶",
-  "item.sablemaidragdoll.player_cheat_death.tip": "潜行右键绑定女仆模型，再次使用以女仆模型装死",
+  "block.sablemaidragdoll.maid_doll": "替身女仆玩偶",
+  "item.sablemaidragdoll.player_cheat_death.tip": "右键绑定女仆模型，再次使用以女仆模型装死",
+  "item.sablemaidragdoll.player_cheat_death.tip1": "潜行右键放置",
   "item.sablemaidragdoll.player_cheat_death.connect": "已绑定至 %s 模型",
   "item.sablemaidragdoll.player_cheat_death.clear": "已清除模型",
 
@@ -41,6 +42,6 @@
   "item.sablemaidragdoll.maid_mace.tip1": "右键女仆来发射，落地时产生冲击波",
   "item.sablemaidragdoll.maid_mace.tip2": "跟你爆了……",
   "item.sablemaidragdoll.mod_icon": "模组图标",
-  "itemGroup.sable_maid_ragdoll.doll": "替身女仆玩偶",
+  "itemGroup.sable_maid_ragdoll.doll": "女仆布娃娃丨替身女仆玩偶",
   "itemGroup.sable_maid_ragdoll.main": "女仆布娃娃"
 }

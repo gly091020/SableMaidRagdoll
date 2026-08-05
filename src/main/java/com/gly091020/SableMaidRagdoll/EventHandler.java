@@ -4,6 +4,8 @@ import com.github.tartaricacid.touhoulittlemaid.api.event.MaidDamageEvent;
 import com.github.tartaricacid.touhoulittlemaid.api.event.MaidDeathEvent;
 import com.github.tartaricacid.touhoulittlemaid.api.event.MaidHurtEvent;
 import com.github.tartaricacid.touhoulittlemaid.entity.passive.EntityMaid;
+import com.github.tartaricacid.touhoulittlemaid.init.InitSounds;
+import com.github.tartaricacid.touhoulittlemaid.network.message.PlayMaidSoundAtPosPackage;
 import com.gly091020.SableMaidRagdoll.command.MaidRagdollCommand;
 import com.gly091020.SableMaidRagdoll.compat.util.MaidRollManager;
 import com.gly091020.SableMaidRagdoll.util.MaidCollisionHandler;
@@ -28,6 +30,7 @@ import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.event.RegisterCommandsEvent;
 import net.neoforged.neoforge.event.tick.ServerTickEvent;
+import net.neoforged.neoforge.network.PacketDistributor;
 import org.joml.Vector3d;
 
 import static com.gly091020.SableRagdollLib.api.ScheduleManager.scheduleDelayed;
@@ -182,10 +185,10 @@ public class EventHandler {
         if(!SableMaidRagdoll.CONFIG.maidEat)return;
         if(event.getLevel().isClientSide)return;
         if(event.getImpactVelocity() * event.getImpactVelocity() < 9)return;
-        if(!(event.getSelfBE().getEntity() instanceof EntityMaid maid))return;
+        if(event.getSelfBE().getEntity() == null)return;
         var pos2 = event.getPos2();
         if(pos2 == null)return;
 
-        MaidCollisionHandler.onCollision(maid, pos2, event.getSelfBE());
+        MaidCollisionHandler.onCollision(event.getSelfBE().getEntity(), pos2, event.getSelfBE());
     }
 }
