@@ -49,7 +49,7 @@ public class MaidCollisionHandler {
             }
             if(blockEntity.getLevel() != null &&
                     (!(blockEntity.getLevel().getBlockEntity(pos2) instanceof AbstractPartBlockEntity other) ||
-                            other.getEntity() != blockEntity.getEntity()) &&
+                            other.getEntity() != blockEntity.getEntity()) && rag != null &&
                     rag.getExtraData().contains("explosion", Tag.TAG_BYTE) &&
                     rag.getExtraData().getBoolean("explosion")) {
                 var level = 2 + maid.getFavorability() / 384 * 5;
@@ -66,7 +66,7 @@ public class MaidCollisionHandler {
             }
         }
 
-        if(blockEntity.getLevel() != null && rag.getExtraData().contains("PCDI_soundID", Tag.TAG_STRING) && entity.invulnerableTime > 0){
+        if(blockEntity.getLevel() != null && rag != null && rag.getExtraData().contains("PCDI_soundID", Tag.TAG_STRING) && entity.invulnerableTime > 0){
             var soundID = rag.getExtraData().getString("PCDI_soundID");
             PacketDistributor.sendToAllPlayers(new PlayMaidSoundAtPosPackage(
                     InitSounds.MAID_HURT.getId(), soundID,

@@ -41,6 +41,7 @@ public class PlayerCheatDeathItem extends BlockItem {
 
     @Override
     protected boolean canPlace(BlockPlaceContext context, BlockState p_40612_) {
+        if(!context.getItemInHand().has(SableMaidRagdoll.MAID_MODEL.get()))return false;
         if (context.getPlayer() != null) {
             return context.getPlayer().isShiftKeyDown() && super.canPlace(context, p_40612_);
         }
