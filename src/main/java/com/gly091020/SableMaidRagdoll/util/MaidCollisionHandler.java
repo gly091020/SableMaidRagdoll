@@ -42,7 +42,7 @@ public class MaidCollisionHandler {
         var rag = RagdollManager.get(blockEntity);
 
         if(entity instanceof EntityMaid maid){
-            if(blockEntity.getPartData().partName().toLowerCase().contains("head")) {
+            if(SableMaidRagdoll.CONFIG.maidEat && blockEntity.getPartData().partName().toLowerCase().contains("head")) {
                 maidEatCake(maid, pos2);
                 maidEatSnackCabinet(maid, pos2);
                 maidEatPicnicMat(maid, pos2);
