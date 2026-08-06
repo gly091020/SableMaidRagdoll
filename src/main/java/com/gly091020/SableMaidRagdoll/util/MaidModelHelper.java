@@ -3,6 +3,7 @@ package com.gly091020.SableMaidRagdoll.util;
 import com.github.tartaricacid.simplebedrockmodel.client.bedrock.model.BedrockCube;
 import com.github.tartaricacid.simplebedrockmodel.client.bedrock.model.BedrockPart;
 import com.github.tartaricacid.touhoulittlemaid.client.model.bedrock.BedrockModel;
+import com.github.tartaricacid.touhoulittlemaid.client.model.bedrock.SimpleBedrockModel;
 import com.gly091020.SableRagdollLib.resource.file.RagdollRenderData;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
@@ -32,6 +33,12 @@ public class MaidModelHelper {
     );
 
     public static void resetModel(BedrockModel<?> model){
+        model.getModelMap().values().forEach(MaidModelHelper::resetModel);
+
+        IGNORE_PART.forEach(p -> hidePart(model.getModelMap().get(p)));
+    }
+
+    public static void resetModel(SimpleBedrockModel<?> model){
         model.getModelMap().values().forEach(MaidModelHelper::resetModel);
 
         IGNORE_PART.forEach(p -> hidePart(model.getModelMap().get(p)));

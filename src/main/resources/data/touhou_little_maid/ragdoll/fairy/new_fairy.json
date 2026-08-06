@@ -1,0 +1,284 @@
+{
+  "render": {
+    "head": {
+      "parts": [
+        {
+          "partName": "head"
+        }
+      ],
+      "transform": [
+        0.5,
+        18.0,
+        -0.5
+      ]
+    },
+    "body": {
+      "parts": [
+        {
+          "partName": "body"
+        },
+        {
+          "partName": "wingLeft"
+        },
+        {
+          "partName": "wingRight"
+        }
+      ],
+      "transform": [
+        -0.5,
+        11.100000381469727,
+        -1.7000000476837158
+      ]
+    },
+    "left_arm": {
+      "parts": [
+        {
+          "partName": "left_arm"
+        }
+      ],
+      "transform": [
+        -1.649999976158142,
+        8.0,
+        0.5
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        15.0
+      ]
+    },
+    "right_arm": {
+      "parts": [
+        {
+          "partName": "right_arm"
+        }
+      ],
+      "transform": [
+        0.6499999761581421,
+        8.0,
+        0.5
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        -15.0
+      ]
+    },
+    "left_leg": {
+      "parts": [
+        {
+          "partName": "left_leg"
+        }
+      ],
+      "transform": [
+        -2.5,
+        3.5,
+        0.5
+      ]
+    },
+    "right_leg": {
+      "parts": [
+        {
+          "partName": "right_leg"
+        }
+      ],
+      "transform": [
+        1.5,
+        3.5,
+        0.5
+      ]
+    }
+  },
+  "joints": [
+    {
+      "posA": [
+        0.699999988079071,
+        -4.5,
+        0.0
+      ],
+      "posB": [
+        -0.20000000298023224,
+        1.5,
+        1.100000023841858
+      ],
+      "settings": {
+        "motor": {
+          "stiffness": 300,
+          "damping": 20
+        }
+      },
+      "A": "head",
+      "B": "body"
+    },
+    {
+      "posA": [
+        3.5,
+        0.0,
+        0.0
+      ],
+      "posB": [
+        0.0,
+        4.0,
+        0.0
+      ],
+      "A": "body",
+      "B": "left_arm"
+    },
+    {
+      "posA": [
+        -4.5,
+        0.0,
+        0.0
+      ],
+      "posB": [
+        0.0,
+        4.0,
+        0.0
+      ],
+      "A": "body",
+      "B": "right_arm"
+    },
+    {
+      "posA": [
+        1.5,
+        -8.5,
+        0.0
+      ],
+      "posB": [
+        -0.5,
+        0.800000011920929,
+        0.0
+      ],
+      "A": "body",
+      "B": "left_leg"
+    },
+    {
+      "posA": [
+        -2.5,
+        -8.5,
+        0.0
+      ],
+      "posB": [
+        -0.5,
+        0.800000011920929,
+        0.0
+      ],
+      "A": "body",
+      "B": "right_leg"
+    }
+  ],
+  "type": "sablemaidragdoll:maid_fairy",
+  "allParts": [
+    "head",
+    "body",
+    "left_arm",
+    "right_arm",
+    "left_leg",
+    "right_leg"
+  ],
+  "hitbox": {
+    "head": [
+      4,
+      4,
+      4,
+      13,
+      12,
+      12
+    ],
+    "body": [
+      4,
+      0,
+      6,
+      11,
+      10,
+      12
+    ],
+    "left_arm": [
+      6,
+      4,
+      6,
+      9,
+      12,
+      9
+    ],
+    "right_arm": [
+      6,
+      4,
+      6,
+      9,
+      12,
+      9
+    ],
+    "left_leg": [
+      6,
+      0,
+      6,
+      9,
+      9,
+      9
+    ],
+    "right_leg": [
+      6,
+      0,
+      6,
+      9,
+      9,
+      9
+    ]
+  },
+  "position": {
+    "head": {
+      "transform": [
+        0.0,
+        23.0,
+        0.0
+      ]
+    },
+    "body": {
+      "transform": [
+        0.0,
+        14.0,
+        0.0
+      ]
+    },
+    "left_arm": {
+      "transform": [
+        4.0,
+        14.0,
+        0.0
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        15.0
+      ]
+    },
+    "right_arm": {
+      "transform": [
+        -4.0,
+        14.0,
+        0.0
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        -15.0
+      ]
+    },
+    "left_leg": {
+      "transform": [
+        2.0,
+        4.5,
+        0.0
+      ]
+    },
+    "right_leg": {
+      "transform": [
+        -2.0,
+        4.5,
+        0.0
+      ]
+    }
+  },
+  "mainBody": "body"
+}

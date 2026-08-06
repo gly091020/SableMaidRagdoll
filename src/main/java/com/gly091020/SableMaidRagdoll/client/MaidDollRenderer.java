@@ -8,12 +8,14 @@ import com.github.tartaricacid.touhoulittlemaid.util.EntityCacheUtil;
 import com.gly091020.SableMaidRagdoll.block.MaidDollBlockEntity;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
+import dev.ryanhcode.sable.companion.SableCompanion;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.renderer.entity.EntityRenderDispatcher;
 import net.minecraft.client.resources.sounds.SimpleSoundInstance;
+import net.minecraft.core.Position;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.Entity;
@@ -57,13 +59,13 @@ public class MaidDollRenderer implements BlockEntityRenderer<MaidDollBlockEntity
         poseStack.scale(1.3f, 1.3f, 1.3f);
         if(maidDollBlockEntity.triggerPat){
             maidDollBlockEntity.triggerPat = false;
-            var pos = maidDollBlockEntity.getBlockPos();
+            var pos = SableCompanion.INSTANCE.projectOutOfSubLevel(level, (Position) maidDollBlockEntity.getBlockPos().getCenter());
             Minecraft.getInstance().getSoundManager().play(new MaidSoundInstanceAtPos(
                     InitSounds.MAID_IDLE.get(), maidDollBlockEntity.getSoundID(),
-                    pos.getX(), pos.getY(), pos.getZ(), 1, 1
+                    pos.x, pos.y, pos.z, 0.5f, 1
             ));
             Minecraft.getInstance().getSoundManager().play(new SimpleSoundInstance(
-                    SoundEvents.WOOL_PLACE, SoundSource.BLOCKS, 0.5f, 1, level.random, pos
+                    SoundEvents.WOOL_PLACE, SoundSource.BLOCKS, 1, 1, level.random, maidDollBlockEntity.getBlockPos()
             ));
         }
 

@@ -3,6 +3,8 @@ package com.gly091020.SableMaidRagdoll.block;
 import com.github.tartaricacid.touhoulittlemaid.block.BlockGarageKit;
 import com.gly091020.SableMaidRagdoll.SableMaidRagdoll;
 import com.mojang.serialization.MapCodec;
+import dev.ryanhcode.sable.api.block.BlockWithSubLevelCollisionCallback;
+import dev.ryanhcode.sable.api.physics.callback.BlockSubLevelCollisionCallback;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
@@ -27,7 +29,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
-public class MaidDollBlock extends HorizontalDirectionalBlock implements EntityBlock {
+public class MaidDollBlock extends HorizontalDirectionalBlock implements EntityBlock, BlockWithSubLevelCollisionCallback {
     public MaidDollBlock(Properties properties) {
         super(properties);
     }
@@ -77,7 +79,7 @@ public class MaidDollBlock extends HorizontalDirectionalBlock implements EntityB
 
     @Override
     protected InteractionResult useWithoutItem(BlockState state, Level level, BlockPos pos, Player player, BlockHitResult hitResult) {
-        if(!level.isClientSide || !(level.getBlockEntity(pos) instanceof MaidDollBlockEntity blockEntity))return InteractionResult.SUCCESS_NO_ITEM_USED;
+        if(level.isClientSide || !(level.getBlockEntity(pos) instanceof MaidDollBlockEntity blockEntity))return InteractionResult.SUCCESS_NO_ITEM_USED;
         blockEntity.triggerPat();
         return InteractionResult.SUCCESS_NO_ITEM_USED;
     }
@@ -95,5 +97,10 @@ public class MaidDollBlock extends HorizontalDirectionalBlock implements EntityB
     @Override
     public BlockState getStateForPlacement(BlockPlaceContext context) {
         return defaultBlockState().setValue(FACING, context.getHorizontalDirection().getOpposite());
+    }
+
+    @Override
+    public BlockSubLevelCollisionCallback sable$getCallback() {
+        return MaidDollBlockSubLevelCollisionCallback.INSTANCE;
     }
 }

@@ -1,11 +1,13 @@
 package com.gly091020.SableMaidRagdoll;
 
+import com.github.tartaricacid.touhoulittlemaid.TouhouLittleMaid;
 import com.github.tartaricacid.touhoulittlemaid.api.event.MaidDamageEvent;
 import com.github.tartaricacid.touhoulittlemaid.api.event.MaidDeathEvent;
 import com.github.tartaricacid.touhoulittlemaid.api.event.MaidHurtEvent;
+import com.github.tartaricacid.touhoulittlemaid.entity.monster.EntityFairy;
+import com.github.tartaricacid.touhoulittlemaid.entity.monster.FairyType;
 import com.github.tartaricacid.touhoulittlemaid.entity.passive.EntityMaid;
-import com.github.tartaricacid.touhoulittlemaid.init.InitSounds;
-import com.github.tartaricacid.touhoulittlemaid.network.message.PlayMaidSoundAtPosPackage;
+import com.gly091020.SableMaidRagdoll.block.MaidFairyPartBlockEntity;
 import com.gly091020.SableMaidRagdoll.command.MaidRagdollCommand;
 import com.gly091020.SableMaidRagdoll.compat.util.MaidRollManager;
 import com.gly091020.SableMaidRagdoll.util.MaidCollisionHandler;
@@ -29,8 +31,8 @@ import net.minecraft.world.phys.Vec3;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.event.RegisterCommandsEvent;
+import net.neoforged.neoforge.event.entity.living.LivingDeathEvent;
 import net.neoforged.neoforge.event.tick.ServerTickEvent;
-import net.neoforged.neoforge.network.PacketDistributor;
 import org.joml.Vector3d;
 
 import static com.gly091020.SableRagdollLib.api.ScheduleManager.scheduleDelayed;
@@ -75,6 +77,44 @@ public class EventHandler {
         if(SableMaidRagdoll.CONFIG.sounds.hungry)
             event.getMaid().level().playSound(null, BlockPos.containing(event.getMaid().position()), SableMaidRagdoll.HUNGRY.get(), SoundSource.PLAYERS, 1,
                     1f + level.random.nextFloat());
+    }
+
+    @SubscribeEvent
+    public static void onMaidFairyDie(LivingDeathEvent event){
+        if(!SableMaidRagdoll.CONFIG.ragdollOnDeath)return;
+        if(event.isCanceled())return;
+        if(!(event.getEntity().level() instanceof ServerLevel level))return;
+        if(!(event.getEntity() instanceof EntityFairy fairy))return;
+        if(event.getSource().getEntity() == null)return;
+
+        createFairyRagdoll(level, fairy, JOMLConversion.toJOML(fairy.getDeltaMovement().scale(3)));
+        scheduleDelayed(level, 4, () -> fairy.setInvisible(true));
+        if(SableMaidRagdoll.CONFIG.sounds.hungry)
+            fairy.level().playSound(null, BlockPos.containing(fairy.position()), SableMaidRagdoll.HUNGRY.get(), SoundSource.PLAYERS, 1,
+                    1f + level.random.nextFloat());
+    }
+
+    private static final ResourceLocation BABY_FAIRY = ResourceLocation.fromNamespaceAndPath(TouhouLittleMaid.MOD_ID, "fairy/baby_fairy");
+    private static final ResourceLocation NEW_FAIRY = ResourceLocation.fromNamespaceAndPath(TouhouLittleMaid.MOD_ID, "fairy/new_fairy");
+    private static void createFairyRagdoll(ServerLevel level, EntityFairy fairy, Vector3d maidMotion){
+        Vector3d forward = JOMLConversion.toJOML(fairy.getLookAngle());
+        Vector3d axis = forward.cross(new Vector3d(0,1,0));
+        var id = fairy.isBaby() ? BABY_FAIRY : NEW_FAIRY;
+        var parts = RagdollHelper.createRagdoll(level, fairy.position().add(0, 0.5, 0), new Vec3(0, -fairy.getYHeadRot(), 0),
+                id);
+        if(parts == null)return;
+        parts.getSublevels().forEach(subLevel -> {
+            if(subLevel.getPlot().getEmbeddedLevelAccessor().getBlockEntity(BlockPos.ZERO) instanceof MaidFairyPartBlockEntity blockEntity){
+                blockEntity.setFairyType(FairyType.values()[fairy.getFairyTypeOrdinal()]);
+                blockEntity.setRick(fairy.getName().getString().equals("rick"));
+                blockEntity.setModelType(fairy.isBaby() ? MaidFairyPartBlockEntity.ModelType.BABY : MaidFairyPartBlockEntity.ModelType.NEW);
+            }
+        });
+        // 等待 2tick 是为了等待刚体创建在施加推力
+        scheduleDelayed(level, 2, () -> {
+            parts.addAngularImpulse(axis, true);
+            parts.addLinearImpulse(maidMotion, true);
+        });
     }
 
     @SubscribeEvent

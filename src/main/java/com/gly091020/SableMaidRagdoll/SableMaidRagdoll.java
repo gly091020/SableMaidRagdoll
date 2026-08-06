@@ -1,10 +1,7 @@
 package com.gly091020.SableMaidRagdoll;
 
 import com.github.tartaricacid.touhoulittlemaid.init.InitCreativeTabs;
-import com.gly091020.SableMaidRagdoll.block.MaidDollBlock;
-import com.gly091020.SableMaidRagdoll.block.MaidDollBlockEntity;
-import com.gly091020.SableMaidRagdoll.block.MaidPartBlock;
-import com.gly091020.SableMaidRagdoll.block.MaidPartBlockEntity;
+import com.gly091020.SableMaidRagdoll.block.*;
 import com.gly091020.SableMaidRagdoll.compat.love_loathe.RagdollSaddleLaunch;
 import com.gly091020.SableMaidRagdoll.compat.util.CompatMods;
 import com.gly091020.SableMaidRagdoll.item.CheatDeathBaubleItem;
@@ -68,12 +65,17 @@ public class SableMaidRagdoll {
     public static final DeferredHolder<Item, PlayerCheatDeathItem> PLAYER_CHEAT_DEATH_ITEM = ITEMS.register("player_cheat_death", resourceLocation -> new PlayerCheatDeathItem());
     public static final DeferredHolder<Item, CopyRagdollIDItem> COPY_RAGDOLL_ID_ITEM = ITEMS.register("copy_ragdoll_id", resourceLocation -> new CopyRagdollIDItem());
     public static final DeferredHolder<Item, MaidMaceItem> MAID_MACE_ITEM = ITEMS.register("maid_mace", resourceLocation -> new MaidMaceItem());
+
     public static final DeferredHolder<Block, MaidPartBlock> MAID_PART_BLOCK = BLOCKS.register("maid_part", () -> new MaidPartBlock(MaidPartBlock.PROPERTIES));
     public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<MaidPartBlockEntity>> MAID_PART_BLOCK_ENTITY = BLOCK_ENTITIES.register("maid_part", () ->
             BlockEntityType.Builder.of(MaidPartBlockEntity::new, MAID_PART_BLOCK.get()).build(null));
+    public static final DeferredHolder<Block, MaidFairyPartBlock> MAID_FAIRY_PART_BLOCK = BLOCKS.register("maid_fairy_part", () -> new MaidFairyPartBlock(MaidPartBlock.PROPERTIES));
+    public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<MaidFairyPartBlockEntity>> MAID_FAIRY_PART_BLOCK_ENTITY = BLOCK_ENTITIES.register("maid_fairy_part", () ->
+            BlockEntityType.Builder.of(MaidFairyPartBlockEntity::new, MAID_FAIRY_PART_BLOCK.get()).build(null));
     public static final DeferredHolder<Block, MaidDollBlock> MAID_DOLL_BLOCK = BLOCKS.register("maid_doll", () -> new MaidDollBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.WHITE_WOOL).isValidSpawn(Blocks::never)));
     public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<MaidDollBlockEntity>> MAID_DOLL_BLOCK_ENTITY = BLOCK_ENTITIES.register("maid_doll", () ->
             BlockEntityType.Builder.of(MaidDollBlockEntity::new, MAID_DOLL_BLOCK.get()).build(null));
+
     public static final DeferredHolder<DataComponentType<?>, DataComponentType<String>> MAID_MODEL = DATA_COMPONENTS.register("maid_model", r ->
        DataComponentType.<String>builder().persistent(Codec.STRING).networkSynchronized(ByteBufCodecs.STRING_UTF8).build()
     );
@@ -91,6 +93,7 @@ public class SableMaidRagdoll {
     public static DeferredHolder<CreativeModeTab, CreativeModeTab> DOLL_TAB;
 
     public static final ResourceLocation RAGDOLL_TYPE = ResourceLocation.fromNamespaceAndPath(MODID, "maid");
+    public static final ResourceLocation FAIRY_RAGDOLL_TYPE = ResourceLocation.fromNamespaceAndPath(MODID, "maid_fairy");
     public static SableMaidRagdollConfig CONFIG;
 
     public SableMaidRagdoll(IEventBus bus){
@@ -107,6 +110,7 @@ public class SableMaidRagdoll {
         CREATIVE_TABS.register(bus);
 
         RagdollTypeRegistry.registry(RAGDOLL_TYPE, MAID_PART_BLOCK::get, MAID_PART_BLOCK_ENTITY::get);
+        RagdollTypeRegistry.registry(FAIRY_RAGDOLL_TYPE, MAID_FAIRY_PART_BLOCK::get, MAID_FAIRY_PART_BLOCK_ENTITY::get);
 
         if(CompatMods.LOVE_LOATHE)
             RagdollSaddleLaunch.init();

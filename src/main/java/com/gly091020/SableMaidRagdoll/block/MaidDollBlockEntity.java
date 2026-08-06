@@ -53,6 +53,14 @@ public class MaidDollBlockEntity extends BlockEntity {
             modelID = tag.getString("modelID");
         if(tag.contains("soundID", Tag.TAG_STRING))
             soundID = tag.getString("soundID");
+
+        if(tag.contains("lastPat", Tag.TAG_LONG))
+            lastPat = tag.getLong("lastPat");
+        if(tag.contains("triggerPat", Tag.TAG_BYTE)) {
+            var s = tag.getBoolean("triggerPat");
+            if (s)
+                triggerPat = true;
+        }
     }
 
     @Override
@@ -62,7 +70,10 @@ public class MaidDollBlockEntity extends BlockEntity {
 
     @Override
     public CompoundTag getUpdateTag(HolderLookup.Provider p_323910_) {
-        return saveWithoutMetadata(p_323910_);
+        var tag = saveWithoutMetadata(p_323910_);
+        tag.putLong("lastPat", lastPat);
+        tag.putBoolean("triggerPat", triggerPat);
+        return tag;
     }
 
     @Override
@@ -70,13 +81,14 @@ public class MaidDollBlockEntity extends BlockEntity {
         loadAdditional(tag, lookupProvider);
     }
 
-    @OnlyIn(Dist.CLIENT)
     public long lastPat = 0;
     public boolean triggerPat;
 
-    @OnlyIn(Dist.CLIENT)
     public void triggerPat(){
         triggerPat = true;
         lastPat = System.currentTimeMillis();
+        if (level != null && !level.isClientSide) {
+            level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState(), 3);
+        }
     }
 }
