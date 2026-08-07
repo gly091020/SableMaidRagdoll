@@ -2,6 +2,7 @@ package com.gly091020.SableMaidRagdoll;
 
 import com.github.tartaricacid.touhoulittlemaid.init.InitCreativeTabs;
 import com.gly091020.SableMaidRagdoll.block.*;
+import com.gly091020.SableMaidRagdoll.compat.control.MaidRagdollPartRecognizer;
 import com.gly091020.SableMaidRagdoll.compat.love_loathe.RagdollSaddleLaunch;
 import com.gly091020.SableMaidRagdoll.compat.util.CompatMods;
 import com.gly091020.SableMaidRagdoll.item.CheatDeathBaubleItem;
@@ -10,6 +11,7 @@ import com.gly091020.SableMaidRagdoll.item.MaidMaceItem;
 import com.gly091020.SableMaidRagdoll.item.PlayerCheatDeathItem;
 import com.gly091020.SableMaidRagdoll.util.MaidCreativeTab;
 import com.gly091020.SableRagdollLib.api.RagdollTypeRegistry;
+import com.gly091020.SableRagdollLib.api.control.RagdollPartRecognizerRegistry;
 import com.mojang.logging.LogUtils;
 import com.mojang.serialization.Codec;
 import me.shedaniel.autoconfig.AutoConfig;
@@ -111,6 +113,7 @@ public class SableMaidRagdoll {
 
         RagdollTypeRegistry.registry(RAGDOLL_TYPE, MAID_PART_BLOCK::get, MAID_PART_BLOCK_ENTITY::get);
         RagdollTypeRegistry.registry(FAIRY_RAGDOLL_TYPE, MAID_FAIRY_PART_BLOCK::get, MAID_FAIRY_PART_BLOCK_ENTITY::get);
+        RagdollPartRecognizerRegistry.register(new MaidRagdollPartRecognizer());
 
         if(CompatMods.LOVE_LOATHE)
             RagdollSaddleLaunch.init();

@@ -7,6 +7,7 @@ import com.gly091020.SableMaidRagdoll.SableMaidRagdoll;
 import com.gly091020.SableMaidRagdoll.block.MaidDollBlockEntity;
 import com.gly091020.SableRagdollLib.api.RagdollHelper;
 import com.gly091020.SableRagdollLib.api.ScheduleManager;
+import com.gly091020.SableRagdollLib.api.control.RagdollControlManager;
 import com.gly091020.SableRagdollLib.entity.PartSeat;
 import dev.ryanhcode.sable.companion.math.JOMLConversion;
 import net.minecraft.ChatFormatting;
@@ -126,6 +127,9 @@ public class PlayerCheatDeathItem extends BlockItem {
         if(SableMaidRagdoll.CONFIG.sounds.hungry)
             player.level().playSound(null, BlockPos.containing(player.position()), SableMaidRagdoll.HUNGRY.get(), SoundSource.PLAYERS, 1,
                     1f + player.level().random.nextFloat());
+
+        RagdollControlManager.start(player, rag);  // todo:后面做成附魔
+
         return true;
     }
 
