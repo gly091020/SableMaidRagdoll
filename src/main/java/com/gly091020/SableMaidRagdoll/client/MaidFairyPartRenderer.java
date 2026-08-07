@@ -1,8 +1,6 @@
 package com.gly091020.SableMaidRagdoll.client;
 
 import com.github.tartaricacid.touhoulittlemaid.TouhouLittleMaid;
-import com.github.tartaricacid.touhoulittlemaid.client.model.bedrock.SimpleBedrockModel;
-import com.github.tartaricacid.touhoulittlemaid.client.resource.BedrockModelLoader;
 import com.github.tartaricacid.touhoulittlemaid.entity.monster.FairyType;
 import com.gly091020.SableMaidRagdoll.block.MaidFairyPartBlockEntity;
 import com.gly091020.SableMaidRagdoll.util.MaidModelHelper;
@@ -28,27 +26,20 @@ public class MaidFairyPartRenderer extends AbstractPartBlockRenderer<MaidFairyPa
 
     @Override
     public void renderMain(MaidFairyPartBlockEntity blockEntity, float delta, PoseStack poseStack, MultiBufferSource multiBufferSource, int light, int overlay) {
-        var type = blockEntity.getModelType();
-        SimpleBedrockModel<?> model;
-        if(type == MaidFairyPartBlockEntity.ModelType.BABY)
-            model = BedrockModelLoader.getModel(BedrockModelLoader.BABY_MAID_FAIRY);
-        else
-            model = BedrockModelLoader.getModel(BedrockModelLoader.NEW_MAID_FAIRY);
-        if(model == null)return;
-        MaidModelHelper.resetModel(model);
-        MaidModelHelper.showPart(model.getPart("blink"));
+        var cache = MaidPartRenderCache.fairy(blockEntity.getModelType());
+        if(cache.model() == null)return;
+        cache.reset();
 
-        var vc = multiBufferSource.getBuffer(RenderType.entityCutoutNoCull(getTexture(blockEntity.getFairyType(), type, blockEntity.isRick())));
+        var vc = multiBufferSource.getBuffer(RenderType.entityCutoutNoCull(getTexture(blockEntity.getFairyType(), blockEntity.getModelType(), blockEntity.isRick())));
 
         poseStack.pushPose();
 
-        for (var part: blockEntity.getPartData().renderData().parts()){
-            var p = model.getPart(part.partName());
-            if(p == null)continue;
+        var data = blockEntity.getPartData();
+        for (var part: cache.parts(data.defFile(), data.partName(), data.renderData().parts())){
             if (part.flatChild()) {
-                MaidModelHelper.renderBedrockPartsWithFlat(p, poseStack, vc, light, overlay);
+                MaidModelHelper.renderBedrockPartsWithFlat(part.part(), poseStack, vc, light, overlay);
             } else {
-                MaidModelHelper.renderBedrockPart(p, poseStack, vc, light, overlay);
+                MaidModelHelper.renderBedrockPart(part.part(), poseStack, vc, light, overlay);
             }
         }
 

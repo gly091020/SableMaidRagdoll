@@ -2,8 +2,11 @@ package com.gly091020.SableMaidRagdoll.client;
 
 import com.github.tartaricacid.simplebedrockmodel.client.bedrock.model.BedrockPart;
 import com.github.tartaricacid.touhoulittlemaid.client.model.bedrock.BedrockModel;
+import com.github.tartaricacid.touhoulittlemaid.client.model.bedrock.SimpleBedrockModel;
+import com.github.tartaricacid.touhoulittlemaid.client.resource.BedrockModelLoader;
 import com.github.tartaricacid.touhoulittlemaid.client.resource.CustomPackLoader;
 import com.github.tartaricacid.touhoulittlemaid.client.resource.pojo.MaidModelInfo;
+import com.gly091020.SableMaidRagdoll.block.MaidFairyPartBlockEntity;
 import com.gly091020.SableMaidRagdoll.util.MaidModelHelper;
 import com.gly091020.SableRagdollLib.resource.file.RagdollExpressions;
 import com.gly091020.SableRagdollLib.resource.file.RagdollRenderData;
@@ -13,6 +16,7 @@ import net.minecraft.world.entity.Mob;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
+import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.IdentityHashMap;
 import java.util.List;
@@ -24,6 +28,9 @@ import java.util.Map;
  */
 public final class MaidPartRenderCache {
     private static final Map<ResourceLocation, Entry> CACHE = new HashMap<>();
+    /** 妖精布娃娃按模型类型（成年/幼年）缓存 */
+    private static final Map<MaidFairyPartBlockEntity.ModelType, FairyEntry> FAIRY_CACHE =
+            new EnumMap<>(MaidFairyPartBlockEntity.ModelType.class);
 
     private MaidPartRenderCache() {
     }
@@ -33,10 +40,18 @@ public final class MaidPartRenderCache {
      */
     public static void clear() {
         CACHE.clear();
+        FAIRY_CACHE.clear();
     }
 
     public static Entry get(ResourceLocation defFile) {
         return CACHE.computeIfAbsent(defFile, MaidPartRenderCache::load);
+    }
+
+    /**
+     * 获取妖精布娃娃的渲染缓存。
+     */
+    public static FairyEntry fairy(MaidFairyPartBlockEntity.ModelType modelType) {
+        return FAIRY_CACHE.computeIfAbsent(modelType, MaidPartRenderCache::loadFairy);
     }
 
     private static Entry load(ResourceLocation defFile) {
@@ -44,6 +59,14 @@ public final class MaidPartRenderCache {
         var model = CustomPackLoader.MAID_MODELS.getModel(modelID).orElse(null);
         var info = CustomPackLoader.MAID_MODELS.getInfo(modelID).orElse(null);
         return new Entry(model, info);
+    }
+
+    private static FairyEntry loadFairy(MaidFairyPartBlockEntity.ModelType modelType) {
+        var model = switch (modelType) {
+            case BABY -> BedrockModelLoader.getModel(BedrockModelLoader.BABY_MAID_FAIRY);
+            case NEW -> BedrockModelLoader.getModel(BedrockModelLoader.NEW_MAID_FAIRY);
+        };
+        return new FairyEntry(model);
     }
 
     public static final class Entry {
@@ -185,6 +208,76 @@ public final class MaidPartRenderCache {
                             (float) Math.toRadians(expression.rotation().z)
                     ))));
             return List.copyOf(actions);
+        }
+    }
+
+    /**
+     * 妖精布娃娃的渲染缓存：模型固定来自 BedrockModelLoader，
+     * 这里预存部件快照、部件名映射和按 (defFile, partName) 解析好的渲染列表。
+     */
+    public static final class FairyEntry {
+        private final @Nullable SimpleBedrockModel<?> model;
+        /** 模型全部部件的快照，用于每帧重置状态 */
+        private final List<BedrockPart> allParts;
+        /** reset 时需要隐藏的部件快照 */
+        private final List<BedrockPart> ignoreParts;
+        /** partName -> BedrockPart */
+        private final Map<String, BedrockPart> partMap;
+        /** defFile -> partName -> 该部位需要渲染的模型部件列表 */
+        private final Map<ResourceLocation, Map<String, List<PartRender>>> partsCache = new HashMap<>();
+
+        private FairyEntry(@Nullable SimpleBedrockModel<?> model) {
+            this.model = model;
+            if (model == null) {
+                this.allParts = List.of();
+                this.ignoreParts = List.of();
+                this.partMap = Map.of();
+            } else {
+                this.allParts = List.copyOf(model.getModelMap().values());
+                this.ignoreParts = MaidModelHelper.IGNORE_PART.stream()
+                        .map(name -> model.getModelMap().get(name))
+                        .filter(part -> part != null)
+                        .toList();
+                this.partMap = Map.copyOf(model.getModelMap());
+            }
+        }
+
+        public @Nullable SimpleBedrockModel<?> model() {
+            return model;
+        }
+
+        /**
+         * 重置模型到初始状态，并保持眨眼部位可见（等价于 resetModel + showPart("blink")）。
+         */
+        public void reset() {
+            for (BedrockPart part : allParts) {
+                MaidModelHelper.resetModel(part);
+            }
+            for (BedrockPart part : ignoreParts) {
+                MaidModelHelper.hidePart(part);
+            }
+            var blink = partMap.get("blink");
+            if (blink != null) {
+                blink.visible = true;
+            }
+        }
+
+        /**
+         * 获取该 ragdoll 定义文件中某部位需要渲染的模型部件列表，按 defFile + partName 缓存，
+         * 避免不同定义文件共用同一部位名时解析结果串用。
+         */
+        public List<PartRender> parts(ResourceLocation defFile, String partName, List<RagdollRenderData.EveryPart> renderParts) {
+            return partsCache.computeIfAbsent(defFile, f -> new HashMap<>())
+                    .computeIfAbsent(partName, p -> {
+                        var resolved = new ArrayList<PartRender>();
+                        for (RagdollRenderData.EveryPart part : renderParts) {
+                            var bedrockPart = partMap.get(part.partName());
+                            if (bedrockPart != null) {
+                                resolved.add(new PartRender(bedrockPart, part.flatChild()));
+                            }
+                        }
+                        return List.copyOf(resolved);
+                    });
         }
     }
 
