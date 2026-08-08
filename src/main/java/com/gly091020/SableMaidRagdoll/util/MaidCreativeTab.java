@@ -1,6 +1,7 @@
 package com.gly091020.SableMaidRagdoll.util;
 
 import com.github.tartaricacid.touhoulittlemaid.client.resource.CustomPackLoader;
+import com.github.tartaricacid.touhoulittlemaid.entity.passive.DefaultMaidSoundPack;
 import com.gly091020.SableMaidRagdoll.SableMaidRagdoll;
 import com.gly091020.SableRagdollLib.common.DefFileLoader;
 import net.minecraft.network.chat.Component;
@@ -36,6 +37,7 @@ public class MaidCreativeTab {
             if(DefFileLoader.getDefFile(ragdollID) == null)continue;
             var stack = new ItemStack(SableMaidRagdoll.PLAYER_CHEAT_DEATH_ITEM.get(), 1);
             stack.set(SableMaidRagdoll.MAID_MODEL, modelID);
+            stack.set(SableMaidRagdoll.MAID_SOUND, DefaultMaidSoundPack.DEFAULT_SOUND_PACK_ID);
             output.accept(stack);
         }
     }

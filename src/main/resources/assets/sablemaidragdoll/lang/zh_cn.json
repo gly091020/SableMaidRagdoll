@@ -15,6 +15,9 @@
   "block.sablemaidragdoll.maid_doll": "替身女仆玩偶",
   "item.sablemaidragdoll.player_cheat_death.tip": "右键绑定女仆模型，再次使用以女仆模型装死",
   "item.sablemaidragdoll.player_cheat_death.tip1": "潜行右键放置",
+  "item.sablemaidragdoll.player_cheat_death.open": "控制模式：开",
+  "item.sablemaidragdoll.player_cheat_death.close": "控制模式：关",
+  "item.sablemaidragdoll.player_cheat_death.tip2": "右键开启/关闭控制模式",
   "item.sablemaidragdoll.player_cheat_death.connect": "已绑定至 %s 模型",
   "item.sablemaidragdoll.player_cheat_death.clear": "已清除模型",
 

@@ -91,6 +91,7 @@ public class MaidDollBlock extends HorizontalDirectionalBlock implements EntityB
         if(!(be instanceof MaidDollBlockEntity blockEntity))return r;
         r.set(SableMaidRagdoll.MAID_SOUND, blockEntity.getSoundID());
         r.set(SableMaidRagdoll.MAID_MODEL, blockEntity.getModelID());
+        r.set(SableMaidRagdoll.ENABLE_CONTROL, blockEntity.isControlMode());
         return r;
     }
 

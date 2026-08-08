@@ -85,6 +85,10 @@ public class SableMaidRagdoll {
             DataComponentType.<String>builder().persistent(Codec.STRING).networkSynchronized(ByteBufCodecs.STRING_UTF8).build()
     );
 
+    public static final DeferredHolder<DataComponentType<?>, DataComponentType<Boolean>> ENABLE_CONTROL = DATA_COMPONENTS.register("enable_control", r ->
+            DataComponentType.<Boolean>builder().persistent(Codec.BOOL).networkSynchronized(ByteBufCodecs.BOOL).build()
+    );
+
     public static final DeferredHolder<CreativeModeTab, CreativeModeTab> MAIN_TAB = CREATIVE_TABS.register("main",
             r -> CreativeModeTab.builder()
                     .title(Component.translatable("itemGroup.sable_maid_ragdoll.main"))

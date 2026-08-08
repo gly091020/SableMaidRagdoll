@@ -17,6 +17,7 @@ import org.jetbrains.annotations.Nullable;
 public class MaidDollBlockEntity extends BlockEntity {
     private String modelID = "";
     private String soundID = "";
+    private boolean controlMode = false;
     public MaidDollBlockEntity(BlockPos pos, BlockState state) {
         super(SableMaidRagdoll.MAID_DOLL_BLOCK_ENTITY.get(), pos, state);
     }
@@ -44,6 +45,7 @@ public class MaidDollBlockEntity extends BlockEntity {
         super.saveAdditional(tag, provider);
         tag.putString("modelID", modelID);
         tag.putString("soundID", soundID);
+        tag.putBoolean("control", controlMode);
     }
 
     @Override
@@ -53,6 +55,8 @@ public class MaidDollBlockEntity extends BlockEntity {
             modelID = tag.getString("modelID");
         if(tag.contains("soundID", Tag.TAG_STRING))
             soundID = tag.getString("soundID");
+        if(tag.contains("control", Tag.TAG_BYTE))
+            controlMode = tag.getBoolean("control");
 
         if(tag.contains("lastPat", Tag.TAG_LONG))
             lastPat = tag.getLong("lastPat");
@@ -90,5 +94,14 @@ public class MaidDollBlockEntity extends BlockEntity {
         if (level != null && !level.isClientSide) {
             level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState(), 3);
         }
+    }
+
+    public void setControlMode(boolean controlMode) {
+        this.controlMode = controlMode;
+        setChanged();
+    }
+
+    public boolean isControlMode() {
+        return controlMode;
     }
 }

@@ -15,6 +15,9 @@
   "block.sablemaidragdoll.maid_doll": "Decoy Maid Doll",
   "item.sablemaidragdoll.player_cheat_death.tip": "Sneak + Right Click to bind a maid model, use again to feign death as the maid model",
   "item.sablemaidragdoll.player_cheat_death.tip1": "Sneak + Right Click to place",
+  "item.sablemaidragdoll.player_cheat_death.tip2": "Right-click to toggle Control Mode",
+  "item.sablemaidragdoll.player_cheat_death.open": "Control Mode: On",
+  "item.sablemaidragdoll.player_cheat_death.close": "Control Mode: Off",
   "item.sablemaidragdoll.player_cheat_death.connect": "Bound to %s model",
   "item.sablemaidragdoll.player_cheat_death.clear": "Model cleared",
 

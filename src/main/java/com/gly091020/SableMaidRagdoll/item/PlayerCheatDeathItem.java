@@ -16,14 +16,21 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.SlotAccess;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.ClickAction;
+import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.inventory.tooltip.TooltipComponent;
-import net.minecraft.world.item.*;
+import net.minecraft.world.item.BlockItem;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Rarity;
+import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
@@ -81,7 +88,7 @@ public class PlayerCheatDeathItem extends BlockItem {
         if(id == null)return InteractionResultHolder.pass(stack);
         if(level.isClientSide)return InteractionResultHolder.success(stack);
         if(!toBeRagdoll((ServerPlayer) player, stack.getOrDefault(SableMaidRagdoll.MAID_SOUND.get(), ""),
-                id))return InteractionResultHolder.pass(stack);
+                id, stack))return InteractionResultHolder.pass(stack);
         addCooldown(stack, player);
         return InteractionResultHolder.success(stack);
     }
@@ -101,7 +108,7 @@ public class PlayerCheatDeathItem extends BlockItem {
         if(useOnContext.getLevel().isClientSide)return InteractionResult.SUCCESS;
         if(!toBeRagdoll((ServerPlayer) useOnContext.getPlayer(),
                 useOnContext.getItemInHand().getOrDefault(SableMaidRagdoll.MAID_SOUND.get(), ""),
-                id))return InteractionResult.PASS;
+                id, useOnContext.getItemInHand()))return InteractionResult.PASS;
         addCooldown(useOnContext.getItemInHand(), useOnContext.getPlayer());
         return InteractionResult.SUCCESS;
     }
@@ -111,7 +118,7 @@ public class PlayerCheatDeathItem extends BlockItem {
         player.getCooldowns().addCooldown(stack.getItem(), 20);
     }
 
-    private boolean toBeRagdoll(ServerPlayer player, String soundID, String id){
+    private boolean toBeRagdoll(ServerPlayer player, String soundID, String id, ItemStack stack){
         var ragdollID = ResourceLocation.fromNamespaceAndPath(SableMaidRagdoll.MODID, id.replace(":", "/"));
         var rag = RagdollHelper.createRagdoll((ServerLevel) player.level(), player.position().add(0, 0.5, 0), new Vec3(0, -player.getYHeadRot(), 0), ragdollID);
         if(rag == null)return false;
@@ -128,16 +135,32 @@ public class PlayerCheatDeathItem extends BlockItem {
             player.level().playSound(null, BlockPos.containing(player.position()), SableMaidRagdoll.HUNGRY.get(), SoundSource.PLAYERS, 1,
                     1f + player.level().random.nextFloat());
 
-        RagdollControlManager.start(player, rag);  // todo:后面做成附魔
+        if(stack.getOrDefault(SableMaidRagdoll.ENABLE_CONTROL, false))
+            RagdollControlManager.start(player, rag);
 
         return true;
     }
 
     @Override
+    public boolean overrideOtherStackedOnMe(ItemStack stack, ItemStack other, Slot p_150894_, ClickAction clickAction, Player player, SlotAccess p_150897_) {
+        if(other.isEmpty() && clickAction == ClickAction.SECONDARY){
+            stack.set(SableMaidRagdoll.ENABLE_CONTROL, !stack.getOrDefault(SableMaidRagdoll.ENABLE_CONTROL, false));
+            if(player.level().isClientSide)
+                player.playSound(SoundEvents.EXPERIENCE_ORB_PICKUP);
+            return true;
+        }
+        return super.overrideOtherStackedOnMe(stack, other, p_150894_, clickAction, player, p_150897_);
+    }
+
+    @Override
     public void appendHoverText(ItemStack p_41421_, TooltipContext p_339594_, List<Component> p_41423_, TooltipFlag p_41424_) {
         super.appendHoverText(p_41421_, p_339594_, p_41423_, p_41424_);
+        p_41423_.add(p_41421_.getOrDefault(SableMaidRagdoll.ENABLE_CONTROL, false) ?
+                Component.translatable("item.sablemaidragdoll.player_cheat_death.open").withStyle(ChatFormatting.GREEN):
+                Component.translatable("item.sablemaidragdoll.player_cheat_death.close").withStyle(ChatFormatting.RED));
         p_41423_.add(Component.translatable("item.sablemaidragdoll.player_cheat_death.tip").withStyle(ChatFormatting.GRAY));
         p_41423_.add(Component.translatable("item.sablemaidragdoll.player_cheat_death.tip1").withStyle(ChatFormatting.GRAY));
+        p_41423_.add(Component.translatable("item.sablemaidragdoll.player_cheat_death.tip2").withStyle(ChatFormatting.GRAY));
     }
 
     @Override
@@ -153,6 +176,7 @@ public class PlayerCheatDeathItem extends BlockItem {
         if(level.getBlockEntity(pos) instanceof MaidDollBlockEntity blockEntity){
             blockEntity.setModelID(stack.getOrDefault(SableMaidRagdoll.MAID_MODEL, ""));
             blockEntity.setSoundID(stack.getOrDefault(SableMaidRagdoll.MAID_SOUND, ""));
+            blockEntity.setControlMode(stack.getOrDefault(SableMaidRagdoll.ENABLE_CONTROL, false));
         }
         return r;
     }
