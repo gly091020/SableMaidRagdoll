@@ -46,6 +46,11 @@
   "item.sablemaidragdoll.maid_mace.tip1": "右键女仆来发射，落地时产生冲击波",
   "item.sablemaidragdoll.maid_mace.tip2": "跟你爆了……",
   "item.sablemaidragdoll.mod_icon": "模组图标",
+  "key.sablemaidragdoll.open_emoji": "打开表情选择界面",
+  "key.category.sablemaidragdoll": "女仆布娃娃",
+  "screen.sablemaidragdoll.emoji_select.title": "选择表情",
+  "screen.sablemaidragdoll.emoji_select.clear": "清除表情",
+  "screen.sablemaidragdoll.emoji_select.tip": "点击表情即可选择，Esc 关闭",
   "itemGroup.sable_maid_ragdoll.doll": "女仆布娃娃丨替身女仆玩偶",
   "itemGroup.sable_maid_ragdoll.main": "女仆布娃娃"
 }

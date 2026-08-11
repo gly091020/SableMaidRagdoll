@@ -9,6 +9,7 @@ import com.gly091020.SableMaidRagdoll.item.CheatDeathBaubleItem;
 import com.gly091020.SableMaidRagdoll.item.CopyRagdollIDItem;
 import com.gly091020.SableMaidRagdoll.item.MaidMaceItem;
 import com.gly091020.SableMaidRagdoll.item.PlayerCheatDeathItem;
+import com.gly091020.SableMaidRagdoll.network.ServerboundEmojiSelectPacket;
 import com.gly091020.SableMaidRagdoll.util.MaidCreativeTab;
 import com.gly091020.SableRagdollLib.api.RagdollTypeRegistry;
 import com.gly091020.SableRagdollLib.api.control.RagdollPartRecognizerRegistry;
@@ -32,8 +33,11 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.common.Mod;
+import net.neoforged.neoforge.attachment.AttachmentType;
+import net.neoforged.neoforge.network.event.RegisterPayloadHandlersEvent;
 import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredRegister;
+import net.neoforged.neoforge.registries.NeoForgeRegistries;
 import org.slf4j.Logger;
 
 @Mod(SableMaidRagdoll.MODID)
@@ -47,6 +51,7 @@ public class SableMaidRagdoll {
     public static final DeferredRegister<SoundEvent> SOUNDS = DeferredRegister.create(Registries.SOUND_EVENT, MODID);
     public static final DeferredRegister<DataComponentType<?>> DATA_COMPONENTS = DeferredRegister.create(Registries.DATA_COMPONENT_TYPE, MODID);
     public static final DeferredRegister<CreativeModeTab> CREATIVE_TABS = DeferredRegister.create(Registries.CREATIVE_MODE_TAB, MODID);
+    public static final DeferredRegister<AttachmentType<?>> ATTACHMENT_TYPES = DeferredRegister.create(NeoForgeRegistries.ATTACHMENT_TYPES, MODID);
 
     public static final TagKey<Item> MAID_TO_RAGDOLL_TAG = TagKey.create(Registries.ITEM, ResourceLocation.fromNamespaceAndPath(MODID, "maid_to_ragdoll"));
     public static final TagKey<DamageType> ALWAYS_TO_RAGDOLL_TAG = TagKey.create(Registries.DAMAGE_TYPE, ResourceLocation.fromNamespaceAndPath(MODID, "always_to_ragdoll"));
@@ -100,6 +105,9 @@ public class SableMaidRagdoll {
 
     public static final ResourceLocation RAGDOLL_TYPE = ResourceLocation.fromNamespaceAndPath(MODID, "maid");
     public static final ResourceLocation FAIRY_RAGDOLL_TYPE = ResourceLocation.fromNamespaceAndPath(MODID, "maid_fairy");
+    public static final ResourceLocation EMPTY_EMOJI = ResourceLocation.fromNamespaceAndPath(MODID, "empty");
+    public static final DeferredHolder<AttachmentType<?>, AttachmentType<ResourceLocation>> EMOJI_ATTACHMENT = ATTACHMENT_TYPES.register("emoji", () ->
+            AttachmentType.builder(() -> EMPTY_EMOJI).serialize(ResourceLocation.CODEC).sync(ResourceLocation.STREAM_CODEC).build());
     public static SableMaidRagdollConfig CONFIG;
 
     public SableMaidRagdoll(IEventBus bus){
@@ -110,6 +118,7 @@ public class SableMaidRagdoll {
         BLOCK_ENTITIES.register(bus);
         SOUNDS.register(bus);
         DATA_COMPONENTS.register(bus);
+        ATTACHMENT_TYPES.register(bus);
 
         if(CONFIG.items.enableDollTab)
             DOLL_TAB = MaidCreativeTab.createDollTab(CREATIVE_TABS);
@@ -121,5 +130,18 @@ public class SableMaidRagdoll {
 
         if(CompatMods.LOVE_LOATHE)
             RagdollSaddleLaunch.init();
+
+        bus.addListener(Network::onRegisterPayloadHandlers);
+    }
+
+    public static class Network {
+        public static void onRegisterPayloadHandlers(RegisterPayloadHandlersEvent event) {
+            var registrar = event.registrar(MODID).versioned("1");
+            registrar.playToServer(
+                    ServerboundEmojiSelectPacket.TYPE,
+                    ServerboundEmojiSelectPacket.STREAM_CODEC,
+                    ServerboundEmojiSelectPacket::handle
+            );
+        }
     }
 }

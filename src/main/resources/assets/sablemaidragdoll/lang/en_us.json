@@ -46,6 +46,11 @@
   "item.sablemaidragdoll.maid_mace.tip1": "Right-click the maid to launch it, generating a shockwave upon landing.",
   "item.sablemaidragdoll.maid_mace.tip2": "I'll take you down with me...",
   "item.sablemaidragdoll.mod_icon": "Mod Icon",
+  "key.sablemaidragdoll.open_emoji": "Open Emoji Selector",
+  "key.category.sablemaidragdoll": "Sable: Maid Ragdoll",
+  "screen.sablemaidragdoll.emoji_select.title": "Select Emoji",
+  "screen.sablemaidragdoll.emoji_select.clear": "Clear Emoji",
+  "screen.sablemaidragdoll.emoji_select.tip": "Click an emoji to select it; ESC to close",
   "itemGroup.sable_maid_ragdoll.doll": "Sable: Maid Ragdoll | Decoy Maid Doll",
   "itemGroup.sable_maid_ragdoll.main": "Sable: Maid Ragdoll"
 }

@@ -5,6 +5,7 @@
   "compatibilityLevel": "JAVA_21",
   "mixins": [
     "CallResponseHurtMixin",
+    "EmojiReloadListenerMixin",
     "EntityBoxMixin",
     "IMaidEdibleBlockMixin",
     "love_loathe.EmotionManagerMixin"
@@ -12,7 +13,8 @@
   "client": [
     "BedrockModelAccessor",
     "CustomPackLoaderMixin",
-    "MaidModelGuiMixin"
+    "MaidModelGuiMixin",
+    "TextureManagerMixin"
   ],
   "injectors": {
     "defaultRequire": 1
