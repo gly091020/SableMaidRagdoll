@@ -4,11 +4,12 @@
   "package": "com.gly091020.SableMaidRagdoll.mixin",
   "compatibilityLevel": "JAVA_21",
   "mixins": [
-    "CallResponseHurtMixin",
     "EmojiReloadListenerMixin",
     "EntityBoxMixin",
     "IMaidEdibleBlockMixin",
-    "love_loathe.EmotionManagerMixin"
+    "love_loathe.CallResponseHurtMixin",
+    "love_loathe.EmotionManagerMixin",
+    "love_loathe.StandUpActionMixin"
   ],
   "client": [
     "BedrockModelAccessor",

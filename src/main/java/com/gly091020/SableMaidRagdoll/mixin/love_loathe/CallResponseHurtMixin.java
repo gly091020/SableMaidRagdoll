@@ -1,4 +1,4 @@
-package com.gly091020.SableMaidRagdoll.mixin;
+package com.gly091020.SableMaidRagdoll.mixin.love_loathe;
 
 import com.bawnorton.mixinsquared.TargetHandler;
 import com.github.tartaricacid.touhoulittlemaid.entity.passive.EntityMaid;
