@@ -5,6 +5,7 @@ import com.gly091020.SableMaidRagdoll.block.*;
 import com.gly091020.SableMaidRagdoll.compat.control.MaidRagdollPartRecognizer;
 import com.gly091020.SableMaidRagdoll.compat.love_loathe.RagdollSaddleLaunch;
 import com.gly091020.SableMaidRagdoll.compat.util.CompatMods;
+import com.gly091020.SableMaidRagdoll.datagen.SableMaidRagdollDatagen;
 import com.gly091020.SableMaidRagdoll.item.CheatDeathBaubleItem;
 import com.gly091020.SableMaidRagdoll.item.CopyRagdollIDItem;
 import com.gly091020.SableMaidRagdoll.item.MaidMaceItem;
@@ -18,6 +19,8 @@ import com.mojang.serialization.Codec;
 import me.shedaniel.autoconfig.AutoConfig;
 import me.shedaniel.autoconfig.serializer.Toml4jConfigSerializer;
 import net.minecraft.core.component.DataComponentType;
+import net.minecraft.core.Registry;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.codec.ByteBufCodecs;
@@ -52,6 +55,7 @@ public class SableMaidRagdoll {
     public static final DeferredRegister<DataComponentType<?>> DATA_COMPONENTS = DeferredRegister.create(Registries.DATA_COMPONENT_TYPE, MODID);
     public static final DeferredRegister<CreativeModeTab> CREATIVE_TABS = DeferredRegister.create(Registries.CREATIVE_MODE_TAB, MODID);
     public static final DeferredRegister<AttachmentType<?>> ATTACHMENT_TYPES = DeferredRegister.create(NeoForgeRegistries.ATTACHMENT_TYPES, MODID);
+    public static final DeferredRegister<ResourceLocation> CUSTOM_STAT = DeferredRegister.create(BuiltInRegistries.CUSTOM_STAT, MODID);
 
     public static final TagKey<Item> MAID_TO_RAGDOLL_TAG = TagKey.create(Registries.ITEM, ResourceLocation.fromNamespaceAndPath(MODID, "maid_to_ragdoll"));
     public static final TagKey<DamageType> ALWAYS_TO_RAGDOLL_TAG = TagKey.create(Registries.DAMAGE_TYPE, ResourceLocation.fromNamespaceAndPath(MODID, "always_to_ragdoll"));
@@ -103,6 +107,9 @@ public class SableMaidRagdoll {
                     .build());
     public static DeferredHolder<CreativeModeTab, CreativeModeTab> DOLL_TAB;
 
+    public static DeferredHolder<ResourceLocation, ResourceLocation> MAID_KNOCKED_AWAY = CUSTOM_STAT.register("maid_knocked_away", r -> r);
+    public static DeferredHolder<ResourceLocation, ResourceLocation> TO_MAID = CUSTOM_STAT.register("to_maid", r -> r);
+
     public static final ResourceLocation RAGDOLL_TYPE = ResourceLocation.fromNamespaceAndPath(MODID, "maid");
     public static final ResourceLocation FAIRY_RAGDOLL_TYPE = ResourceLocation.fromNamespaceAndPath(MODID, "maid_fairy");
     public static final ResourceLocation EMPTY_EMOJI = ResourceLocation.fromNamespaceAndPath(MODID, "empty");
@@ -119,6 +126,7 @@ public class SableMaidRagdoll {
         SOUNDS.register(bus);
         DATA_COMPONENTS.register(bus);
         ATTACHMENT_TYPES.register(bus);
+        CUSTOM_STAT.register(bus);
 
         if(CONFIG.items.enableDollTab)
             DOLL_TAB = MaidCreativeTab.createDollTab(CREATIVE_TABS);
@@ -132,6 +140,7 @@ public class SableMaidRagdoll {
             RagdollSaddleLaunch.init();
 
         bus.addListener(Network::onRegisterPayloadHandlers);
+        bus.addListener(SableMaidRagdollDatagen::onGatherData);
     }
 
     public static class Network {

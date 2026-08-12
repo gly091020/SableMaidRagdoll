@@ -1,10 +1,12 @@
 package com.gly091020.SableMaidRagdoll.item;
 
 import com.github.tartaricacid.touhoulittlemaid.entity.passive.EntityMaid;
+import com.github.tartaricacid.touhoulittlemaid.init.InitTrigger;
 import com.github.tartaricacid.touhoulittlemaid.inventory.tooltip.ItemMaidTooltip;
 import com.github.tartaricacid.touhoulittlemaid.inventory.tooltip.YsmMaidInfo;
 import com.gly091020.SableMaidRagdoll.SableMaidRagdoll;
 import com.gly091020.SableMaidRagdoll.block.MaidDollBlockEntity;
+import com.gly091020.SableMaidRagdoll.util.MaidRagdollAdvancementEvents;
 import com.gly091020.SableRagdollLib.api.RagdollHelper;
 import com.gly091020.SableRagdollLib.api.ScheduleManager;
 import com.gly091020.SableRagdollLib.api.control.RagdollControlManager;
@@ -18,6 +20,7 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.stats.Stats;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.InteractionResultHolder;
@@ -114,6 +117,9 @@ public class PlayerCheatDeathItem extends BlockItem {
     }
 
     private void addCooldown(ItemStack stack, Player player){
+        player.awardStat(Stats.CUSTOM.get(SableMaidRagdoll.TO_MAID.get()));
+        if(player instanceof ServerPlayer serverPlayer && stack.getOrDefault(SableMaidRagdoll.ENABLE_CONTROL, false))
+            InitTrigger.MAID_EVENT.get().trigger(serverPlayer, MaidRagdollAdvancementEvents.CONTROL_MAID.getName());
         if(player.isCreative())return;
         player.getCooldowns().addCooldown(stack.getItem(), 20);
     }

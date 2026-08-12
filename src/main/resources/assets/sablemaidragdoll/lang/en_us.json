@@ -52,5 +52,24 @@
   "screen.sablemaidragdoll.emoji_select.clear": "Clear Emoji",
   "screen.sablemaidragdoll.emoji_select.tip": "Click an emoji to select it; ESC to close",
   "itemGroup.sable_maid_ragdoll.doll": "Sable: Maid Ragdoll | Decoy Maid Doll",
-  "itemGroup.sable_maid_ragdoll.main": "Sable: Maid Ragdoll"
+  "itemGroup.sable_maid_ragdoll.main": "Sable: Maid Ragdoll",
+
+  "advancements.sablemaidragdoll.root.title": "Maid Ragdoll",
+  "advancements.sablemaidragdoll.root.description": "Practical or not, it's peak nonsense",
+  "stat.sablemaidragdoll.maid_knocked_away": "Maids Knocked Away",
+  "stat.sablemaidragdoll.to_maid": "To Maid",
+  "advancements.sablemaidragdoll.cheat_death_bauble.title": "Out Like a Light",
+  "advancements.sablemaidragdoll.cheat_death_bauble.description": "Kids these days sure sleep well",
+  "advancements.sablemaidragdoll.maid_mace.title": "Meat Mallet?",
+  "advancements.sablemaidragdoll.maid_mace.description": "What have you been feeding your maid???",
+  "advancements.sablemaidragdoll.hit_maid_ragdoll.title": "Ughh~",
+  "advancements.sablemaidragdoll.hit_maid_ragdoll.description": "A phrase my roommate says every morning and night",
+  "advancements.sablemaidragdoll.control_maid.title": "Total Maid Defeat",
+  "advancements.sablemaidragdoll.control_maid.description": "Are you using Minecraft as a game engine?",
+  "advancements.sablemaidragdoll.player_cheat_death.title": "Mysterious Doll",
+  "advancements.sablemaidragdoll.player_cheat_death.description": "The One True Maid Ragdoll",
+  "advancements.sablemaidragdoll.maid_knocked_away_100.title": "A Hammer a Day Keeps the Maids Away",
+  "advancements.sablemaidragdoll.maid_knocked_away_100.description": "Are you trying to take over i狐TV's job?",
+  "advancements.sablemaidragdoll.to_maid_100.title": "We Need More Maid Ragdolls",
+  "advancements.sablemaidragdoll.to_maid_100.description": "Tormenting maids is too cruel — torment yourself instead"
 }

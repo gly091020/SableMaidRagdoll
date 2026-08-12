@@ -1,8 +1,0 @@
-{
-  "variants": {
-    "facing=north": { "model": "sablemaidragdoll:block/maid_doll" },
-    "facing=south": { "model": "sablemaidragdoll:block/maid_doll", "y": 180 },
-    "facing=east": { "model": "sablemaidragdoll:block/maid_doll", "y": 90 },
-    "facing=west": { "model": "sablemaidragdoll:block/maid_doll", "y": 270 }
-  }
-}

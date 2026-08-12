@@ -1,16 +1,19 @@
 package com.gly091020.SableMaidRagdoll;
 
 import com.github.tartaricacid.touhoulittlemaid.TouhouLittleMaid;
+import com.github.tartaricacid.touhoulittlemaid.advancements.maid.MaidEventTrigger;
 import com.github.tartaricacid.touhoulittlemaid.api.event.MaidDamageEvent;
 import com.github.tartaricacid.touhoulittlemaid.api.event.MaidDeathEvent;
 import com.github.tartaricacid.touhoulittlemaid.api.event.MaidHurtEvent;
 import com.github.tartaricacid.touhoulittlemaid.entity.monster.EntityFairy;
 import com.github.tartaricacid.touhoulittlemaid.entity.monster.FairyType;
 import com.github.tartaricacid.touhoulittlemaid.entity.passive.EntityMaid;
+import com.github.tartaricacid.touhoulittlemaid.init.InitTrigger;
 import com.gly091020.SableMaidRagdoll.block.MaidFairyPartBlockEntity;
 import com.gly091020.SableMaidRagdoll.command.MaidRagdollCommand;
 import com.gly091020.SableMaidRagdoll.compat.util.MaidRollManager;
 import com.gly091020.SableMaidRagdoll.util.MaidCollisionHandler;
+import com.gly091020.SableMaidRagdoll.util.MaidRagdollAdvancementEvents;
 import com.gly091020.SableRagdollLib.api.RagdollHelper;
 import com.gly091020.SableRagdollLib.api.RagdollManager;
 import com.gly091020.SableRagdollLib.api.ScheduleManager;
@@ -23,7 +26,9 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.Tag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.stats.Stats;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.damagesource.DamageTypes;
 import net.minecraft.world.entity.player.Player;
@@ -126,10 +131,15 @@ public class EventHandler {
         float health = event.getMaid().getHealth();
         if (health < damage) return;
 
-        if (!isOwnerAttackWithTag(event.getMaid(), event.getSource())
+        boolean ownerAttack = isOwnerAttackWithTag(event.getMaid(), event.getSource());
+        if (!ownerAttack
                 && !(SableMaidRagdoll.CONFIG.ragdollOnSpecialDamage && event.getSource().is(SableMaidRagdoll.ALWAYS_TO_RAGDOLL_TAG))) return;
 
         ragdollOnDamage(level, event.getSource(), event.getMaid());
+        if (ownerAttack && event.getMaid().getOwner() instanceof ServerPlayer player) {
+            player.awardStat(Stats.CUSTOM.get(SableMaidRagdoll.MAID_KNOCKED_AWAY.get()));
+            InitTrigger.MAID_EVENT.get().trigger(player, MaidRagdollAdvancementEvents.HIT_MAID.getName());
+        }
         if (SableMaidRagdoll.CONFIG.sounds.metalPipe)
             event.getMaid().level().playSound(null, BlockPos.containing(event.getMaid().position()), SableMaidRagdoll.PIPE.get(), SoundSource.PLAYERS, 1, 1);
         event.setCanceled(true);
