@@ -5,7 +5,6 @@ import com.github.tartaricacid.touhoulittlemaid.entity.ai.edible.MaidEdibleBlock
 import com.github.tartaricacid.touhoulittlemaid.entity.favorability.Type;
 import com.github.tartaricacid.touhoulittlemaid.entity.passive.EntityMaid;
 import com.github.tartaricacid.touhoulittlemaid.init.InitSounds;
-import com.github.tartaricacid.touhoulittlemaid.network.NetworkHandler;
 import com.github.tartaricacid.touhoulittlemaid.network.message.PlayMaidSoundAtPosPackage;
 import com.github.tartaricacid.touhoulittlemaid.tileentity.TileEntityPicnicMat;
 import com.github.tartaricacid.touhoulittlemaid.tileentity.TileEntitySnackCabinet;
@@ -13,19 +12,27 @@ import com.gly091020.SableMaidRagdoll.SableMaidRagdoll;
 import com.gly091020.SableRagdollLib.api.RagdollManager;
 import com.gly091020.SableRagdollLib.api.ScheduleManager;
 import com.gly091020.SableRagdollLib.block.AbstractPartBlockEntity;
+import dev.ryanhcode.sable.companion.SableCompanion;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.core.Position;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.nbt.Tag;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.Container;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Explosion;
 import net.minecraft.world.level.ExplosionDamageCalculator;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.ButtonBlock;
+import net.minecraft.world.level.block.LeverBlock;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.items.ItemStackHandler;
 import net.neoforged.neoforge.network.PacketDistributor;
 
@@ -36,6 +43,22 @@ import java.util.UUID;
 public class MaidCollisionHandler {
     private static final long COLLISION_COOLDOWN_MILLIS = 100;
     private static final Map<UUID, Long> LAST_COLLISION_TIME = new HashMap<>();
+
+    public static void tryActivateSwitch(Level level, Entity entity, BlockPos pos1, BlockPos pos2){
+        if(level.getBlockEntity(pos2) instanceof AbstractPartBlockEntity)return;
+        var p1 = SableCompanion.INSTANCE.projectOutOfSubLevel(level, (Position) pos1.getCenter());
+        var p2 = SableCompanion.INSTANCE.projectOutOfSubLevel(level, (Position) pos1.getCenter());
+        var dir = Direction.getNearest(p1.x - p2.x, p1.y - p2.y, p1.z - p2.z);
+        ScheduleManager.scheduleDelayed((ServerLevel) level, 0, () -> activateIfSwitch(level, entity, pos2.relative(dir)));
+    }
+
+    private static boolean activateIfSwitch(Level level, Entity entity, BlockPos pos){
+        var state = level.getBlockState(pos);
+        if(!(state.getBlock() instanceof ButtonBlock) && !(state.getBlock() instanceof LeverBlock))return false;
+        state.useWithoutItem(level, entity instanceof Player player ? player : null,
+                new BlockHitResult(Vec3.atCenterOf(pos), Direction.UP, pos, false));
+        return true;
+    }
 
     public static void onCollision(Entity entity, BlockPos pos2, AbstractPartBlockEntity blockEntity){
         if(!isCollisionReady(entity))return;

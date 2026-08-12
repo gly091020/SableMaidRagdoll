@@ -234,10 +234,10 @@ public class EventHandler {
     public static void onPartCollision(RagdollPartCollisionEvent.Post event){
         if(event.getLevel().isClientSide)return;
         if(event.getImpactVelocity() * event.getImpactVelocity() < 9)return;
-        if(event.getSelfBE().getEntity() == null)return;
         var pos2 = event.getPos2();
         if(pos2 == null)return;
-
+        MaidCollisionHandler.tryActivateSwitch(event.getLevel(), event.getSelfBE().getEntity(), event.getPos1(), pos2);
+        if(event.getSelfBE().getEntity() == null)return;
         MaidCollisionHandler.onCollision(event.getSelfBE().getEntity(), pos2, event.getSelfBE());
     }
 }
