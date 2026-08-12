@@ -23,7 +23,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 @Mixin(value = EntityMaid.class, priority = 1001)
 @Pseudo
 public class CallResponseHurtMixin {
-    @TargetHandler(mixin = "com.github.tartaricacid.callresponse.mixin.MixinEntityMaid", name = "example$onHurtHead")
+    @TargetHandler(mixin = "com.github.JumDa5he.callresponse.mixin.MixinEntityMaid", name = "example$onHurtHead")
     @Inject(method = "@MixinSquared:Handler", at = @At("HEAD"), cancellable = true, require = 0)
     private void sableMaidRagdoll$skipCallResponseBypass(DamageSource source, float amount,
                                                          CallbackInfoReturnable<Boolean> cir, CallbackInfo ci) {

@@ -1,7 +1,6 @@
 package com.gly091020.SableMaidRagdoll.compat.love_loathe;
 
-import com.github.tartaricacid.callresponse.compat.api.event.saddle.SaddleEvent;
-import com.github.tartaricacid.callresponse.compat.emotion.SaddleChargeHandler;
+import com.github.JumDa5he.callresponse.compat.api.event.saddle.SaddleEvent;
 import com.gly091020.SableMaidRagdoll.SableMaidRagdoll;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.sounds.SimpleSoundInstance;

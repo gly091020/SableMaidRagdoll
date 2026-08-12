@@ -11,11 +11,11 @@ import org.spongepowered.asm.mixin.injection.Redirect;
 import java.util.List;
 
 @Mixin(targets = {
-        "com.github.tartaricacid.callresponse.compat.emotion.EmotionBetrayalManager",
-        "com.github.tartaricacid.callresponse.compat.emotion.EmotionDevotedManager",
-        "com.github.tartaricacid.callresponse.compat.emotion.EmotionDotingManager",
-        "com.github.tartaricacid.callresponse.compat.emotion.EmotionForgettingManager",
-        "com.github.tartaricacid.callresponse.compat.emotion.EmotionPassiveManager",
+        "com.github.JumDa5he.callresponse.compat.emotion.EmotionBetrayalManager",
+        "com.github.JumDa5he.callresponse.compat.emotion.EmotionDevotedManager",
+        "com.github.JumDa5he.callresponse.compat.emotion.EmotionDotingManager",
+        "com.github.JumDa5he.callresponse.compat.emotion.EmotionForgettingManager",
+        "com.github.JumDa5he.callresponse.compat.emotion.EmotionPassiveManager",
 }, remap = false)
 @Pseudo
 public class EmotionManagerMixin {

@@ -1,6 +1,6 @@
 package com.gly091020.SableMaidRagdoll.compat.love_loathe;
 
-import com.github.tartaricacid.callresponse.compat.api.event.saddle.SaddleEvent;
+import com.github.JumDa5he.callresponse.compat.api.event.saddle.SaddleEvent;
 import com.gly091020.SableMaidRagdoll.SableMaidRagdoll;
 import com.gly091020.SableMaidRagdoll.util.MixinFunction;
 import dev.ryanhcode.sable.companion.math.JOMLConversion;

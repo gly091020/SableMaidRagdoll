@@ -19,7 +19,7 @@ includeBuild("../SableRagdollLib") {
 
 includeBuild("../Love-And-Loathe") {
     dependencySubstitution {
-        substitute(module("com.github.tartaricacid:callresponse"))
+        substitute(module("com.github.JumDa5he:callresponse"))
                 .using(project(":"))
     }
 }
