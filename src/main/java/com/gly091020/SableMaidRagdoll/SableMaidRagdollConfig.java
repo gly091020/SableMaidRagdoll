@@ -36,6 +36,8 @@ public class SableMaidRagdollConfig implements ConfigData {
         public boolean hungry = false;
         public boolean drop = false;
         public boolean bigDog = false;
+        public boolean GCJCry = false;
+        public boolean watermelonHurt = false;
     }
 
     public static class LoveAndLoathe{

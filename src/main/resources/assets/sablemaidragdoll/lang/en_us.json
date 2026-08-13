@@ -71,5 +71,10 @@
   "advancements.sablemaidragdoll.maid_knocked_away_100.title": "A Hammer a Day Keeps the Maids Away",
   "advancements.sablemaidragdoll.maid_knocked_away_100.description": "Are you trying to take over i狐TV's job?",
   "advancements.sablemaidragdoll.to_maid_100.title": "We Need More Maid Ragdolls",
-  "advancements.sablemaidragdoll.to_maid_100.description": "Tormenting maids is too cruel — torment yourself instead"
+  "advancements.sablemaidragdoll.to_maid_100.description": "Tormenting maids is too cruel — torment yourself instead",
+
+  "item.sablemaidragdoll.sonic_wave": "Ultrasonic Wave Generator",
+  "item.sablemaidragdoll.sonic_wave.tip": "Especially lethal to gly...",
+  "text.autoconfig.sablemaidragdoll.option.sounds.GCJCry": "The Author's Brother's Mysterious Wailing",
+  "text.autoconfig.sablemaidragdoll.option.sounds.watermelonHurt": "Haoa"
 }

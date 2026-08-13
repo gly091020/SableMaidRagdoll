@@ -10,6 +10,7 @@ import com.gly091020.SableMaidRagdoll.item.CheatDeathBaubleItem;
 import com.gly091020.SableMaidRagdoll.item.CopyRagdollIDItem;
 import com.gly091020.SableMaidRagdoll.item.MaidMaceItem;
 import com.gly091020.SableMaidRagdoll.item.PlayerCheatDeathItem;
+import com.gly091020.SableMaidRagdoll.item.SonicWaveItem;
 import com.gly091020.SableMaidRagdoll.network.ServerboundEmojiSelectPacket;
 import com.gly091020.SableMaidRagdoll.util.MaidCreativeTab;
 import com.gly091020.SableRagdollLib.api.RagdollTypeRegistry;
@@ -43,10 +44,13 @@ import net.neoforged.neoforge.registries.DeferredRegister;
 import net.neoforged.neoforge.registries.NeoForgeRegistries;
 import org.slf4j.Logger;
 
+import java.util.UUID;
+
 @Mod(SableMaidRagdoll.MODID)
 public class SableMaidRagdoll {
     public static final String MODID = "sablemaidragdoll";
     public static final Logger LOGGER = LogUtils.getLogger();
+    public static final UUID GLY = UUID.fromString("91bd580f-5f17-4e30-872f-2e480dd9a220");
 
     public static final DeferredRegister<Item> ITEMS = DeferredRegister.create(Registries.ITEM, MODID);
     public static final DeferredRegister<Block> BLOCKS = DeferredRegister.create(Registries.BLOCK, MODID);
@@ -70,12 +74,17 @@ public class SableMaidRagdoll {
             SoundEvent.createVariableRangeEvent(ResourceLocation.fromNamespaceAndPath(MODID, "big_dog")));
     public static final DeferredHolder<SoundEvent, SoundEvent> DOG_CALL = SOUNDS.register("dog_call", () ->
             SoundEvent.createVariableRangeEvent(ResourceLocation.fromNamespaceAndPath(MODID, "dog_call")));
+    public static final DeferredHolder<SoundEvent, SoundEvent> GCJ_SOUND = SOUNDS.register("gcj_sound", () ->
+            SoundEvent.createVariableRangeEvent(ResourceLocation.fromNamespaceAndPath(MODID, "gcj_sound")));
+    public static final DeferredHolder<SoundEvent, SoundEvent> WATERMELON_HURT = SOUNDS.register("watermelon_hurt", () ->
+            SoundEvent.createVariableRangeEvent(ResourceLocation.fromNamespaceAndPath(MODID, "watermelon_hurt")));
 
     public static final DeferredHolder<Item, Item> MOD_ICON_ITEM = ITEMS.register("mod_icon", resourceLocation -> new Item(new Item.Properties()));
     public static final DeferredHolder<Item, CheatDeathBaubleItem> CHEAT_DEATH_BAUBLE_ITEM = ITEMS.register("cheat_death_bauble", resourceLocation -> new CheatDeathBaubleItem());
     public static final DeferredHolder<Item, PlayerCheatDeathItem> PLAYER_CHEAT_DEATH_ITEM = ITEMS.register("player_cheat_death", resourceLocation -> new PlayerCheatDeathItem());
     public static final DeferredHolder<Item, CopyRagdollIDItem> COPY_RAGDOLL_ID_ITEM = ITEMS.register("copy_ragdoll_id", resourceLocation -> new CopyRagdollIDItem());
     public static final DeferredHolder<Item, MaidMaceItem> MAID_MACE_ITEM = ITEMS.register("maid_mace", resourceLocation -> new MaidMaceItem());
+    public static final DeferredHolder<Item, SonicWaveItem> SONIC_WAVE_ITEM = ITEMS.register("sonic_wave", resourceLocation -> new SonicWaveItem());
 
     public static final DeferredHolder<Block, MaidPartBlock> MAID_PART_BLOCK = BLOCKS.register("maid_part", () -> new MaidPartBlock(MaidPartBlock.PROPERTIES));
     public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<MaidPartBlockEntity>> MAID_PART_BLOCK_ENTITY = BLOCK_ENTITIES.register("maid_part", () ->

@@ -72,5 +72,10 @@
   "advancements.sablemaidragdoll.maid_knocked_away_100.title": "一天一锤子，女仆远离我",
   "advancements.sablemaidragdoll.maid_knocked_away_100.description": "你是要接过作者i狐TV的任务吗？",
   "advancements.sablemaidragdoll.to_maid_100.title": "我们需要更多的女仆布娃娃",
-  "advancements.sablemaidragdoll.to_maid_100.description": "折磨女仆还是太残忍了，还是折磨自己吧"
+  "advancements.sablemaidragdoll.to_maid_100.description": "折磨女仆还是太残忍了，还是折磨自己吧",
+
+  "item.sablemaidragdoll.sonic_wave": "超声波发生器",
+  "item.sablemaidragdoll.sonic_wave.tip": "对于gly很有杀伤力……",
+  "text.autoconfig.sablemaidragdoll.option.sounds.GCJCry": "作者他弟的神必哭喊",
+  "text.autoconfig.sablemaidragdoll.option.sounds.watermelonHurt": "郝啊"
 }

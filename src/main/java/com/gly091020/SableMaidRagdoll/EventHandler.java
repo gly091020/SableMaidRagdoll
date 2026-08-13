@@ -140,7 +140,9 @@ public class EventHandler {
             player.awardStat(Stats.CUSTOM.get(SableMaidRagdoll.MAID_KNOCKED_AWAY.get()));
             InitTrigger.MAID_EVENT.get().trigger(player, MaidRagdollAdvancementEvents.HIT_MAID.getName());
         }
-        if (SableMaidRagdoll.CONFIG.sounds.metalPipe)
+        if(ownerAttack && SableMaidRagdoll.CONFIG.sounds.watermelonHurt)
+            event.getMaid().level().playSound(null, BlockPos.containing(event.getMaid().position()), SableMaidRagdoll.WATERMELON_HURT.get(), SoundSource.PLAYERS, 1, 1);
+        else if(SableMaidRagdoll.CONFIG.sounds.metalPipe)
             event.getMaid().level().playSound(null, BlockPos.containing(event.getMaid().position()), SableMaidRagdoll.PIPE.get(), SoundSource.PLAYERS, 1, 1);
         event.setCanceled(true);
     }
