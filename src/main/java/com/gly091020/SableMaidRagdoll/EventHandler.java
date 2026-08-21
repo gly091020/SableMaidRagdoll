@@ -36,6 +36,7 @@ import net.minecraft.world.phys.Vec3;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.event.RegisterCommandsEvent;
+import net.neoforged.neoforge.event.entity.living.LivingDamageEvent;
 import net.neoforged.neoforge.event.entity.living.LivingDeathEvent;
 import net.neoforged.neoforge.event.tick.ServerTickEvent;
 import org.joml.Vector3d;
@@ -99,6 +100,26 @@ public class EventHandler {
                     1f + level.random.nextFloat());
     }
 
+    @SubscribeEvent
+    public static void onMaidFairyHurt(LivingDamageEvent.Post event){
+        if(!SableMaidRagdoll.CONFIG.ragdollOnOwnerAttack)return;
+        if(!(event.getEntity() instanceof EntityFairy fairy))return;
+        if(fairy.getVehicle() instanceof PartSeat)return;
+        if(!(fairy.level() instanceof ServerLevel serverLevel))return;
+
+        boolean flag1 = event.getSource().getEntity() instanceof Player player && player.getMainHandItem().is(SableMaidRagdoll.MAID_TO_RAGDOLL_TAG);
+        boolean flag2 = event.getSource().is(SableMaidRagdoll.ALWAYS_TO_RAGDOLL_TAG);
+        if(!flag1 && !flag2)return;
+
+        float damage = event.getNewDamage();
+        float health = fairy.getHealth();
+        if (health < damage) return;
+
+        createFairyRagdoll(serverLevel, fairy, JOMLConversion.toJOML(fairy.getDeltaMovement().scale(3)));
+        if(SableMaidRagdoll.CONFIG.sounds.metalPipe)
+            fairy.level().playSound(null, BlockPos.containing(fairy.position()), SableMaidRagdoll.PIPE.get(), SoundSource.PLAYERS, 1, 1);
+    }
+
     private static final ResourceLocation BABY_FAIRY = ResourceLocation.fromNamespaceAndPath(TouhouLittleMaid.MOD_ID, "fairy/baby_fairy");
     private static final ResourceLocation NEW_FAIRY = ResourceLocation.fromNamespaceAndPath(TouhouLittleMaid.MOD_ID, "fairy/new_fairy");
     private static void createFairyRagdoll(ServerLevel level, EntityFairy fairy, Vector3d maidMotion){
@@ -119,6 +140,8 @@ public class EventHandler {
         scheduleDelayed(level, 2, () -> {
             parts.addAngularImpulse(axis, true);
             parts.addLinearImpulse(maidMotion, true);
+            if(fairy.isAlive())
+                parts.addEntity(fairy);
         });
     }
 
