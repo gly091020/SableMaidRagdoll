@@ -1,4 +1,4 @@
-package com.gly091020.SableMaidRagdoll.compat.control;
+package com.gly091020.SableMaidRagdoll.util;
 
 import com.gly091020.SableRagdollLib.api.control.IRagdollPartRecognizer;
 import com.gly091020.SableRagdollLib.api.control.PartRole;

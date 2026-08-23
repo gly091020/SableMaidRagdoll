@@ -154,6 +154,7 @@ dependencies {
     implementation "me.shedaniel.cloth:cloth-config-neoforge:${cloth_config_version}"
     compileOnly("dev.ryanhcode.sable:sable-sable_rapier-${project.minecraft_version}:${project.sable_version}")
     implementation("com.lowdragmc.ldlib2:ldlib2-neoforge-${minecraft_version}:${ldlib2_version}:all")
+    implementation("maven.modrinth:I3mWDgfy:${player_ragdoll_version}")
 
     implementation "com.gly091020:sableragdolllib"
     compileOnly "com.github.JumDa5he:callresponse"

@@ -10,6 +10,7 @@
   "text.autoconfig.sablemaidragdoll.option.ragdollOnDeath": "死亡时产生布娃娃",
   "text.autoconfig.sablemaidragdoll.option.ragdollOnOwnerAttack": "主人用特定物品攻击时变成布娃娃",
   "text.autoconfig.sablemaidragdoll.option.ragdollOnSpecialDamage": "收到特殊伤害时变成布娃娃",
+  "text.autoconfig.sablemaidragdoll.option.ragdollOnBroom": "扫帚碰撞时变成布娃娃",
   "text.autoconfig.sablemaidragdoll.option.ragdollOnBox": "蛋糕盒产生布娃娃",
 
   "block.sablemaidragdoll.maid_doll": "替身女仆玩偶",
@@ -41,6 +42,8 @@
   "text.autoconfig.sablemaidragdoll.option.items.playerCheatDeathItem": "替身女仆玩偶",
   "text.autoconfig.sablemaidragdoll.option.items.cheatDeathBauble": "假死护符",
   "text.autoconfig.sablemaidragdoll.option.items.maidMace": "女仆重锤",
+  "text.autoconfig.sablemaidragdoll.option.items.tntCake": "TNT蛋糕",
+  "text.autoconfig.sablemaidragdoll.option.items.sonicWave": "超声波发生器",
   "text.autoconfig.sablemaidragdoll.option.items.enableDollTab": "启用替身女仆玩偶标签页",
   "item.sablemaidragdoll.maid_mace": "女仆重锤",
   "item.sablemaidragdoll.maid_mace.tip1": "右键女仆来发射，落地时产生冲击波",
@@ -78,5 +81,6 @@
   "item.sablemaidragdoll.sonic_wave.tip": "对于gly很有杀伤力……",
   "text.autoconfig.sablemaidragdoll.option.sounds.GCJCry": "作者他弟的神必哭喊",
   "text.autoconfig.sablemaidragdoll.option.sounds.watermelonHurt": "郝啊",
+  "text.autoconfig.sablemaidragdoll.option.sounds.broomMan": "坠机",
   "block.sablemaidragdoll.tnt_cake": "TNT蛋糕"
 }

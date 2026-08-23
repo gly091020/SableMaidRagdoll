@@ -11,6 +11,7 @@ public class SableMaidRagdollConfig implements ConfigData {
     public boolean ragdollOnOwnerAttack = true;
     public boolean ragdollOnBox = true;
     public boolean ragdollOnSpecialDamage = false;
+    public boolean ragdollOnBroom = false;
     public boolean maidKnockback = true;
     public boolean maidEat = true;
 
@@ -29,6 +30,8 @@ public class SableMaidRagdollConfig implements ConfigData {
         public boolean cheatDeathBauble = true;
         public boolean playerCheatDeathItem = true;
         public boolean maidMace = true;
+        public boolean tntCake = true;
+        public boolean sonicWave = true;
     }
 
     public static class Sounds{
@@ -38,6 +41,7 @@ public class SableMaidRagdollConfig implements ConfigData {
         public boolean bigDog = false;
         public boolean GCJCry = false;
         public boolean watermelonHurt = false;
+        public boolean broomMan = false;
     }
 
     public static class LoveAndLoathe{

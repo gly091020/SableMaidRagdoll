@@ -6,6 +6,8 @@ import com.github.tartaricacid.touhoulittlemaid.entity.item.EntityBox;
 import com.github.tartaricacid.touhoulittlemaid.entity.item.EntityBroom;
 import com.github.tartaricacid.touhoulittlemaid.entity.passive.EntityMaid;
 import com.gly091020.SableMaidRagdoll.SableMaidRagdoll;
+import com.gly091020.SableMaidRagdoll.compat.player_ragdoll.PlayerRagdollUtil;
+import com.gly091020.SableMaidRagdoll.compat.util.CompatMods;
 import com.gly091020.SableMaidRagdoll.mixin.BedrockModelAccessor;
 import com.gly091020.SableRagdollLib.api.Ragdoll;
 import com.gly091020.SableRagdollLib.api.RagdollHelper;
@@ -13,6 +15,7 @@ import com.gly091020.SableRagdollLib.api.ScheduleManager;
 import dev.ryanhcode.sable.companion.math.JOMLConversion;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.Nullable;
@@ -114,6 +117,11 @@ public class MixinFunction {
             if(entity instanceof EntityMaid maid){
                 manCreateRagdoll(serverLevel, maid, JOMLConversion.toJOML(movement.scale(10)), true);
             }
+            if(CompatMods.PLAYER_RAGDOLL && entity instanceof ServerPlayer serverPlayer){
+                PlayerRagdollUtil.launch(serverPlayer, movement.scale(10));
+            }
         }
+        if(SableMaidRagdoll.CONFIG.sounds.metalPipe)
+            entityBroom.playSound(SableMaidRagdoll.PIPE.get());
     }
 }

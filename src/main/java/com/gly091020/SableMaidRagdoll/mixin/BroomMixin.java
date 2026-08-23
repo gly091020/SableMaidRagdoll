@@ -1,7 +1,10 @@
 package com.gly091020.SableMaidRagdoll.mixin;
 
 import com.github.tartaricacid.touhoulittlemaid.entity.item.EntityBroom;
+import com.gly091020.SableMaidRagdoll.SableMaidRagdoll;
 import com.gly091020.SableMaidRagdoll.network.ServerboundBroomManPacket;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.resources.sounds.SimpleSoundInstance;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.MoverType;
 import net.minecraft.world.phys.Vec3;
@@ -22,6 +25,7 @@ public abstract class BroomMixin {
 
     @Inject(method = "move", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/Entity;setOnGroundWithMovement(ZLnet/minecraft/world/phys/Vec3;)V"))
     public void man(MoverType moverType, Vec3 vec3, CallbackInfo ci){
+        if(!SableMaidRagdoll.CONFIG.ragdollOnBroom)return;
         if(!((Object)this instanceof EntityBroom entityBroom))return;
         if(!horizontalCollision)return;
         Vec3 motion = getDeltaMovement();
@@ -32,6 +36,8 @@ public abstract class BroomMixin {
         double backAngle = Math.abs(((motionYaw - (broomYaw + 180) + 180) % 360 + 360) % 360 - 180);
         if(angle < 30 || backAngle < 30){
             PacketDistributor.sendToServer(new ServerboundBroomManPacket(entityBroom.getId(), motion));
+            if(SableMaidRagdoll.CONFIG.sounds.broomMan && entityBroom.level().isClientSide)
+                Minecraft.getInstance().getSoundManager().play(SimpleSoundInstance.forUI(SableMaidRagdoll.BROOM_MAN, 1));
         }
     }
 }

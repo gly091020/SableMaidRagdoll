@@ -8,7 +8,7 @@ import com.gly091020.SableMaidRagdoll.block.parts.MaidFairyPartBlockEntity;
 import com.gly091020.SableMaidRagdoll.block.parts.MaidPartBlock;
 import com.gly091020.SableMaidRagdoll.block.parts.MaidPartBlockEntity;
 import com.gly091020.SableMaidRagdoll.block.tnt_cake.TNTCakeBlock;
-import com.gly091020.SableMaidRagdoll.compat.control.MaidRagdollPartRecognizer;
+import com.gly091020.SableMaidRagdoll.util.MaidRagdollPartRecognizer;
 import com.gly091020.SableMaidRagdoll.compat.love_loathe.RagdollSaddleLaunch;
 import com.gly091020.SableMaidRagdoll.compat.util.CompatMods;
 import com.gly091020.SableMaidRagdoll.datagen.SableMaidRagdollDatagen;
@@ -85,6 +85,8 @@ public class SableMaidRagdoll {
             SoundEvent.createVariableRangeEvent(ResourceLocation.fromNamespaceAndPath(MODID, "gcj_sound")));
     public static final DeferredHolder<SoundEvent, SoundEvent> WATERMELON_HURT = SOUNDS.register("watermelon_hurt", () ->
             SoundEvent.createVariableRangeEvent(ResourceLocation.fromNamespaceAndPath(MODID, "watermelon_hurt")));
+    public static final DeferredHolder<SoundEvent, SoundEvent> BROOM_MAN = SOUNDS.register("broom_man", () ->
+            SoundEvent.createVariableRangeEvent(ResourceLocation.fromNamespaceAndPath(MODID, "broom_man")));
 
     public static final DeferredHolder<Block, MaidPartBlock> MAID_PART_BLOCK = BLOCKS.register("maid_part", () -> new MaidPartBlock(MaidPartBlock.PROPERTIES));
     public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<MaidPartBlockEntity>> MAID_PART_BLOCK_ENTITY = BLOCK_ENTITIES.register("maid_part", () ->
