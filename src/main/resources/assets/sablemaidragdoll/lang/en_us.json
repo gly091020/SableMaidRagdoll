@@ -76,5 +76,6 @@
   "item.sablemaidragdoll.sonic_wave": "Ultrasonic Wave Generator",
   "item.sablemaidragdoll.sonic_wave.tip": "Especially lethal to gly...",
   "text.autoconfig.sablemaidragdoll.option.sounds.GCJCry": "The Author's Brother's Mysterious Wailing",
-  "text.autoconfig.sablemaidragdoll.option.sounds.watermelonHurt": "Haoa"
+  "text.autoconfig.sablemaidragdoll.option.sounds.watermelonHurt": "Haoa",
+  "block.sablemaidragdoll.tnt_cake": "TNT Cake"
 }

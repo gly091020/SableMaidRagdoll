@@ -26,7 +26,7 @@ public class RagdollSaddleLaunch {
         var m = JOMLConversion.toJOML(maid.getDeltaMovement()).mul(5);
         if(chargePercent > 0)
             m.sub(0, 0.8, 0);
-        MixinFunction.createRagdoll((ServerLevel) level, maid, m, true);
+        MixinFunction.saddleLaunchCreateRagdoll((ServerLevel) level, maid, m, true);
         if(SableMaidRagdoll.CONFIG.sounds.drop && chargePercent == 0)
             player.level().playSound(null, BlockPos.containing(player.position()), SableMaidRagdoll.DROP.get(), SoundSource.PLAYERS, 1, 1);
     }

@@ -1,4 +1,4 @@
-package com.gly091020.SableMaidRagdoll.block;
+package com.gly091020.SableMaidRagdoll.block.maid_doll;
 
 import com.github.tartaricacid.touhoulittlemaid.init.InitSounds;
 import com.github.tartaricacid.touhoulittlemaid.network.message.PlayMaidSoundAtPosPackage;

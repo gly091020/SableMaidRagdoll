@@ -54,6 +54,12 @@ public class ModRecipeProvider extends RecipeProvider {
                 .requires(Items.ECHO_SHARD)
                 .unlockedBy("get", InventoryChangeTrigger.TriggerInstance.hasItems(Items.ECHO_SHARD))
                 .save(recipeOutput, modId("sonic_wave_item"));
+
+        ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, SableMaidRagdoll.TNT_CAKE_BLOCK.get())
+                .requires(Items.CAKE)
+                .requires(Items.TNT)
+                .unlockedBy("get", InventoryChangeTrigger.TriggerInstance.hasItems(Items.CAKE))
+                .save(recipeOutput, modId("tnt_cake_item"));
     }
 
     private static ResourceLocation modId(String path) {

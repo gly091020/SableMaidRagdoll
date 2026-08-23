@@ -2,7 +2,7 @@ package com.gly091020.SableMaidRagdoll.client;
 
 import com.github.tartaricacid.touhoulittlemaid.TouhouLittleMaid;
 import com.github.tartaricacid.touhoulittlemaid.entity.monster.FairyType;
-import com.gly091020.SableMaidRagdoll.block.MaidFairyPartBlockEntity;
+import com.gly091020.SableMaidRagdoll.block.parts.MaidFairyPartBlockEntity;
 import com.gly091020.SableMaidRagdoll.util.MaidModelHelper;
 import com.gly091020.SableRagdollLib.client.renderer.AbstractPartBlockRenderer;
 import com.mojang.blaze3d.vertex.PoseStack;

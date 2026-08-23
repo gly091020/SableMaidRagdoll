@@ -28,6 +28,7 @@ public class MaidCreativeTab {
         if(SableMaidRagdoll.CONFIG.items.maidMace)
             output.accept(SableMaidRagdoll.MAID_MACE_ITEM.get());
         output.accept(SableMaidRagdoll.SONIC_WAVE_ITEM.get());
+        output.accept(SableMaidRagdoll.TNT_CAKE_ITEM.get());
         output.accept(SableMaidRagdoll.COPY_RAGDOLL_ID_ITEM.get());
     }
 

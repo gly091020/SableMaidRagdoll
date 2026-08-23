@@ -18,6 +18,7 @@ public class ModItemModelProvider extends ItemModelProvider {
         basicItem(SableMaidRagdoll.MAID_MACE_ITEM.get());
         basicItem(SableMaidRagdoll.MOD_ICON_ITEM.get());
         basicItem(SableMaidRagdoll.SONIC_WAVE_ITEM.get());
+        simpleBlockItem(SableMaidRagdoll.TNT_CAKE_BLOCK.get());
 
         getBuilder("copy_ragdoll_id")
                 .parent(new ModelFile.UncheckedModelFile("item/generated"))

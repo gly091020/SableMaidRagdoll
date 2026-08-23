@@ -5,7 +5,7 @@ import com.github.tartaricacid.touhoulittlemaid.client.sound.data.MaidSoundInsta
 import com.github.tartaricacid.touhoulittlemaid.entity.passive.EntityMaid;
 import com.github.tartaricacid.touhoulittlemaid.init.InitSounds;
 import com.github.tartaricacid.touhoulittlemaid.util.EntityCacheUtil;
-import com.gly091020.SableMaidRagdoll.block.MaidDollBlockEntity;
+import com.gly091020.SableMaidRagdoll.block.maid_doll.MaidDollBlockEntity;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
 import dev.ryanhcode.sable.companion.SableCompanion;

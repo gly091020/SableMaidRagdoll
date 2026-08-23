@@ -1,13 +1,10 @@
 package com.gly091020.SableMaidRagdoll.client;
 
 import com.github.tartaricacid.simplebedrockmodel.client.bedrock.model.BedrockPart;
-import com.github.tartaricacid.touhoulittlemaid.TouhouLittleMaid;
-import com.github.tartaricacid.touhoulittlemaid.client.model.bedrock.BedrockModel;
 import com.github.tartaricacid.touhoulittlemaid.client.resource.listener.EmojiReloadListener;
 import com.github.tartaricacid.touhoulittlemaid.compat.gun.common.GunClientUtil;
-import com.github.tartaricacid.touhoulittlemaid.entity.passive.EntityMaid;
 import com.gly091020.SableMaidRagdoll.SableMaidRagdoll;
-import com.gly091020.SableMaidRagdoll.block.MaidPartBlockEntity;
+import com.gly091020.SableMaidRagdoll.block.parts.MaidPartBlockEntity;
 import com.gly091020.SableMaidRagdoll.geo.GeoMaidModelRenderer;
 import com.gly091020.SableMaidRagdoll.util.MaidModelHelper;
 import com.gly091020.SableMaidRagdoll.util.RagdollChatBubbleRenderer;

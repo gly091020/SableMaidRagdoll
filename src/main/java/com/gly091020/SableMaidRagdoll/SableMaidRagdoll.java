@@ -1,7 +1,13 @@
 package com.gly091020.SableMaidRagdoll;
 
 import com.github.tartaricacid.touhoulittlemaid.init.InitCreativeTabs;
-import com.gly091020.SableMaidRagdoll.block.*;
+import com.gly091020.SableMaidRagdoll.block.maid_doll.MaidDollBlock;
+import com.gly091020.SableMaidRagdoll.block.maid_doll.MaidDollBlockEntity;
+import com.gly091020.SableMaidRagdoll.block.parts.MaidFairyPartBlock;
+import com.gly091020.SableMaidRagdoll.block.parts.MaidFairyPartBlockEntity;
+import com.gly091020.SableMaidRagdoll.block.parts.MaidPartBlock;
+import com.gly091020.SableMaidRagdoll.block.parts.MaidPartBlockEntity;
+import com.gly091020.SableMaidRagdoll.block.tnt_cake.TNTCakeBlock;
 import com.gly091020.SableMaidRagdoll.compat.control.MaidRagdollPartRecognizer;
 import com.gly091020.SableMaidRagdoll.compat.love_loathe.RagdollSaddleLaunch;
 import com.gly091020.SableMaidRagdoll.compat.util.CompatMods;
@@ -11,6 +17,7 @@ import com.gly091020.SableMaidRagdoll.item.CopyRagdollIDItem;
 import com.gly091020.SableMaidRagdoll.item.MaidMaceItem;
 import com.gly091020.SableMaidRagdoll.item.PlayerCheatDeathItem;
 import com.gly091020.SableMaidRagdoll.item.SonicWaveItem;
+import com.gly091020.SableMaidRagdoll.network.ServerboundBroomManPacket;
 import com.gly091020.SableMaidRagdoll.network.ServerboundEmojiSelectPacket;
 import com.gly091020.SableMaidRagdoll.util.MaidCreativeTab;
 import com.gly091020.SableRagdollLib.api.RagdollTypeRegistry;
@@ -20,7 +27,6 @@ import com.mojang.serialization.Codec;
 import me.shedaniel.autoconfig.AutoConfig;
 import me.shedaniel.autoconfig.serializer.Toml4jConfigSerializer;
 import net.minecraft.core.component.DataComponentType;
-import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
@@ -29,6 +35,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.damagesource.DamageType;
+import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
@@ -79,13 +86,6 @@ public class SableMaidRagdoll {
     public static final DeferredHolder<SoundEvent, SoundEvent> WATERMELON_HURT = SOUNDS.register("watermelon_hurt", () ->
             SoundEvent.createVariableRangeEvent(ResourceLocation.fromNamespaceAndPath(MODID, "watermelon_hurt")));
 
-    public static final DeferredHolder<Item, Item> MOD_ICON_ITEM = ITEMS.register("mod_icon", resourceLocation -> new Item(new Item.Properties()));
-    public static final DeferredHolder<Item, CheatDeathBaubleItem> CHEAT_DEATH_BAUBLE_ITEM = ITEMS.register("cheat_death_bauble", resourceLocation -> new CheatDeathBaubleItem());
-    public static final DeferredHolder<Item, PlayerCheatDeathItem> PLAYER_CHEAT_DEATH_ITEM = ITEMS.register("player_cheat_death", resourceLocation -> new PlayerCheatDeathItem());
-    public static final DeferredHolder<Item, CopyRagdollIDItem> COPY_RAGDOLL_ID_ITEM = ITEMS.register("copy_ragdoll_id", resourceLocation -> new CopyRagdollIDItem());
-    public static final DeferredHolder<Item, MaidMaceItem> MAID_MACE_ITEM = ITEMS.register("maid_mace", resourceLocation -> new MaidMaceItem());
-    public static final DeferredHolder<Item, SonicWaveItem> SONIC_WAVE_ITEM = ITEMS.register("sonic_wave", resourceLocation -> new SonicWaveItem());
-
     public static final DeferredHolder<Block, MaidPartBlock> MAID_PART_BLOCK = BLOCKS.register("maid_part", () -> new MaidPartBlock(MaidPartBlock.PROPERTIES));
     public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<MaidPartBlockEntity>> MAID_PART_BLOCK_ENTITY = BLOCK_ENTITIES.register("maid_part", () ->
             BlockEntityType.Builder.of(MaidPartBlockEntity::new, MAID_PART_BLOCK.get()).build(null));
@@ -95,6 +95,15 @@ public class SableMaidRagdoll {
     public static final DeferredHolder<Block, MaidDollBlock> MAID_DOLL_BLOCK = BLOCKS.register("maid_doll", () -> new MaidDollBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.WHITE_WOOL).isValidSpawn(Blocks::never)));
     public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<MaidDollBlockEntity>> MAID_DOLL_BLOCK_ENTITY = BLOCK_ENTITIES.register("maid_doll", () ->
             BlockEntityType.Builder.of(MaidDollBlockEntity::new, MAID_DOLL_BLOCK.get()).build(null));
+    public static final DeferredHolder<Block, TNTCakeBlock> TNT_CAKE_BLOCK = BLOCKS.register("tnt_cake", r -> new TNTCakeBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.CAKE)));
+
+    public static final DeferredHolder<Item, Item> MOD_ICON_ITEM = ITEMS.register("mod_icon", resourceLocation -> new Item(new Item.Properties()));
+    public static final DeferredHolder<Item, CheatDeathBaubleItem> CHEAT_DEATH_BAUBLE_ITEM = ITEMS.register("cheat_death_bauble", resourceLocation -> new CheatDeathBaubleItem());
+    public static final DeferredHolder<Item, PlayerCheatDeathItem> PLAYER_CHEAT_DEATH_ITEM = ITEMS.register("player_cheat_death", resourceLocation -> new PlayerCheatDeathItem());
+    public static final DeferredHolder<Item, CopyRagdollIDItem> COPY_RAGDOLL_ID_ITEM = ITEMS.register("copy_ragdoll_id", resourceLocation -> new CopyRagdollIDItem());
+    public static final DeferredHolder<Item, MaidMaceItem> MAID_MACE_ITEM = ITEMS.register("maid_mace", resourceLocation -> new MaidMaceItem());
+    public static final DeferredHolder<Item, SonicWaveItem> SONIC_WAVE_ITEM = ITEMS.register("sonic_wave", resourceLocation -> new SonicWaveItem());
+    public static final DeferredHolder<Item, BlockItem> TNT_CAKE_ITEM = ITEMS.register("tnt_cake", r -> new BlockItem(TNT_CAKE_BLOCK.get(), new Item.Properties().stacksTo(1)));
 
     public static final DeferredHolder<DataComponentType<?>, DataComponentType<String>> MAID_MODEL = DATA_COMPONENTS.register("maid_model", r ->
        DataComponentType.<String>builder().persistent(Codec.STRING).networkSynchronized(ByteBufCodecs.STRING_UTF8).build()
@@ -154,11 +163,17 @@ public class SableMaidRagdoll {
 
     public static class Network {
         public static void onRegisterPayloadHandlers(RegisterPayloadHandlersEvent event) {
-            var registrar = event.registrar(MODID).versioned("1");
+            var registrar = event.registrar(MODID).versioned("2");
             registrar.playToServer(
                     ServerboundEmojiSelectPacket.TYPE,
                     ServerboundEmojiSelectPacket.STREAM_CODEC,
                     ServerboundEmojiSelectPacket::handle
+            );
+
+            registrar.playToServer(
+                    ServerboundBroomManPacket.TYPE,
+                    ServerboundBroomManPacket.STREAM_CODEC,
+                    ServerboundBroomManPacket::handle
             );
         }
     }

@@ -1,5 +1,6 @@
 package com.gly091020.SableMaidRagdoll.datagen;
 
+import com.github.tartaricacid.touhoulittlemaid.init.InitItems;
 import com.gly091020.SableMaidRagdoll.SableMaidRagdoll;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -46,7 +47,8 @@ public class ModTagsProvider {
                     .addTag(TagKey.create(Registries.ITEM, ResourceLocation.withDefaultNamespace("anvil")))
                     .addTag(TagKey.create(Registries.ITEM, ResourceLocation.withDefaultNamespace("doors")))
                     .addTag(TagKey.create(Registries.ITEM, ResourceLocation.withDefaultNamespace("shovels")))
-                    .add(BuiltInRegistries.ITEM.getOptional(ResourceLocation.fromNamespaceAndPath("touhou_little_maid", "maid_beacon")).orElseThrow())
+                    .add(InitItems.MAID_BEACON.get())
+                    .add(InitItems.BOOKSHELF.get())
                     .addOptionalTag(ResourceLocation.fromNamespaceAndPath("superbwarfare", "hammer"))
                     .addOptionalTag(ResourceLocation.fromNamespaceAndPath("c", "tools/wrench"))
                     .addOptional(ResourceLocation.fromNamespaceAndPath("iammusicplayer", "boombox"))

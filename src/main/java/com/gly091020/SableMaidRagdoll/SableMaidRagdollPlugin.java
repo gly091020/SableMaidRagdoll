@@ -3,7 +3,9 @@ package com.gly091020.SableMaidRagdoll;
 import com.github.tartaricacid.touhoulittlemaid.ai.agent.tool.ToolRegister;
 import com.github.tartaricacid.touhoulittlemaid.api.ILittleMaid;
 import com.github.tartaricacid.touhoulittlemaid.api.LittleMaidExtension;
+import com.github.tartaricacid.touhoulittlemaid.entity.ai.edible.MaidEdibleBlockManager;
 import com.github.tartaricacid.touhoulittlemaid.item.bauble.BaubleManager;
+import com.gly091020.SableMaidRagdoll.block.tnt_cake.TNTCakeEdible;
 import com.gly091020.SableMaidRagdoll.compat.util.CompatMods;
 import com.gly091020.SableMaidRagdoll.compat.util.RollTool;
 import com.gly091020.SableMaidRagdoll.item.CheatDeathBauble;
@@ -19,5 +21,10 @@ public class SableMaidRagdollPlugin implements ILittleMaid {
     public void registerAITool(ToolRegister register) {
         if(SableMaidRagdoll.CONFIG.loveAndLoathe.moreAIFunction && CompatMods.LOVE_LOATHE)
             register.register(new RollTool());
+    }
+
+    @Override
+    public void registerMaidEdibleBlock(MaidEdibleBlockManager manager) {
+        manager.add(new TNTCakeEdible());
     }
 }

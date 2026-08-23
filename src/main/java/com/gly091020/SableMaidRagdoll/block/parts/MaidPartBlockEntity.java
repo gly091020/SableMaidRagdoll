@@ -1,4 +1,4 @@
-package com.gly091020.SableMaidRagdoll.block;
+package com.gly091020.SableMaidRagdoll.block.parts;
 
 import com.gly091020.SableMaidRagdoll.SableMaidRagdoll;
 import com.gly091020.SableRagdollLib.block.AbstractPartBlockEntity;

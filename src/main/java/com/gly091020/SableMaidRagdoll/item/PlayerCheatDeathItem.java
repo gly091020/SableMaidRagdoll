@@ -5,7 +5,7 @@ import com.github.tartaricacid.touhoulittlemaid.init.InitTrigger;
 import com.github.tartaricacid.touhoulittlemaid.inventory.tooltip.ItemMaidTooltip;
 import com.github.tartaricacid.touhoulittlemaid.inventory.tooltip.YsmMaidInfo;
 import com.gly091020.SableMaidRagdoll.SableMaidRagdoll;
-import com.gly091020.SableMaidRagdoll.block.MaidDollBlockEntity;
+import com.gly091020.SableMaidRagdoll.block.maid_doll.MaidDollBlockEntity;
 import com.gly091020.SableMaidRagdoll.util.MaidRagdollAdvancementEvents;
 import com.gly091020.SableRagdollLib.api.RagdollHelper;
 import com.gly091020.SableRagdollLib.api.ScheduleManager;

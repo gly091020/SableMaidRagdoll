@@ -1,4 +1,4 @@
-package com.gly091020.SableMaidRagdoll.block;
+package com.gly091020.SableMaidRagdoll.block.parts;
 
 import com.github.tartaricacid.touhoulittlemaid.entity.monster.FairyType;
 import com.gly091020.SableMaidRagdoll.SableMaidRagdoll;
@@ -8,7 +8,6 @@ import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.world.level.block.state.BlockState;
-import org.jetbrains.annotations.NotNull;
 
 public class MaidFairyPartBlockEntity extends AbstractPartBlockEntity {
     private FairyType type = FairyType.CYAN;

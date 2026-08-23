@@ -6,7 +6,7 @@ import com.github.tartaricacid.touhoulittlemaid.client.model.bedrock.SimpleBedro
 import com.github.tartaricacid.touhoulittlemaid.client.resource.BedrockModelLoader;
 import com.github.tartaricacid.touhoulittlemaid.client.resource.CustomPackLoader;
 import com.github.tartaricacid.touhoulittlemaid.client.resource.pojo.MaidModelInfo;
-import com.gly091020.SableMaidRagdoll.block.MaidFairyPartBlockEntity;
+import com.gly091020.SableMaidRagdoll.block.parts.MaidFairyPartBlockEntity;
 import com.gly091020.SableMaidRagdoll.util.MaidModelHelper;
 import com.gly091020.SableRagdollLib.resource.file.RagdollExpressions;
 import com.gly091020.SableRagdollLib.resource.file.RagdollRenderData;

@@ -1,4 +1,4 @@
-package com.gly091020.SableMaidRagdoll.block;
+package com.gly091020.SableMaidRagdoll.block.maid_doll;
 
 import com.gly091020.SableMaidRagdoll.SableMaidRagdoll;
 import net.minecraft.core.BlockPos;
@@ -10,8 +10,6 @@ import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
 import org.jetbrains.annotations.Nullable;
 
 public class MaidDollBlockEntity extends BlockEntity {
