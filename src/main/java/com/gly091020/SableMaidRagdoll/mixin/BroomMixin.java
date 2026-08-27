@@ -8,9 +8,12 @@ import net.minecraft.client.resources.sounds.SimpleSoundInstance;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.MoverType;
 import net.minecraft.world.phys.Vec3;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
 import net.neoforged.neoforge.network.PacketDistributor;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
@@ -36,8 +39,15 @@ public abstract class BroomMixin {
         double backAngle = Math.abs(((motionYaw - (broomYaw + 180) + 180) % 360 + 360) % 360 - 180);
         if(angle < 30 || backAngle < 30){
             PacketDistributor.sendToServer(new ServerboundBroomManPacket(entityBroom.getId(), motion));
-            if(SableMaidRagdoll.CONFIG.sounds.broomMan && entityBroom.level().isClientSide)
-                Minecraft.getInstance().getSoundManager().play(SimpleSoundInstance.forUI(SableMaidRagdoll.BROOM_MAN, 1));
+            if(entityBroom.level().isClientSide)
+                sableMaidRagdoll$playSound();
         }
+    }
+
+    @Unique
+    @OnlyIn(Dist.CLIENT)
+    private static void sableMaidRagdoll$playSound(){
+        if(SableMaidRagdoll.CONFIG.sounds.broomMan)
+            Minecraft.getInstance().getSoundManager().play(SimpleSoundInstance.forUI(SableMaidRagdoll.BROOM_MAN, 1));
     }
 }
