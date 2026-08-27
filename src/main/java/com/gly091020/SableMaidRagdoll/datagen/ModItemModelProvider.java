@@ -18,6 +18,8 @@ public class ModItemModelProvider extends ItemModelProvider {
         basicItem(SableMaidRagdoll.MAID_MACE_ITEM.get());
         basicItem(SableMaidRagdoll.MOD_ICON_ITEM.get());
         basicItem(SableMaidRagdoll.SONIC_WAVE_ITEM.get());
+        spawnEggItem(SableMaidRagdoll.RAGDOLLABLE_MAID_SPAWN_EGG.get());
+        spawnEggItem(SableMaidRagdoll.WINE_FOX_SPAWN_EGG.get());
         simpleBlockItem(SableMaidRagdoll.TNT_CAKE_BLOCK.get());
 
         getBuilder("copy_ragdoll_id")

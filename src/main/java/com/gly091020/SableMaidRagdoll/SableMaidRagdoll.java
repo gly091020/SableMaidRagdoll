@@ -8,6 +8,8 @@ import com.gly091020.SableMaidRagdoll.block.parts.MaidFairyPartBlockEntity;
 import com.gly091020.SableMaidRagdoll.block.parts.MaidPartBlock;
 import com.gly091020.SableMaidRagdoll.block.parts.MaidPartBlockEntity;
 import com.gly091020.SableMaidRagdoll.block.tnt_cake.TNTCakeBlock;
+import com.gly091020.SableMaidRagdoll.item.spawn_egg.RagdollableMaidSpawnEgg;
+import com.gly091020.SableMaidRagdoll.item.spawn_egg.WineFoxSpawnEgg;
 import com.gly091020.SableMaidRagdoll.util.MaidRagdollPartRecognizer;
 import com.gly091020.SableMaidRagdoll.compat.love_loathe.RagdollSaddleLaunch;
 import com.gly091020.SableMaidRagdoll.compat.util.CompatMods;
@@ -106,6 +108,8 @@ public class SableMaidRagdoll {
     public static final DeferredHolder<Item, MaidMaceItem> MAID_MACE_ITEM = ITEMS.register("maid_mace", resourceLocation -> new MaidMaceItem());
     public static final DeferredHolder<Item, SonicWaveItem> SONIC_WAVE_ITEM = ITEMS.register("sonic_wave", resourceLocation -> new SonicWaveItem());
     public static final DeferredHolder<Item, BlockItem> TNT_CAKE_ITEM = ITEMS.register("tnt_cake", r -> new BlockItem(TNT_CAKE_BLOCK.get(), new Item.Properties().stacksTo(1)));
+    public static final DeferredHolder<Item, RagdollableMaidSpawnEgg> RAGDOLLABLE_MAID_SPAWN_EGG = ITEMS.register("ragdollanle_maid_spawn_egg", r -> new RagdollableMaidSpawnEgg());
+    public static final DeferredHolder<Item, WineFoxSpawnEgg> WINE_FOX_SPAWN_EGG = ITEMS.register("winefox_spawn_egg", r -> new WineFoxSpawnEgg());
 
     public static final DeferredHolder<DataComponentType<?>, DataComponentType<String>> MAID_MODEL = DATA_COMPONENTS.register("maid_model", r ->
        DataComponentType.<String>builder().persistent(Codec.STRING).networkSynchronized(ByteBufCodecs.STRING_UTF8).build()

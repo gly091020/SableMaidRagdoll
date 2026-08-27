@@ -82,5 +82,9 @@
   "text.autoconfig.sablemaidragdoll.option.ragdollOnBroom": "Ragdoll on broom collision",
   "text.autoconfig.sablemaidragdoll.option.items.tntCake": "TNT Cake",
   "text.autoconfig.sablemaidragdoll.option.items.sonicWave": "Sonic Wave Generator",
-  "text.autoconfig.sablemaidragdoll.option.sounds.broomMan": "Crash"
+  "text.autoconfig.sablemaidragdoll.option.sounds.broomMan": "Crash",
+
+  "item.sablemaidragdoll.ragdollanle_maid_spawn_egg": "Ragdollable Maid Spawn Egg",
+  "item.sablemaidragdoll.winefox_spawn_egg": "Wine Fox Spawn Egg",
+  "text.autoconfig.sablemaidragdoll.option.items.spawnEggs": "Spawn Eggs"
 }

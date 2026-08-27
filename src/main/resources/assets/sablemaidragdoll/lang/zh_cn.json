@@ -82,5 +82,9 @@
   "text.autoconfig.sablemaidragdoll.option.sounds.GCJCry": "作者他弟的神必哭喊",
   "text.autoconfig.sablemaidragdoll.option.sounds.watermelonHurt": "郝啊",
   "text.autoconfig.sablemaidragdoll.option.sounds.broomMan": "坠机",
-  "block.sablemaidragdoll.tnt_cake": "TNT蛋糕"
+  "block.sablemaidragdoll.tnt_cake": "TNT蛋糕",
+
+  "item.sablemaidragdoll.ragdollanle_maid_spawn_egg": "可布娃娃化女仆刷怪蛋",
+  "item.sablemaidragdoll.winefox_spawn_egg": "酒狐刷怪蛋",
+  "text.autoconfig.sablemaidragdoll.option.items.spawnEggs": "刷怪蛋"
 }

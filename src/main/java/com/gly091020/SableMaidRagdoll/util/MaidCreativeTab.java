@@ -31,6 +31,10 @@ public class MaidCreativeTab {
             output.accept(SableMaidRagdoll.SONIC_WAVE_ITEM.get());
         if(SableMaidRagdoll.CONFIG.items.tntCake)
             output.accept(SableMaidRagdoll.TNT_CAKE_ITEM.get());
+        if(SableMaidRagdoll.CONFIG.items.spawnEggs){
+            output.accept(SableMaidRagdoll.RAGDOLLABLE_MAID_SPAWN_EGG.get());
+            output.accept(SableMaidRagdoll.WINE_FOX_SPAWN_EGG.get());
+        }
         output.accept(SableMaidRagdoll.COPY_RAGDOLL_ID_ITEM.get());
     }
 
