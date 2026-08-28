@@ -8,6 +8,7 @@ import com.gly091020.SableMaidRagdoll.block.parts.MaidFairyPartBlockEntity;
 import com.gly091020.SableMaidRagdoll.block.parts.MaidPartBlock;
 import com.gly091020.SableMaidRagdoll.block.parts.MaidPartBlockEntity;
 import com.gly091020.SableMaidRagdoll.block.tnt_cake.TNTCakeBlock;
+import com.gly091020.SableMaidRagdoll.compat.player_ragdoll.PlayerRagdollUtil;
 import com.gly091020.SableMaidRagdoll.item.spawn_egg.RagdollableMaidSpawnEgg;
 import com.gly091020.SableMaidRagdoll.item.spawn_egg.WineFoxSpawnEgg;
 import com.gly091020.SableMaidRagdoll.util.MaidRagdollPartRecognizer;
@@ -162,6 +163,8 @@ public class SableMaidRagdoll {
 
         if(CompatMods.LOVE_LOATHE)
             RagdollSaddleLaunch.init();
+        if(CompatMods.PLAYER_RAGDOLL)
+            PlayerRagdollUtil.init();
 
         bus.addListener(Network::onRegisterPayloadHandlers);
         bus.addListener(SableMaidRagdollDatagen::onGatherData);

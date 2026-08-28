@@ -86,5 +86,8 @@
 
   "item.sablemaidragdoll.ragdollanle_maid_spawn_egg": "Ragdollable Maid Spawn Egg",
   "item.sablemaidragdoll.winefox_spawn_egg": "Wine Fox Spawn Egg",
-  "text.autoconfig.sablemaidragdoll.option.items.spawnEggs": "Spawn Eggs"
+  "text.autoconfig.sablemaidragdoll.option.items.spawnEggs": "Spawn Eggs",
+
+  "text.autoconfig.sablemaidragdoll.option.playerRagdoll": "Sable: Ragdolls",
+  "text.autoconfig.sablemaidragdoll.option.playerRagdoll.attackToRagDoll": "Become a ragdoll when attacked with a specific item"
 }

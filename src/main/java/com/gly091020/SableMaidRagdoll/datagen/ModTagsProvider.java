@@ -2,6 +2,7 @@ package com.gly091020.SableMaidRagdoll.datagen;
 
 import com.github.tartaricacid.touhoulittlemaid.init.InitItems;
 import com.gly091020.SableMaidRagdoll.SableMaidRagdoll;
+import dev.leo.sableplayerragdoll.RagdollItemTags;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
@@ -41,7 +42,7 @@ public class ModTagsProvider {
 
         @Override
         protected void addTags(HolderLookup.Provider provider) {
-            tag(TagKey.create(Registries.ITEM, ResourceLocation.fromNamespaceAndPath(SableMaidRagdoll.MODID, "maid_to_ragdoll")))
+            tag(SableMaidRagdoll.MAID_TO_RAGDOLL_TAG)
                     .add(Items.MACE)
                     .addTag(TagKey.create(Registries.ITEM, ResourceLocation.withDefaultNamespace("beds")))
                     .addTag(TagKey.create(Registries.ITEM, ResourceLocation.withDefaultNamespace("anvil")))

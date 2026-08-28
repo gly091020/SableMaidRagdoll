@@ -86,5 +86,8 @@
 
   "item.sablemaidragdoll.ragdollanle_maid_spawn_egg": "可布娃娃化女仆刷怪蛋",
   "item.sablemaidragdoll.winefox_spawn_egg": "酒狐刷怪蛋",
-  "text.autoconfig.sablemaidragdoll.option.items.spawnEggs": "刷怪蛋"
+  "text.autoconfig.sablemaidragdoll.option.items.spawnEggs": "刷怪蛋",
+
+  "text.autoconfig.sablemaidragdoll.option.playerRagdoll": "Sable: Ragdolls",
+  "text.autoconfig.sablemaidragdoll.option.playerRagdoll.attackToRagDoll": "用特定物品攻击时变成布娃娃"
 }
