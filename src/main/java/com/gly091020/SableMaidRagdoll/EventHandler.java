@@ -250,6 +250,11 @@ public class EventHandler {
         if(r == null || !(r.getEntity() instanceof EntityMaid maid))return;
         float damage = (float) (event.getMagnitude() * 24 - 4);
         if(damage <= 0)return;
+        var rag = RagdollManager.get(event.getSubLevel());
+        if(rag != null && event.getTarget().is(rag.getEntity())){
+            event.setDamage(0);
+            return;
+        }
         event.getTarget().hurt(maid.level().damageSources().mobAttack(maid), damage);
         event.setDamage(0);
     }

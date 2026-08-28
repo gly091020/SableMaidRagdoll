@@ -5,6 +5,7 @@ import com.github.tartaricacid.touhoulittlemaid.entity.passive.EntityMaid;
 import com.github.tartaricacid.touhoulittlemaid.init.InitEntities;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.player.Player;
 
 public class WineFoxSpawnEgg extends SMRDeferredSpawnEggItem {
     private static final String DEFAULT_MODEL_ID = "touhou_little_maid:hakurei_reimu";
@@ -13,9 +14,13 @@ public class WineFoxSpawnEgg extends SMRDeferredSpawnEggItem {
     }
 
     @Override
-    public void afterSpawn(Entity entity) {
+    public void afterSpawn(Entity owner, Entity entity) {
         if(entity.level().isClientSide)return;
-        if(entity instanceof EntityMaid maid)maid.setModelId(getRandomMaid(maid.getRandom()));
+        if(entity instanceof EntityMaid maid){
+            maid.setModelId(getRandomMaid(maid.getRandom()));
+            if(owner instanceof Player player && player.isShiftKeyDown())
+                maid.setOwnerUUID(player.getUUID());
+        }
     }
 
     public static String getRandomMaid(RandomSource randomSource){

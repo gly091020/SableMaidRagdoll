@@ -6,6 +6,7 @@ import com.gly091020.SableMaidRagdoll.SableMaidRagdoll;
 import com.gly091020.SableRagdollLib.common.DefFileLoader;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.player.Player;
 
 public class RagdollableMaidSpawnEgg extends SMRDeferredSpawnEggItem {
     private static final String DEFAULT_MODEL_ID = "touhou_little_maid:hakurei_reimu";
@@ -14,9 +15,13 @@ public class RagdollableMaidSpawnEgg extends SMRDeferredSpawnEggItem {
     }
 
     @Override
-    public void afterSpawn(Entity entity) {
+    public void afterSpawn(Entity owner, Entity entity) {
         if(entity.level().isClientSide)return;
-        if(entity instanceof EntityMaid maid)maid.setModelId(getRandomMaid(maid.getRandom()));
+        if(entity instanceof EntityMaid maid){
+            maid.setModelId(getRandomMaid(maid.getRandom()));
+            if(owner instanceof Player player && player.isShiftKeyDown())
+                maid.setOwnerUUID(player.getUUID());
+        }
     }
 
     public static String getRandomMaid(RandomSource randomSource){

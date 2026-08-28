@@ -43,7 +43,7 @@ public abstract class SMRDeferredSpawnEggItem extends DeferredSpawnEggItem {
 
             try {
                 var entity = type.spawn(source.level(), stack, null, source.pos().relative(face), MobSpawnType.DISPENSER, face != Direction.UP, false);
-                afterSpawn(entity);
+                afterSpawn(null, entity);
             } catch (Exception exception) {
                 DispenseItemBehavior.LOGGER.error("Error while dispensing spawn egg from dispenser at {}", source.pos(), exception);
                 return ItemStack.EMPTY;
@@ -76,7 +76,7 @@ public abstract class SMRDeferredSpawnEggItem extends DeferredSpawnEggItem {
             EntityType<?> entitytype = this.getType(itemstack);
             var entity = entitytype.spawn((ServerLevel)level, itemstack, p_43223_.getPlayer(), blockpos1, MobSpawnType.SPAWN_EGG, true, !Objects.equals(blockpos, blockpos1) && direction == Direction.UP);
             if (entity != null) {
-                afterSpawn(entity);
+                afterSpawn(p_43223_.getPlayer(), entity);
                 itemstack.shrink(1);
                 level.gameEvent(p_43223_.getPlayer(), GameEvent.ENTITY_PLACE, blockpos);
             }
@@ -102,7 +102,7 @@ public abstract class SMRDeferredSpawnEggItem extends DeferredSpawnEggItem {
                 if (entity == null) {
                     return InteractionResultHolder.pass(itemstack);
                 } else {
-                    afterSpawn(entity);
+                    afterSpawn(p_43226_, entity);
                     itemstack.consume(1, p_43226_);
                     p_43226_.awardStat(Stats.ITEM_USED.get(this));
                     p_43225_.gameEvent(p_43226_, GameEvent.ENTITY_PLACE, entity.position());
@@ -114,5 +114,5 @@ public abstract class SMRDeferredSpawnEggItem extends DeferredSpawnEggItem {
         }
     }
 
-    public abstract void afterSpawn(Entity entity);
+    public abstract void afterSpawn(@Nullable Entity owner, Entity entity);
 }
