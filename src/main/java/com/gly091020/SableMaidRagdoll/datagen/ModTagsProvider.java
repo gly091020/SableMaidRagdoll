@@ -14,6 +14,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.damagesource.DamageTypes;
 import net.minecraft.world.item.Items;
+import net.neoforged.neoforge.common.Tags;
 import net.neoforged.neoforge.common.data.BlockTagsProvider;
 import net.neoforged.neoforge.common.data.ExistingFileHelper;
 
@@ -64,7 +65,7 @@ public class ModTagsProvider {
 
         @Override
         protected void addTags(HolderLookup.Provider provider) {
-            tag(TagKey.create(Registries.DAMAGE_TYPE, ResourceLocation.fromNamespaceAndPath(SableMaidRagdoll.MODID, "always_to_ragdoll")))
+            tag(SableMaidRagdoll.ALWAYS_TO_RAGDOLL_TAG)
                     .add(DamageTypes.BAD_RESPAWN_POINT)
                     .add(DamageTypes.EXPLOSION)
                     .add(DamageTypes.FALL)
@@ -76,7 +77,12 @@ public class ModTagsProvider {
                     .add(DamageTypes.STALAGMITE)
                     .add(DamageTypes.THROWN)
                     .add(DamageTypes.UNATTRIBUTED_FIREBALL)
-                    .add(DamageTypes.WITHER_SKULL);
+                    .add(DamageTypes.WITHER_SKULL)
+                    .addOptional(ResourceLocation.parse("superbwarfare:vehicle_strike"));
+
+            tag(SableMaidRagdoll.LAOWU_HURT_DANCE)
+                    .add(DamageTypes.FLY_INTO_WALL)
+                    .addOptional(ResourceLocation.parse("superbwarfare:vehicle_strike"));
         }
     }
 }

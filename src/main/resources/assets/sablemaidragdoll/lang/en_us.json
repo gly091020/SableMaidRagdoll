@@ -89,5 +89,8 @@
   "text.autoconfig.sablemaidragdoll.option.items.spawnEggs": "Spawn Eggs",
 
   "text.autoconfig.sablemaidragdoll.option.playerRagdoll": "Sable: Ragdolls",
-  "text.autoconfig.sablemaidragdoll.option.playerRagdoll.attackToRagDoll": "Become a ragdoll when attacked with a specific item"
+  "text.autoconfig.sablemaidragdoll.option.playerRagdoll.attackToRagDoll": "Become a ragdoll when attacked with a specific item",
+
+  "text.autoconfig.sablemaidragdoll.option.laoWuWineFox": "Laowu Maid",
+  "text.autoconfig.sablemaidragdoll.option.laoWuWineFox.dance": "Dance"
 }

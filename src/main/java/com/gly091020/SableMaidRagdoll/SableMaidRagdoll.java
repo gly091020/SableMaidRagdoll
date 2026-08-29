@@ -73,6 +73,7 @@ public class SableMaidRagdoll {
 
     public static final TagKey<Item> MAID_TO_RAGDOLL_TAG = TagKey.create(Registries.ITEM, ResourceLocation.fromNamespaceAndPath(MODID, "maid_to_ragdoll"));
     public static final TagKey<DamageType> ALWAYS_TO_RAGDOLL_TAG = TagKey.create(Registries.DAMAGE_TYPE, ResourceLocation.fromNamespaceAndPath(MODID, "always_to_ragdoll"));
+    public static final TagKey<DamageType> LAOWU_HURT_DANCE = TagKey.create(Registries.DAMAGE_TYPE, ResourceLocation.fromNamespaceAndPath(SableMaidRagdoll.MODID, "laowu_hurt_dance"));
 
     public static final DeferredHolder<SoundEvent, SoundEvent> PIPE = SOUNDS.register("pipe", () ->
             SoundEvent.createVariableRangeEvent(ResourceLocation.fromNamespaceAndPath(MODID, "pipe")));

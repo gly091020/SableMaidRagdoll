@@ -89,5 +89,8 @@
   "text.autoconfig.sablemaidragdoll.option.items.spawnEggs": "刷怪蛋",
 
   "text.autoconfig.sablemaidragdoll.option.playerRagdoll": "Sable: Ragdolls",
-  "text.autoconfig.sablemaidragdoll.option.playerRagdoll.attackToRagDoll": "用特定物品攻击时变成布娃娃"
+  "text.autoconfig.sablemaidragdoll.option.playerRagdoll.attackToRagDoll": "用特定物品攻击时变成布娃娃",
+
+  "text.autoconfig.sablemaidragdoll.option.laoWuWineFox": "酒狐哈气",
+  "text.autoconfig.sablemaidragdoll.option.laoWuWineFox.dance": "跳舞"
 }

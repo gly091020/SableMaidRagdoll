@@ -24,6 +24,9 @@ public class SableMaidRagdollConfig implements ConfigData {
     @ConfigEntry.Gui.CollapsibleObject(startExpanded = true)
     public PlayerRagdoll playerRagdoll = new PlayerRagdoll();
 
+    @ConfigEntry.Gui.CollapsibleObject(startExpanded = true)
+    public LaoWuWineFox laoWuWineFox = new LaoWuWineFox();
+
     @ConfigEntry.Gui.CollapsibleObject()
     public Sounds sounds = new Sounds();
 
@@ -56,6 +59,10 @@ public class SableMaidRagdollConfig implements ConfigData {
 
     public static class PlayerRagdoll{
         public boolean attackToRagDoll = true;
+    }
+
+    public static class LaoWuWineFox{
+        public boolean dance = true;
     }
 
     @Button("open_lib_config")

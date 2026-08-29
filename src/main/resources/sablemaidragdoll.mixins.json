@@ -11,7 +11,8 @@
     "IMaidEdibleBlockMixin",
     "love_loathe.CallResponseHurtMixin",
     "love_loathe.EmotionManagerMixin",
-    "love_loathe.StandUpActionMixin"
+    "love_loathe.StandUpActionMixin",
+    "maid_spell.MaidSpellAllyEventsMixin"
   ],
   "client": [
     "BedrockModelAccessor",

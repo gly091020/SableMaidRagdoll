@@ -6,7 +6,9 @@ import com.github.tartaricacid.touhoulittlemaid.init.InitDataComponent;
 import com.github.tartaricacid.touhoulittlemaid.init.InitItems;
 import com.gly091020.SableMaidRagdoll.SableMaidRagdoll;
 import com.gly091020.SableMaidRagdoll.compat.util.MaidRollManager;
+import com.gly091020.SableMaidRagdoll.compat.util.WineFoxHurtDancingManager;
 import com.gly091020.SableRagdollLib.api.RagdollHelper;
+import com.gly091020.SableRagdollLib.api.RagdollManager;
 import com.gly091020.SableRagdollLib.api.ScheduleManager;
 import com.gly091020.SableRagdollLib.common.DefFileLoader;
 import com.mojang.brigadier.CommandDispatcher;
@@ -36,6 +38,9 @@ public class MaidRagdollCommand {
         root.then(Commands.literal("spawn_test_box").then(Commands.argument("modelID", ResourceLocationArgument.id()).executes(MaidRagdollCommand::spawnTestBox)));
         root.then(Commands.literal("give_garage_kit").then(Commands.argument("entity", EntityArgument.entity()).executes(MaidRagdollCommand::giveGarageKit)));
         root.then(Commands.literal("start_roll").then(Commands.argument("entity", EntityArgument.entity()).executes(MaidRagdollCommand::startRoll)));
+        root.then(Commands.literal("start_dance")
+                .executes(MaidRagdollCommand::startDanceAll)
+                .then(Commands.argument("entity", EntityArgument.entity()).executes(MaidRagdollCommand::startDance)));
         dispatcher.register(root);
     }
 
@@ -125,5 +130,31 @@ public class MaidRagdollCommand {
             return 0;
         MaidRollManager.startRolling(maid);
         return 1;
+    }
+
+    /** 指定实体对应的布娃娃乱舞（测试用）。 */
+    public static int startDance(CommandContext<CommandSourceStack> context) throws CommandSyntaxException {
+        var entity = EntityArgument.getEntity(context, "entity");
+        var ragdoll = RagdollManager.getAll().stream()
+                .filter(r -> r.isAlive() && r.getEntity() == entity)
+                .findFirst().orElse(null);
+        if (ragdoll == null) {
+            return 0;
+        }
+        WineFoxHurtDancingManager.startDancing(ragdoll);
+        return 1;
+    }
+
+    /** 所有活跃布娃娃乱舞（测试用）。 */
+    public static int startDanceAll(CommandContext<CommandSourceStack> context) {
+        int count = 0;
+        for (var ragdoll : RagdollManager.getAll()) {
+            if (!ragdoll.isAlive()) {
+                continue;
+            }
+            WineFoxHurtDancingManager.startDancing(ragdoll);
+            count++;
+        }
+        return count;
     }
 }

@@ -10,9 +10,12 @@ import com.github.tartaricacid.touhoulittlemaid.entity.passive.EntityMaid;
 import com.github.tartaricacid.touhoulittlemaid.init.InitTrigger;
 import com.gly091020.SableMaidRagdoll.block.parts.MaidFairyPartBlockEntity;
 import com.gly091020.SableMaidRagdoll.command.MaidRagdollCommand;
+import com.gly091020.SableMaidRagdoll.compat.util.CompatMods;
 import com.gly091020.SableMaidRagdoll.compat.util.MaidRollManager;
+import com.gly091020.SableMaidRagdoll.compat.util.WineFoxHurtDancingManager;
 import com.gly091020.SableMaidRagdoll.util.MaidCollisionHandler;
 import com.gly091020.SableMaidRagdoll.util.MaidRagdollAdvancementEvents;
+import com.gly091020.SableRagdollLib.api.Ragdoll;
 import com.gly091020.SableRagdollLib.api.RagdollHelper;
 import com.gly091020.SableRagdollLib.api.RagdollManager;
 import com.gly091020.SableRagdollLib.api.ScheduleManager;
@@ -154,14 +157,17 @@ public class EventHandler {
         if (health < damage) return;
 
         boolean ownerAttack = isOwnerAttackWithTag(event.getMaid(), event.getSource());
-        if (!ownerAttack
-                && !(SableMaidRagdoll.CONFIG.ragdollOnSpecialDamage && event.getSource().is(SableMaidRagdoll.ALWAYS_TO_RAGDOLL_TAG))) return;
+        boolean specialDamage = SableMaidRagdoll.CONFIG.ragdollOnSpecialDamage && event.getSource().is(SableMaidRagdoll.ALWAYS_TO_RAGDOLL_TAG);
+        if (!ownerAttack && !specialDamage) return;
 
-        ragdollOnDamage(level, event.getSource(), event.getMaid());
+        var rag = ragdollOnDamage(level, event.getSource(), event.getMaid());
+        if(rag == null)return;
         if (ownerAttack && event.getMaid().getOwner() instanceof ServerPlayer player) {
             player.awardStat(Stats.CUSTOM.get(SableMaidRagdoll.MAID_KNOCKED_AWAY.get()));
             InitTrigger.MAID_EVENT.get().trigger(player, MaidRagdollAdvancementEvents.HIT_MAID.getName());
         }
+        if(CompatMods.LAOWU_WINE_FOX && specialDamage && event.getSource().is(SableMaidRagdoll.LAOWU_HURT_DANCE))
+            WineFoxHurtDancingManager.startDancing(rag);
         if(ownerAttack && SableMaidRagdoll.CONFIG.sounds.watermelonHurt)
             event.getMaid().level().playSound(null, BlockPos.containing(event.getMaid().position()), SableMaidRagdoll.WATERMELON_HURT.get(), SoundSource.PLAYERS, 1, 1);
         else if(SableMaidRagdoll.CONFIG.sounds.metalPipe)
@@ -193,7 +199,7 @@ public class EventHandler {
                 || (SableMaidRagdoll.CONFIG.ragdollOnSpecialDamage && source.is(SableMaidRagdoll.ALWAYS_TO_RAGDOLL_TAG));
     }
 
-    private static void ragdollOnDamage(ServerLevel level, DamageSource damageSource, EntityMaid maid){
+    private static Ragdoll ragdollOnDamage(ServerLevel level, DamageSource damageSource, EntityMaid maid){
         var sourceEntity = damageSource.getEntity();
         var position = damageSource.getSourcePosition();
         Vec3 direction = maid
@@ -210,7 +216,7 @@ public class EventHandler {
         } else if (position != null) {
             maid.lookAt(EntityAnchorArgument.Anchor.EYES, position);
         }
-        createRagdoll(level, maid, maidMotion, axis, true);
+        return createRagdoll(level, maid, maidMotion, axis, true);
     }
 
     private static void createRagdoll(ServerLevel level, EntityMaid maid, Vector3d maidMotion, boolean addMaid){
@@ -219,11 +225,11 @@ public class EventHandler {
         createRagdoll(level, maid, maidMotion, axis, addMaid);
     }
 
-    private static void createRagdoll(ServerLevel level, EntityMaid maid, Vector3d maidMotion, Vector3d rotation, boolean addMaid){
+    private static Ragdoll createRagdoll(ServerLevel level, EntityMaid maid, Vector3d maidMotion, Vector3d rotation, boolean addMaid){
         var id = ResourceLocation.fromNamespaceAndPath(SableMaidRagdoll.MODID, maid.getModelId().replace(":", "/"));
         var parts = RagdollHelper.createRagdoll(level, maid.position().add(0, 0.5, 0), new Vec3(0, -maid.getYHeadRot(), 0),
                 id);
-        if(parts == null)return;
+        if(parts == null)return null;
         // 等待 2tick 是为了等待刚体创建在施加推力
         scheduleDelayed(level, 2, () -> {
             parts.addAngularImpulse(rotation, true);
@@ -231,6 +237,7 @@ public class EventHandler {
         });
         if(addMaid)
             parts.addEntity(maid);
+        return parts;
     }
 
     @SubscribeEvent
@@ -241,6 +248,7 @@ public class EventHandler {
     @SubscribeEvent
     public static void onServerTick(ServerTickEvent.Pre event){
         MaidRollManager.tick();
+        WineFoxHurtDancingManager.tick();
     }
 
     @SubscribeEvent
