@@ -2,6 +2,7 @@ package com.gly091020.SableMaidRagdoll.mixin;
 
 import com.github.tartaricacid.touhoulittlemaid.entity.item.EntityBroom;
 import com.gly091020.SableMaidRagdoll.SableMaidRagdoll;
+import com.gly091020.SableMaidRagdoll.init.InitSounds;
 import com.gly091020.SableMaidRagdoll.network.ServerboundBroomManPacket;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.sounds.SimpleSoundInstance;
@@ -48,6 +49,6 @@ public abstract class BroomMixin {
     @OnlyIn(Dist.CLIENT)
     private static void sableMaidRagdoll$playSound(){
         if(SableMaidRagdoll.CONFIG.sounds.broomMan)
-            Minecraft.getInstance().getSoundManager().play(SimpleSoundInstance.forUI(SableMaidRagdoll.BROOM_MAN, 1));
+            Minecraft.getInstance().getSoundManager().play(SimpleSoundInstance.forUI(InitSounds.BROOM_MAN, 1));
     }
 }

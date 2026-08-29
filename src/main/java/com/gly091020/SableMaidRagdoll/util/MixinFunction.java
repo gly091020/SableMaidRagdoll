@@ -8,6 +8,7 @@ import com.github.tartaricacid.touhoulittlemaid.entity.passive.EntityMaid;
 import com.gly091020.SableMaidRagdoll.SableMaidRagdoll;
 import com.gly091020.SableMaidRagdoll.compat.player_ragdoll.PlayerRagdollUtil;
 import com.gly091020.SableMaidRagdoll.compat.util.CompatMods;
+import com.gly091020.SableMaidRagdoll.init.InitSounds;
 import com.gly091020.SableMaidRagdoll.mixin.BedrockModelAccessor;
 import com.gly091020.SableRagdollLib.api.Ragdoll;
 import com.gly091020.SableRagdollLib.api.RagdollHelper;
@@ -122,6 +123,6 @@ public class MixinFunction {
             }
         }
         if(SableMaidRagdoll.CONFIG.sounds.metalPipe)
-            entityBroom.playSound(SableMaidRagdoll.PIPE.get());
+            entityBroom.playSound(InitSounds.PIPE.get());
     }
 }

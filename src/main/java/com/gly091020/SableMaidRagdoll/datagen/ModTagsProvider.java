@@ -2,19 +2,17 @@ package com.gly091020.SableMaidRagdoll.datagen;
 
 import com.github.tartaricacid.touhoulittlemaid.init.InitItems;
 import com.gly091020.SableMaidRagdoll.SableMaidRagdoll;
-import dev.leo.sableplayerragdoll.RagdollItemTags;
+import com.gly091020.SableMaidRagdoll.init.InitBlocks;
+import com.gly091020.SableMaidRagdoll.init.InitTags;
 import net.minecraft.core.HolderLookup;
-import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.PackOutput;
 import net.minecraft.data.tags.DamageTypeTagsProvider;
 import net.minecraft.data.tags.ItemTagsProvider;
-import net.minecraft.data.tags.TagsProvider;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.damagesource.DamageTypes;
 import net.minecraft.world.item.Items;
-import net.neoforged.neoforge.common.Tags;
 import net.neoforged.neoforge.common.data.BlockTagsProvider;
 import net.neoforged.neoforge.common.data.ExistingFileHelper;
 
@@ -32,7 +30,7 @@ public class ModTagsProvider {
         @Override
         protected void addTags(HolderLookup.Provider provider) {
             tag(TagKey.create(Registries.BLOCK, ResourceLocation.fromNamespaceAndPath("sableragdolllib", "ragdoll_part")))
-                    .add(SableMaidRagdoll.MAID_PART_BLOCK.get());
+                    .add(InitBlocks.MAID_PART_BLOCK.get());
         }
     }
 
@@ -43,7 +41,7 @@ public class ModTagsProvider {
 
         @Override
         protected void addTags(HolderLookup.Provider provider) {
-            tag(SableMaidRagdoll.MAID_TO_RAGDOLL_TAG)
+            tag(InitTags.MAID_TO_RAGDOLL_TAG)
                     .add(Items.MACE)
                     .addTag(TagKey.create(Registries.ITEM, ResourceLocation.withDefaultNamespace("beds")))
                     .addTag(TagKey.create(Registries.ITEM, ResourceLocation.withDefaultNamespace("anvil")))
@@ -65,7 +63,7 @@ public class ModTagsProvider {
 
         @Override
         protected void addTags(HolderLookup.Provider provider) {
-            tag(SableMaidRagdoll.ALWAYS_TO_RAGDOLL_TAG)
+            tag(InitTags.ALWAYS_TO_RAGDOLL_TAG)
                     .add(DamageTypes.BAD_RESPAWN_POINT)
                     .add(DamageTypes.EXPLOSION)
                     .add(DamageTypes.FALL)
@@ -80,7 +78,7 @@ public class ModTagsProvider {
                     .add(DamageTypes.WITHER_SKULL)
                     .addOptional(ResourceLocation.parse("superbwarfare:vehicle_strike"));
 
-            tag(SableMaidRagdoll.LAOWU_HURT_DANCE)
+            tag(InitTags.LAOWU_HURT_DANCE)
                     .add(DamageTypes.FLY_INTO_WALL)
                     .addOptional(ResourceLocation.parse("superbwarfare:vehicle_strike"));
         }

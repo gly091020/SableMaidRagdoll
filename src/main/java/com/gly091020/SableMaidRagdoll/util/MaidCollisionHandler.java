@@ -85,7 +85,7 @@ public class MaidCollisionHandler {
                 rag.getExtraData().remove("explosion");
 
                 if(SableMaidRagdoll.CONFIG.sounds.metalPipe)
-                    maid.level().playSound(null, BlockPos.containing(maid.position()), SableMaidRagdoll.PIPE.get(), SoundSource.PLAYERS, 1, 1f);
+                    maid.level().playSound(null, BlockPos.containing(maid.position()), com.gly091020.SableMaidRagdoll.init.InitSounds.PIPE.get(), SoundSource.PLAYERS, 1, 1f);
             }
         }
 

@@ -1,6 +1,6 @@
 package com.gly091020.SableMaidRagdoll.datagen;
 
-import com.gly091020.SableMaidRagdoll.SableMaidRagdoll;
+import com.gly091020.SableMaidRagdoll.init.InitBlocks;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.PackOutput;
 import net.minecraft.data.loot.LootTableProvider;
@@ -31,10 +31,10 @@ public class ModLootTableProvider extends LootTableProvider {
 
         @Override
         public void generate(BiConsumer<ResourceKey<LootTable>, LootTable.Builder> consumer) {
-            dropSelf(consumer, SableMaidRagdoll.MAID_PART_BLOCK.get());
-            dropSelf(consumer, SableMaidRagdoll.MAID_FAIRY_PART_BLOCK.get());
-            dropSelf(consumer, SableMaidRagdoll.MAID_DOLL_BLOCK.get());
-            consumer.accept(SableMaidRagdoll.TNT_CAKE_BLOCK.get().getLootTable(), new LootTable.Builder());
+            dropSelf(consumer, InitBlocks.MAID_PART_BLOCK.get());
+            dropSelf(consumer, InitBlocks.MAID_FAIRY_PART_BLOCK.get());
+            dropSelf(consumer, InitBlocks.MAID_DOLL_BLOCK.get());
+            consumer.accept(InitBlocks.TNT_CAKE_BLOCK.get().getLootTable(), new LootTable.Builder());
         }
     }
 

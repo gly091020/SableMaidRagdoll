@@ -1,7 +1,8 @@
 package com.gly091020.SableMaidRagdoll.block.maid_doll;
 
 import com.github.tartaricacid.touhoulittlemaid.block.BlockGarageKit;
-import com.gly091020.SableMaidRagdoll.SableMaidRagdoll;
+import com.gly091020.SableMaidRagdoll.init.InitDataComponents;
+import com.gly091020.SableMaidRagdoll.init.InitItems;
 import com.mojang.serialization.MapCodec;
 import dev.ryanhcode.sable.api.block.BlockWithSubLevelCollisionCallback;
 import dev.ryanhcode.sable.api.physics.callback.BlockSubLevelCollisionCallback;
@@ -53,10 +54,10 @@ public class MaidDollBlock extends HorizontalDirectionalBlock implements EntityB
     @Override
     protected List<ItemStack> getDrops(BlockState state, LootParams.Builder builder) {
         BlockEntity blockentity = builder.getOptionalParameter(LootContextParams.BLOCK_ENTITY);
-        var s = new ItemStack(SableMaidRagdoll.PLAYER_CHEAT_DEATH_ITEM.get());
+        var s = new ItemStack(InitItems.PLAYER_CHEAT_DEATH_ITEM.get());
         if(!(blockentity instanceof MaidDollBlockEntity blockEntity))return List.of(s);
-        s.set(SableMaidRagdoll.MAID_MODEL, blockEntity.getModelID());
-        s.set(SableMaidRagdoll.MAID_SOUND, blockEntity.getSoundID());
+        s.set(InitDataComponents.MAID_MODEL, blockEntity.getModelID());
+        s.set(InitDataComponents.MAID_SOUND, blockEntity.getSoundID());
         return List.of(s);
     }
 
@@ -89,9 +90,9 @@ public class MaidDollBlock extends HorizontalDirectionalBlock implements EntityB
         var be = level.getBlockEntity(pos);
         var r = super.getCloneItemStack(state, target, level, pos, player);
         if(!(be instanceof MaidDollBlockEntity blockEntity))return r;
-        r.set(SableMaidRagdoll.MAID_SOUND, blockEntity.getSoundID());
-        r.set(SableMaidRagdoll.MAID_MODEL, blockEntity.getModelID());
-        r.set(SableMaidRagdoll.ENABLE_CONTROL, blockEntity.isControlMode());
+        r.set(InitDataComponents.MAID_SOUND, blockEntity.getSoundID());
+        r.set(InitDataComponents.MAID_MODEL, blockEntity.getModelID());
+        r.set(InitDataComponents.ENABLE_CONTROL, blockEntity.isControlMode());
         return r;
     }
 

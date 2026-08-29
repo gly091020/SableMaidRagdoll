@@ -6,6 +6,7 @@ import com.github.tartaricacid.touhoulittlemaid.compat.gun.common.GunClientUtil;
 import com.gly091020.SableMaidRagdoll.SableMaidRagdoll;
 import com.gly091020.SableMaidRagdoll.block.parts.MaidPartBlockEntity;
 import com.gly091020.SableMaidRagdoll.geo.GeoMaidModelRenderer;
+import com.gly091020.SableMaidRagdoll.init.InitAttachmentTypes;
 import com.gly091020.SableMaidRagdoll.util.MaidModelHelper;
 import com.gly091020.SableMaidRagdoll.util.RagdollChatBubbleRenderer;
 import com.gly091020.SableMaidRagdoll.util.RagdollEmoji;
@@ -201,7 +202,7 @@ public class MaidPartRenderer extends AbstractPartBlockRenderer<MaidPartBlockEnt
         var entity = blockEntity.getEntity();
         if (!(entity instanceof Player player) || !RagdollEmoji.hasEmoji(player)) return null;
         ResourceLocation location = RagdollEmoji.getEmoji(player);
-        if (location.equals(SableMaidRagdoll.EMPTY_EMOJI)) return null;
+        if (location.equals(InitAttachmentTypes.EMPTY_EMOJI)) return null;
         for (var emoji : RagdollChatBubbleRenderer.getEmojis()) {
             if (emoji.location().equals(location)) return emoji;
         }

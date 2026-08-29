@@ -2,6 +2,7 @@ package com.gly091020.SableMaidRagdoll.compat.love_loathe;
 
 import com.github.JumDa5he.callresponse.compat.api.event.saddle.SaddleEvent;
 import com.gly091020.SableMaidRagdoll.SableMaidRagdoll;
+import com.gly091020.SableMaidRagdoll.init.InitSounds;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.sounds.SimpleSoundInstance;
 import net.minecraft.client.resources.sounds.SoundInstance;
@@ -20,7 +21,7 @@ public class ChargeSoundManager {
     @SubscribeEvent
     public static void onStart(SaddleEvent.Charge.Start event){
         if(!SableMaidRagdoll.CONFIG.sounds.bigDog)return;
-        bigDog = SimpleSoundInstance.forUI(SableMaidRagdoll.BIG_DOG, 1);
+        bigDog = SimpleSoundInstance.forUI(InitSounds.BIG_DOG, 1);
         Minecraft.getInstance().getSoundManager().play(bigDog);
     }
 
@@ -30,6 +31,6 @@ public class ChargeSoundManager {
         if(bigDog != null)
             Minecraft.getInstance().getSoundManager().stop(bigDog);
         bigDog = null;
-        Minecraft.getInstance().getSoundManager().play(SimpleSoundInstance.forUI(SableMaidRagdoll.DOG_CALL, 1));
+        Minecraft.getInstance().getSoundManager().play(SimpleSoundInstance.forUI(InitSounds.DOG_CALL, 1));
     }
 }

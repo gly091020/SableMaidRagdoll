@@ -6,6 +6,10 @@ import com.github.tartaricacid.touhoulittlemaid.inventory.tooltip.ItemMaidToolti
 import com.github.tartaricacid.touhoulittlemaid.inventory.tooltip.YsmMaidInfo;
 import com.gly091020.SableMaidRagdoll.SableMaidRagdoll;
 import com.gly091020.SableMaidRagdoll.block.maid_doll.MaidDollBlockEntity;
+import com.gly091020.SableMaidRagdoll.init.InitBlocks;
+import com.gly091020.SableMaidRagdoll.init.InitCustomStats;
+import com.gly091020.SableMaidRagdoll.init.InitDataComponents;
+import com.gly091020.SableMaidRagdoll.init.InitSounds;
 import com.gly091020.SableMaidRagdoll.util.MaidRagdollAdvancementEvents;
 import com.gly091020.SableRagdollLib.api.RagdollHelper;
 import com.gly091020.SableRagdollLib.api.ScheduleManager;
@@ -47,12 +51,12 @@ import java.util.Optional;
 
 public class PlayerCheatDeathItem extends BlockItem {
     public PlayerCheatDeathItem() {
-        super(SableMaidRagdoll.MAID_DOLL_BLOCK.get(), new Properties().stacksTo(1).rarity(Rarity.RARE));
+        super(InitBlocks.MAID_DOLL_BLOCK.get(), new Properties().stacksTo(1).rarity(Rarity.RARE));
     }
 
     @Override
     protected boolean canPlace(BlockPlaceContext context, BlockState p_40612_) {
-        if(!context.getItemInHand().has(SableMaidRagdoll.MAID_MODEL.get()))return false;
+        if(!context.getItemInHand().has(InitDataComponents.MAID_MODEL.get()))return false;
         if (context.getPlayer() != null) {
             return context.getPlayer().isShiftKeyDown() && super.canPlace(context, p_40612_);
         }
@@ -69,8 +73,8 @@ public class PlayerCheatDeathItem extends BlockItem {
             player.sendSystemMessage(Component.translatable("item.sablemaidragdoll.player_cheat_death.connect", maid.getModelId()));
             return InteractionResult.SUCCESS;
         }
-        stack.set(SableMaidRagdoll.MAID_MODEL.get(), maid.getModelId());
-        stack.set(SableMaidRagdoll.MAID_SOUND.get(), maid.getSoundPackId());
+        stack.set(InitDataComponents.MAID_MODEL.get(), maid.getModelId());
+        stack.set(InitDataComponents.MAID_SOUND.get(), maid.getSoundPackId());
         return InteractionResult.SUCCESS;
     }
 
@@ -83,14 +87,14 @@ public class PlayerCheatDeathItem extends BlockItem {
             return InteractionResultHolder.success(stack);
         }
         if(player.isShiftKeyDown() && !level.isClientSide){
-            stack.remove(SableMaidRagdoll.MAID_MODEL.get());
+            stack.remove(InitDataComponents.MAID_MODEL.get());
             player.sendSystemMessage(Component.translatable("item.sablemaidragdoll.player_cheat_death.clear"));
             return InteractionResultHolder.success(stack);
         }
-        var id = stack.get(SableMaidRagdoll.MAID_MODEL.get());
+        var id = stack.get(InitDataComponents.MAID_MODEL.get());
         if(id == null)return InteractionResultHolder.pass(stack);
         if(level.isClientSide)return InteractionResultHolder.success(stack);
-        if(!toBeRagdoll((ServerPlayer) player, stack.getOrDefault(SableMaidRagdoll.MAID_SOUND.get(), ""),
+        if(!toBeRagdoll((ServerPlayer) player, stack.getOrDefault(InitDataComponents.MAID_SOUND.get(), ""),
                 id, stack))return InteractionResultHolder.pass(stack);
         addCooldown(stack, player);
         return InteractionResultHolder.success(stack);
@@ -106,19 +110,19 @@ public class PlayerCheatDeathItem extends BlockItem {
         if(useOnContext.getPlayer() != null && useOnContext.getPlayer().isShiftKeyDown()){
             return super.useOn(useOnContext);
         }
-        var id = useOnContext.getItemInHand().get(SableMaidRagdoll.MAID_MODEL.get());
+        var id = useOnContext.getItemInHand().get(InitDataComponents.MAID_MODEL.get());
         if(id == null)return InteractionResult.PASS;
         if(useOnContext.getLevel().isClientSide)return InteractionResult.SUCCESS;
         if(!toBeRagdoll((ServerPlayer) useOnContext.getPlayer(),
-                useOnContext.getItemInHand().getOrDefault(SableMaidRagdoll.MAID_SOUND.get(), ""),
+                useOnContext.getItemInHand().getOrDefault(InitDataComponents.MAID_SOUND.get(), ""),
                 id, useOnContext.getItemInHand()))return InteractionResult.PASS;
         addCooldown(useOnContext.getItemInHand(), useOnContext.getPlayer());
         return InteractionResult.SUCCESS;
     }
 
     private void addCooldown(ItemStack stack, Player player){
-        player.awardStat(Stats.CUSTOM.get(SableMaidRagdoll.TO_MAID.get()));
-        if(player instanceof ServerPlayer serverPlayer && stack.getOrDefault(SableMaidRagdoll.ENABLE_CONTROL, false))
+        player.awardStat(Stats.CUSTOM.get(InitCustomStats.TO_MAID.get()));
+        if(player instanceof ServerPlayer serverPlayer && stack.getOrDefault(InitDataComponents.ENABLE_CONTROL, false))
             InitTrigger.MAID_EVENT.get().trigger(serverPlayer, MaidRagdollAdvancementEvents.CONTROL_MAID.getName());
         if(player.isCreative())return;
         player.getCooldowns().addCooldown(stack.getItem(), 20);
@@ -138,10 +142,10 @@ public class PlayerCheatDeathItem extends BlockItem {
         });
         rag.getExtraData().putString("PCDI_soundID", soundID);
         if(SableMaidRagdoll.CONFIG.sounds.hungry)
-            player.level().playSound(null, BlockPos.containing(player.position()), SableMaidRagdoll.HUNGRY.get(), SoundSource.PLAYERS, 1,
+            player.level().playSound(null, BlockPos.containing(player.position()), InitSounds.HUNGRY.get(), SoundSource.PLAYERS, 1,
                     1f + player.level().random.nextFloat());
 
-        if(stack.getOrDefault(SableMaidRagdoll.ENABLE_CONTROL, false))
+        if(stack.getOrDefault(InitDataComponents.ENABLE_CONTROL, false))
             RagdollControlManager.start(player, rag);
 
         return true;
@@ -150,7 +154,7 @@ public class PlayerCheatDeathItem extends BlockItem {
     @Override
     public boolean overrideOtherStackedOnMe(ItemStack stack, ItemStack other, Slot p_150894_, ClickAction clickAction, Player player, SlotAccess p_150897_) {
         if(other.isEmpty() && clickAction == ClickAction.SECONDARY){
-            stack.set(SableMaidRagdoll.ENABLE_CONTROL, !stack.getOrDefault(SableMaidRagdoll.ENABLE_CONTROL, false));
+            stack.set(InitDataComponents.ENABLE_CONTROL, !stack.getOrDefault(InitDataComponents.ENABLE_CONTROL, false));
             if(player.level().isClientSide)
                 player.playSound(SoundEvents.EXPERIENCE_ORB_PICKUP);
             return true;
@@ -161,7 +165,7 @@ public class PlayerCheatDeathItem extends BlockItem {
     @Override
     public void appendHoverText(ItemStack p_41421_, TooltipContext p_339594_, List<Component> p_41423_, TooltipFlag p_41424_) {
         super.appendHoverText(p_41421_, p_339594_, p_41423_, p_41424_);
-        p_41423_.add(p_41421_.getOrDefault(SableMaidRagdoll.ENABLE_CONTROL, false) ?
+        p_41423_.add(p_41421_.getOrDefault(InitDataComponents.ENABLE_CONTROL, false) ?
                 Component.translatable("item.sablemaidragdoll.player_cheat_death.open").withStyle(ChatFormatting.GREEN):
                 Component.translatable("item.sablemaidragdoll.player_cheat_death.close").withStyle(ChatFormatting.RED));
         p_41423_.add(Component.translatable("item.sablemaidragdoll.player_cheat_death.tip").withStyle(ChatFormatting.GRAY));
@@ -171,7 +175,7 @@ public class PlayerCheatDeathItem extends BlockItem {
 
     @Override
     public Optional<TooltipComponent> getTooltipImage(ItemStack stack) {
-        var modelID = stack.get(SableMaidRagdoll.MAID_MODEL.get());
+        var modelID = stack.get(InitDataComponents.MAID_MODEL.get());
         if(modelID == null)return Optional.empty();
         return Optional.of(new ItemMaidTooltip(modelID, "", YsmMaidInfo.EMPTY));
     }
@@ -180,9 +184,9 @@ public class PlayerCheatDeathItem extends BlockItem {
     protected boolean updateCustomBlockEntityTag(BlockPos pos, Level level, @Nullable Player player, ItemStack stack, BlockState state) {
         var r = super.updateCustomBlockEntityTag(pos, level, player, stack, state);
         if(level.getBlockEntity(pos) instanceof MaidDollBlockEntity blockEntity){
-            blockEntity.setModelID(stack.getOrDefault(SableMaidRagdoll.MAID_MODEL, ""));
-            blockEntity.setSoundID(stack.getOrDefault(SableMaidRagdoll.MAID_SOUND, ""));
-            blockEntity.setControlMode(stack.getOrDefault(SableMaidRagdoll.ENABLE_CONTROL, false));
+            blockEntity.setModelID(stack.getOrDefault(InitDataComponents.MAID_MODEL, ""));
+            blockEntity.setSoundID(stack.getOrDefault(InitDataComponents.MAID_SOUND, ""));
+            blockEntity.setControlMode(stack.getOrDefault(InitDataComponents.ENABLE_CONTROL, false));
         }
         return r;
     }

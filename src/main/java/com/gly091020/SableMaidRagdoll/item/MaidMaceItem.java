@@ -2,6 +2,7 @@ package com.gly091020.SableMaidRagdoll.item;
 
 import com.github.tartaricacid.touhoulittlemaid.entity.passive.EntityMaid;
 import com.gly091020.SableMaidRagdoll.SableMaidRagdoll;
+import com.gly091020.SableMaidRagdoll.init.InitSounds;
 import com.gly091020.SableRagdollLib.api.RagdollHelper;
 import com.gly091020.SableRagdollLib.api.ScheduleManager;
 import com.gly091020.SableRagdollLib.entity.PartSeat;
@@ -45,7 +46,7 @@ public class MaidMaceItem extends Item {
         });
         addCooldown(stack, player);
         if(SableMaidRagdoll.CONFIG.sounds.drop)
-            player.level().playSound(null, BlockPos.containing(player.position()), SableMaidRagdoll.DROP.get(), SoundSource.PLAYERS, 1, 1f);
+            player.level().playSound(null, BlockPos.containing(player.position()), InitSounds.DROP.get(), SoundSource.PLAYERS, 1, 1f);
         return InteractionResult.SUCCESS;
     }
 

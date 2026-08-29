@@ -1,7 +1,8 @@
 package com.gly091020.SableMaidRagdoll.client;
 
 import com.github.tartaricacid.touhoulittlemaid.client.resource.listener.EmojiReloadListener;
-import com.gly091020.SableMaidRagdoll.SableMaidRagdoll;
+import com.gly091020.SableMaidRagdoll.init.InitAttachmentTypes;
+import com.gly091020.SableMaidRagdoll.init.InitRagdollTypes;
 import com.gly091020.SableMaidRagdoll.network.ServerboundEmojiSelectPacket;
 import com.gly091020.SableMaidRagdoll.util.RagdollChatBubbleRenderer;
 import com.gly091020.SableMaidRagdoll.util.RagdollEmoji;
@@ -40,7 +41,7 @@ public class EmojiSelectScreen extends Screen {
         this.emojis = RagdollChatBubbleRenderer.getEmojis();
         var player = Minecraft.getInstance().player;
         this.currentEmoji = player == null ? null : RagdollEmoji.getEmoji(player);
-        if (this.currentEmoji != null && this.currentEmoji.equals(SableMaidRagdoll.EMPTY_EMOJI)) {
+        if (this.currentEmoji != null && this.currentEmoji.equals(InitAttachmentTypes.EMPTY_EMOJI)) {
             this.currentEmoji = null;
         }
     }
@@ -48,7 +49,7 @@ public class EmojiSelectScreen extends Screen {
     public static void tryOpen() {
         var mc = Minecraft.getInstance();
         if (mc.player == null || mc.screen != null) return;
-        if (!RagdollEmoji.isRagdollOfType(mc.player, SableMaidRagdoll.RAGDOLL_TYPE)) {
+        if (!RagdollEmoji.isRagdollOfType(mc.player, InitRagdollTypes.RAGDOLL_TYPE)) {
             return;
         }
         mc.setScreen(new EmojiSelectScreen());
@@ -153,7 +154,7 @@ public class EmojiSelectScreen extends Screen {
     /** 选择表情（null 表示清除），发给服务端后关闭界面。 */
     private void selectEmoji(EmojiReloadListener.EmojiResource emoji) {
         var mc = Minecraft.getInstance();
-        ResourceLocation location = emoji == null ? SableMaidRagdoll.EMPTY_EMOJI : emoji.location();
+        ResourceLocation location = emoji == null ? InitAttachmentTypes.EMPTY_EMOJI : emoji.location();
         // 附件会自动同步到客户端，无需本地再写一份
         if (mc.getConnection() != null) {
             mc.getConnection().send(new ServerboundCustomPayloadPacket(new ServerboundEmojiSelectPacket(location)));

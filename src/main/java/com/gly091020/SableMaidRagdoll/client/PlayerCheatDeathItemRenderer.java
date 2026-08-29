@@ -3,7 +3,7 @@ package com.gly091020.SableMaidRagdoll.client;
 import com.github.tartaricacid.touhoulittlemaid.api.client.render.MaidRenderState;
 import com.github.tartaricacid.touhoulittlemaid.entity.passive.EntityMaid;
 import com.github.tartaricacid.touhoulittlemaid.util.EntityCacheUtil;
-import com.gly091020.SableMaidRagdoll.SableMaidRagdoll;
+import com.gly091020.SableMaidRagdoll.init.InitDataComponents;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.geom.EntityModelSet;
@@ -28,7 +28,7 @@ public class PlayerCheatDeathItemRenderer extends BlockEntityWithoutLevelRendere
     public void renderByItem(ItemStack stack, ItemDisplayContext context, PoseStack poseStack, MultiBufferSource bufferSource, int light, int overlay) {
         var level = Minecraft.getInstance().level;
         if(level == null)return;
-        var modelID = stack.get(SableMaidRagdoll.MAID_MODEL);
+        var modelID = stack.get(InitDataComponents.MAID_MODEL);
         EntityMaid maid;
         try {
             maid = (EntityMaid) EntityCacheUtil.ENTITY_CACHE.get(EntityMaid.TYPE, () -> {

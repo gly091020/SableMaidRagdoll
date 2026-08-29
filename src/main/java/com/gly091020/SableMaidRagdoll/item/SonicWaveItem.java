@@ -2,13 +2,11 @@ package com.gly091020.SableMaidRagdoll.item;
 
 import com.github.tartaricacid.touhoulittlemaid.entity.passive.EntityMaid;
 import com.gly091020.SableMaidRagdoll.SableMaidRagdoll;
-import com.gly091020.SableRagdollLib.api.Ragdoll;
+import com.gly091020.SableMaidRagdoll.init.InitSounds;
+import com.gly091020.SableMaidRagdoll.util.AuthorUtil;
 import com.gly091020.SableRagdollLib.api.RagdollHelper;
-import com.gly091020.SableRagdollLib.api.RagdollManager;
 import com.gly091020.SableRagdollLib.api.ScheduleManager;
 import com.gly091020.SableRagdollLib.entity.PartSeat;
-import dev.ryanhcode.sable.api.sublevel.ServerSubLevelContainer;
-import dev.ryanhcode.sable.sublevel.ServerSubLevel;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.chat.Component;
@@ -26,7 +24,6 @@ import net.minecraft.world.item.Rarity;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
-import org.joml.Vector3d;
 
 import java.util.List;
 
@@ -56,10 +53,10 @@ public class SonicWaveItem extends Item {
 
         if(SableMaidRagdoll.CONFIG.sounds.GCJCry)
             serverLevel.playSound(null, player.getX(), player.getY(), player.getZ(),
-                    SableMaidRagdoll.GCJ_SOUND.get(), SoundSource.PLAYERS, 1, 1);
+                    InitSounds.GCJ_SOUND.get(), SoundSource.PLAYERS, 1, 1);
         else if (SableMaidRagdoll.CONFIG.sounds.bigDog)
             serverLevel.playSound(null, player.getX(), player.getY(), player.getZ(),
-                    SableMaidRagdoll.DOG_CALL.get(), SoundSource.PLAYERS, 1, 1);
+                    InitSounds.DOG_CALL.get(), SoundSource.PLAYERS, 1, 1);
         else
             serverLevel.playSound(null, player.getX(), player.getY(), player.getZ(),
                     SoundEvents.WARDEN_SONIC_BOOM, SoundSource.PLAYERS, 1, 1);
@@ -90,7 +87,7 @@ public class SonicWaveItem extends Item {
             entity.setDeltaMovement(entity.getDeltaMovement().add(0, 0.35 * falloff + 0.1, 0));
             entity.hurtMarked = true;
 
-            if(entity instanceof Player && entity.getUUID().equals(SableMaidRagdoll.GLY))
+            if(entity instanceof Player && entity.getUUID().equals(AuthorUtil.GLY))
                 entity.hurt(level.damageSources().playerAttack(player), 1);
         }
     }

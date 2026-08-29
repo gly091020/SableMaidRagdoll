@@ -1,10 +1,10 @@
 package com.gly091020.SableMaidRagdoll.network;
 
 import com.gly091020.SableMaidRagdoll.SableMaidRagdoll;
+import com.gly091020.SableMaidRagdoll.init.InitAttachmentTypes;
+import com.gly091020.SableMaidRagdoll.init.InitRagdollTypes;
 import com.gly091020.SableMaidRagdoll.util.RagdollEmoji;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.network.chat.Component;
-import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.resources.ResourceLocation;
@@ -36,9 +36,9 @@ public record ServerboundEmojiSelectPacket(ResourceLocation emoji) implements Cu
         context.enqueueWork(() -> {
             Player player = context.player();
             // 只有正在乘坐女仆类型布娃娃的玩家才能修改表情
-            if (!RagdollEmoji.isRagdollOfType(player, SableMaidRagdoll.RAGDOLL_TYPE)) return;
+            if (!RagdollEmoji.isRagdollOfType(player, InitRagdollTypes.RAGDOLL_TYPE)) return;
 
-            if (emoji.equals(SableMaidRagdoll.EMPTY_EMOJI)) {
+            if (emoji.equals(InitAttachmentTypes.EMPTY_EMOJI)) {
                 RagdollEmoji.setEmoji(player, null);
             } else {
                 RagdollEmoji.setEmoji(player, emoji);

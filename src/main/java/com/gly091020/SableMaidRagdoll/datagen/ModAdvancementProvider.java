@@ -3,12 +3,12 @@ package com.gly091020.SableMaidRagdoll.datagen;
 import com.github.tartaricacid.touhoulittlemaid.advancements.maid.MaidEventTrigger;
 import com.github.tartaricacid.touhoulittlemaid.init.InitItems;
 import com.gly091020.SableMaidRagdoll.SableMaidRagdoll;
+import com.gly091020.SableMaidRagdoll.init.InitCustomStats;
 import com.gly091020.SableMaidRagdoll.util.MaidCreativeTab;
 import com.gly091020.SableMaidRagdoll.util.MaidRagdollAdvancementEvents;
 import net.minecraft.advancements.Advancement;
 import net.minecraft.advancements.AdvancementHolder;
 import net.minecraft.advancements.AdvancementType;
-import net.minecraft.advancements.Criterion;
 import net.minecraft.advancements.critereon.EntityPredicate;
 import net.minecraft.advancements.critereon.InventoryChangeTrigger;
 import net.minecraft.advancements.critereon.MinMaxBounds;
@@ -42,7 +42,7 @@ public class ModAdvancementProvider extends AdvancementProvider {
         public void generate(HolderLookup.Provider registries, Consumer<AdvancementHolder> saver, ExistingFileHelper existingFileHelper) {
             AdvancementHolder root = Advancement.Builder.advancement()
                     .display(
-                            SableMaidRagdoll.MOD_ICON_ITEM.get(),
+                            com.gly091020.SableMaidRagdoll.init.InitItems.MOD_ICON_ITEM.get(),
                             Component.translatable("advancements.sablemaidragdoll.root.title"),
                             Component.translatable("advancements.sablemaidragdoll.root.description"),
                             ResourceLocation.withDefaultNamespace("textures/block/light_blue_wool.png"),
@@ -54,17 +54,17 @@ public class ModAdvancementProvider extends AdvancementProvider {
                     .addCriterion("enter_world", PlayerTrigger.TriggerInstance.tick())
                     .save(saver, ResourceLocation.fromNamespaceAndPath(SableMaidRagdoll.MODID, "root"), existingFileHelper);
 
-            var cheatDeath = itemObtained(saver, existingFileHelper, root, "cheat_death_bauble", SableMaidRagdoll.CHEAT_DEATH_BAUBLE_ITEM.get());
-            itemObtained(saver, existingFileHelper, cheatDeath, "maid_mace", SableMaidRagdoll.MAID_MACE_ITEM.get());
+            var cheatDeath = itemObtained(saver, existingFileHelper, root, "cheat_death_bauble", com.gly091020.SableMaidRagdoll.init.InitItems.CHEAT_DEATH_BAUBLE_ITEM.get());
+            itemObtained(saver, existingFileHelper, cheatDeath, "maid_mace", com.gly091020.SableMaidRagdoll.init.InitItems.MAID_MACE_ITEM.get());
             var maidDoll = itemObtained(saver, existingFileHelper, cheatDeath, "player_cheat_death", MaidCreativeTab.getDollDisplayStack(), AdvancementType.GOAL);
 
             maidEvent(saver, existingFileHelper, root, "hit_maid_ragdoll", MaidRagdollAdvancementEvents.HIT_MAID.getName(), InitItems.FAVORABILITY_TOOL_REDUCE);
             maidEvent(saver, existingFileHelper, maidDoll, "control_maid", MaidRagdollAdvancementEvents.CONTROL_MAID.getName(), InitItems.GARAGE_KIT);
 
-            statMilestone(saver, existingFileHelper, root, "maid_knocked_away_100", SableMaidRagdoll.MAID_MACE_ITEM.get(),
-                    SableMaidRagdoll.MAID_KNOCKED_AWAY.get(), 100);
-            statMilestone(saver, existingFileHelper, maidDoll, "to_maid_100", SableMaidRagdoll.PLAYER_CHEAT_DEATH_ITEM.get(),
-                    SableMaidRagdoll.TO_MAID.get(), 100);
+            statMilestone(saver, existingFileHelper, root, "maid_knocked_away_100", com.gly091020.SableMaidRagdoll.init.InitItems.MAID_MACE_ITEM.get(),
+                    InitCustomStats.MAID_KNOCKED_AWAY.get(), 100);
+            statMilestone(saver, existingFileHelper, maidDoll, "to_maid_100", com.gly091020.SableMaidRagdoll.init.InitItems.PLAYER_CHEAT_DEATH_ITEM.get(),
+                    InitCustomStats.TO_MAID.get(), 100);
         }
 
         private static AdvancementHolder itemObtained(Consumer<AdvancementHolder> saver, ExistingFileHelper helper, AdvancementHolder parent, String id, ItemLike item) {

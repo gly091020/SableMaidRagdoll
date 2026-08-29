@@ -2,6 +2,8 @@ package com.gly091020.SableMaidRagdoll.client;
 
 import com.gly091020.SableMaidRagdoll.SableMaidRagdoll;
 import com.gly091020.SableMaidRagdoll.geo.GeoMaidModelRenderer;
+import com.gly091020.SableMaidRagdoll.init.InitBlockEntities;
+import com.gly091020.SableMaidRagdoll.init.InitItems;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.BlockEntityWithoutLevelRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderers;
@@ -19,15 +21,15 @@ public class ClientEventHandler {
     @SubscribeEvent
     public static void onClientSetup(FMLClientSetupEvent event) {
         BlockEntityRenderers.register(
-                SableMaidRagdoll.MAID_PART_BLOCK_ENTITY.get(),
+                InitBlockEntities.MAID_PART_BLOCK_ENTITY.get(),
                 (context) -> new MaidPartRenderer(context.getEntityRenderer().getItemInHandRenderer())
         );
         BlockEntityRenderers.register(
-                SableMaidRagdoll.MAID_FAIRY_PART_BLOCK_ENTITY.get(),
+                InitBlockEntities.MAID_FAIRY_PART_BLOCK_ENTITY.get(),
                 context -> new MaidFairyPartRenderer()
         );
         BlockEntityRenderers.register(
-                SableMaidRagdoll.MAID_DOLL_BLOCK_ENTITY.get(),
+                InitBlockEntities.MAID_DOLL_BLOCK_ENTITY.get(),
                 MaidDollRenderer::new
         );
     }
@@ -46,6 +48,6 @@ public class ClientEventHandler {
                 return new PlayerCheatDeathItemRenderer(Minecraft.getInstance().getBlockEntityRenderDispatcher(),
                         Minecraft.getInstance().getEntityModels());
             }
-        }, SableMaidRagdoll.PLAYER_CHEAT_DEATH_ITEM.get());
+        }, InitItems.PLAYER_CHEAT_DEATH_ITEM.get());
     }
 }

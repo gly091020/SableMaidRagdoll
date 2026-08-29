@@ -1,6 +1,7 @@
 package com.gly091020.SableMaidRagdoll.datagen;
 
 import com.gly091020.SableMaidRagdoll.SableMaidRagdoll;
+import com.gly091020.SableMaidRagdoll.init.InitBlocks;
 import net.minecraft.data.PackOutput;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.neoforged.neoforge.client.model.generators.BlockStateProvider;
@@ -14,17 +15,17 @@ public class ModBlockStateProvider extends BlockStateProvider {
 
     @Override
     protected void registerStatesAndModels() {
-        simpleBlock(SableMaidRagdoll.MAID_PART_BLOCK.get(),
+        simpleBlock(InitBlocks.MAID_PART_BLOCK.get(),
                 models().getBuilder("maid_part").texture("particle", modLoc("block/maid_part")));
-        simpleBlock(SableMaidRagdoll.MAID_FAIRY_PART_BLOCK.get(),
+        simpleBlock(InitBlocks.MAID_FAIRY_PART_BLOCK.get(),
                 models().getBuilder("maid_fairy_part").texture("particle", modLoc("block/maid_part")));
-        horizontalBlock(SableMaidRagdoll.MAID_DOLL_BLOCK.get(),
+        horizontalBlock(InitBlocks.MAID_DOLL_BLOCK.get(),
                 models().getBuilder("maid_doll").texture("particle", mcLoc("block/white_wool")));
         tntCakeBlock();
     }
 
     private void tntCakeBlock() {
-        var builder = getVariantBuilder(SableMaidRagdoll.TNT_CAKE_BLOCK.get());
+        var builder = getVariantBuilder(InitBlocks.TNT_CAKE_BLOCK.get());
         builder.partialState().with(BlockStateProperties.BITES, 0)
                 .modelForState().modelFile(tntCakeModel("tnt_cake", "minecraft:block/cake")).addModel();
         for (int bites = 1; bites <= 6; bites++) {

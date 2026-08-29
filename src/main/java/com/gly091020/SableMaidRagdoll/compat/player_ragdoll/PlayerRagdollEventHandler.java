@@ -1,6 +1,7 @@
 package com.gly091020.SableMaidRagdoll.compat.player_ragdoll;
 
 import com.gly091020.SableMaidRagdoll.SableMaidRagdoll;
+import com.gly091020.SableMaidRagdoll.init.InitTags;
 import dev.leo.sableplayerragdoll.api.RagdollAPI;
 import dev.leo.sableplayerragdoll.mob.api.MobRagdollLaunchOptions;
 import net.minecraft.server.level.ServerPlayer;
@@ -15,7 +16,7 @@ public class PlayerRagdollEventHandler {
     public static void onAttack(AttackEntityEvent event){
         if(!(event.getEntity() instanceof ServerPlayer serverPlayer))return;
         if(!SableMaidRagdoll.CONFIG.playerRagdoll.attackToRagDoll)return;
-        if(!serverPlayer.getMainHandItem().is(SableMaidRagdoll.MAID_TO_RAGDOLL_TAG))return;
+        if(!serverPlayer.getMainHandItem().is(InitTags.MAID_TO_RAGDOLL_TAG))return;
 
         if(event.getTarget() instanceof LivingEntity livingEntity && !(event.getTarget() instanceof Player)){
             if(RagdollAPI.isMobRagdolled(livingEntity)){

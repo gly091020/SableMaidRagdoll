@@ -3,6 +3,7 @@ package com.gly091020.SableMaidRagdoll.item;
 import com.github.tartaricacid.touhoulittlemaid.api.bauble.IMaidBauble;
 import com.github.tartaricacid.touhoulittlemaid.entity.passive.EntityMaid;
 import com.gly091020.SableMaidRagdoll.SableMaidRagdoll;
+import com.gly091020.SableMaidRagdoll.init.InitSounds;
 import com.gly091020.SableRagdollLib.api.RagdollHelper;
 import com.gly091020.SableRagdollLib.api.RagdollManager;
 import com.gly091020.SableRagdollLib.block.AbstractPartBlockEntity;
@@ -148,7 +149,7 @@ public class CheatDeathBauble implements IMaidBauble {
 
         maid.getPersistentData().putBoolean("cheat_death", true);
         if(SableMaidRagdoll.CONFIG.sounds.hungry)
-            maid.level().playSound(null, BlockPos.containing(maid.position()), SableMaidRagdoll.HUNGRY.get(), SoundSource.PLAYERS, 1,
+            maid.level().playSound(null, BlockPos.containing(maid.position()), InitSounds.HUNGRY.get(), SoundSource.PLAYERS, 1,
                     1f + level.random.nextFloat());
         return true;
     }

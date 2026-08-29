@@ -1,6 +1,6 @@
 package com.gly091020.SableMaidRagdoll.block.maid_doll;
 
-import com.gly091020.SableMaidRagdoll.SableMaidRagdoll;
+import com.gly091020.SableMaidRagdoll.init.InitBlockEntities;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
@@ -17,7 +17,7 @@ public class MaidDollBlockEntity extends BlockEntity {
     private String soundID = "";
     private boolean controlMode = false;
     public MaidDollBlockEntity(BlockPos pos, BlockState state) {
-        super(SableMaidRagdoll.MAID_DOLL_BLOCK_ENTITY.get(), pos, state);
+        super(InitBlockEntities.MAID_DOLL_BLOCK_ENTITY.get(), pos, state);
     }
 
     public void setModelID(String modelID) {

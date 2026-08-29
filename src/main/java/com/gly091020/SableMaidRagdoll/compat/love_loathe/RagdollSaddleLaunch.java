@@ -2,6 +2,7 @@ package com.gly091020.SableMaidRagdoll.compat.love_loathe;
 
 import com.github.JumDa5he.callresponse.compat.api.event.saddle.SaddleEvent;
 import com.gly091020.SableMaidRagdoll.SableMaidRagdoll;
+import com.gly091020.SableMaidRagdoll.init.InitSounds;
 import com.gly091020.SableMaidRagdoll.util.MixinFunction;
 import dev.ryanhcode.sable.companion.math.JOMLConversion;
 import net.minecraft.core.BlockPos;
@@ -28,6 +29,6 @@ public class RagdollSaddleLaunch {
             m.sub(0, 0.8, 0);
         MixinFunction.saddleLaunchCreateRagdoll((ServerLevel) level, maid, m, true);
         if(SableMaidRagdoll.CONFIG.sounds.drop && chargePercent == 0)
-            player.level().playSound(null, BlockPos.containing(player.position()), SableMaidRagdoll.DROP.get(), SoundSource.PLAYERS, 1, 1);
+            player.level().playSound(null, BlockPos.containing(player.position()), InitSounds.DROP.get(), SoundSource.PLAYERS, 1, 1);
     }
 }

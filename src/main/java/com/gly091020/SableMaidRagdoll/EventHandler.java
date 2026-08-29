@@ -4,6 +4,7 @@ import com.github.tartaricacid.touhoulittlemaid.TouhouLittleMaid;
 import com.github.tartaricacid.touhoulittlemaid.api.event.MaidDamageEvent;
 import com.github.tartaricacid.touhoulittlemaid.api.event.MaidDeathEvent;
 import com.github.tartaricacid.touhoulittlemaid.api.event.MaidHurtEvent;
+import com.github.tartaricacid.touhoulittlemaid.entity.chatbubble.implement.TextChatBubbleData;
 import com.github.tartaricacid.touhoulittlemaid.entity.monster.EntityFairy;
 import com.github.tartaricacid.touhoulittlemaid.entity.monster.FairyType;
 import com.github.tartaricacid.touhoulittlemaid.entity.passive.EntityMaid;
@@ -13,6 +14,10 @@ import com.gly091020.SableMaidRagdoll.command.MaidRagdollCommand;
 import com.gly091020.SableMaidRagdoll.compat.util.CompatMods;
 import com.gly091020.SableMaidRagdoll.compat.util.MaidRollManager;
 import com.gly091020.SableMaidRagdoll.compat.util.WineFoxHurtDancingManager;
+import com.gly091020.SableMaidRagdoll.init.InitCustomStats;
+import com.gly091020.SableMaidRagdoll.init.InitSounds;
+import com.gly091020.SableMaidRagdoll.init.InitTags;
+import com.gly091020.SableMaidRagdoll.util.AuthorUtil;
 import com.gly091020.SableMaidRagdoll.util.MaidCollisionHandler;
 import com.gly091020.SableMaidRagdoll.util.MaidRagdollAdvancementEvents;
 import com.gly091020.SableRagdollLib.api.Ragdoll;
@@ -26,6 +31,7 @@ import dev.ryanhcode.sable.companion.math.JOMLConversion;
 import net.minecraft.commands.arguments.EntityAnchorArgument;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.Tag;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
@@ -83,7 +89,7 @@ public class EventHandler {
         scheduleDelayed(level, 4, () -> event.getMaid().setInvisible(true));
 
         if(SableMaidRagdoll.CONFIG.sounds.hungry)
-            event.getMaid().level().playSound(null, BlockPos.containing(event.getMaid().position()), SableMaidRagdoll.HUNGRY.get(), SoundSource.PLAYERS, 1,
+            event.getMaid().level().playSound(null, BlockPos.containing(event.getMaid().position()), InitSounds.HUNGRY.get(), SoundSource.PLAYERS, 1,
                     1f + level.random.nextFloat());
     }
 
@@ -98,7 +104,7 @@ public class EventHandler {
         createFairyRagdoll(level, fairy, JOMLConversion.toJOML(fairy.getDeltaMovement().scale(3)));
         scheduleDelayed(level, 4, () -> fairy.setInvisible(true));
         if(SableMaidRagdoll.CONFIG.sounds.hungry)
-            fairy.level().playSound(null, BlockPos.containing(fairy.position()), SableMaidRagdoll.HUNGRY.get(), SoundSource.PLAYERS, 1,
+            fairy.level().playSound(null, BlockPos.containing(fairy.position()), InitSounds.HUNGRY.get(), SoundSource.PLAYERS, 1,
                     1f + level.random.nextFloat());
     }
 
@@ -109,8 +115,8 @@ public class EventHandler {
         if(fairy.getVehicle() instanceof PartSeat)return;
         if(!(fairy.level() instanceof ServerLevel serverLevel))return;
 
-        boolean flag1 = event.getSource().getEntity() instanceof Player player && player.getMainHandItem().is(SableMaidRagdoll.MAID_TO_RAGDOLL_TAG);
-        boolean flag2 = event.getSource().is(SableMaidRagdoll.ALWAYS_TO_RAGDOLL_TAG);
+        boolean flag1 = event.getSource().getEntity() instanceof Player player && player.getMainHandItem().is(InitTags.MAID_TO_RAGDOLL_TAG);
+        boolean flag2 = event.getSource().is(InitTags.ALWAYS_TO_RAGDOLL_TAG);
         if(!flag1 && !flag2)return;
 
         float damage = event.getNewDamage();
@@ -119,7 +125,7 @@ public class EventHandler {
 
         createFairyRagdoll(serverLevel, fairy, JOMLConversion.toJOML(fairy.getDeltaMovement().scale(3)));
         if(SableMaidRagdoll.CONFIG.sounds.metalPipe)
-            fairy.level().playSound(null, BlockPos.containing(fairy.position()), SableMaidRagdoll.PIPE.get(), SoundSource.PLAYERS, 1, 1);
+            fairy.level().playSound(null, BlockPos.containing(fairy.position()), InitSounds.PIPE.get(), SoundSource.PLAYERS, 1, 1);
     }
 
     private static final ResourceLocation BABY_FAIRY = ResourceLocation.fromNamespaceAndPath(TouhouLittleMaid.MOD_ID, "fairy/baby_fairy");
@@ -157,21 +163,23 @@ public class EventHandler {
         if (health < damage) return;
 
         boolean ownerAttack = isOwnerAttackWithTag(event.getMaid(), event.getSource());
-        boolean specialDamage = SableMaidRagdoll.CONFIG.ragdollOnSpecialDamage && event.getSource().is(SableMaidRagdoll.ALWAYS_TO_RAGDOLL_TAG);
+        boolean specialDamage = SableMaidRagdoll.CONFIG.ragdollOnSpecialDamage && event.getSource().is(InitTags.ALWAYS_TO_RAGDOLL_TAG);
         if (!ownerAttack && !specialDamage) return;
 
         var rag = ragdollOnDamage(level, event.getSource(), event.getMaid());
         if(rag == null)return;
         if (ownerAttack && event.getMaid().getOwner() instanceof ServerPlayer player) {
-            player.awardStat(Stats.CUSTOM.get(SableMaidRagdoll.MAID_KNOCKED_AWAY.get()));
+            if(AuthorUtil.isLoveWineFoxTV(player))
+                event.getMaid().getChatBubbleManager().addChatBubble(TextChatBubbleData.type2(Component.translatable("text.sablemaidragdoll.please_owner")));
+            player.awardStat(Stats.CUSTOM.get(InitCustomStats.MAID_KNOCKED_AWAY.get()));
             InitTrigger.MAID_EVENT.get().trigger(player, MaidRagdollAdvancementEvents.HIT_MAID.getName());
         }
-        if(CompatMods.LAOWU_WINE_FOX && specialDamage && event.getSource().is(SableMaidRagdoll.LAOWU_HURT_DANCE))
+        if(CompatMods.LAOWU_WINE_FOX && specialDamage && event.getSource().is(InitTags.LAOWU_HURT_DANCE))
             WineFoxHurtDancingManager.startDancing(rag);
         if(ownerAttack && SableMaidRagdoll.CONFIG.sounds.watermelonHurt)
-            event.getMaid().level().playSound(null, BlockPos.containing(event.getMaid().position()), SableMaidRagdoll.WATERMELON_HURT.get(), SoundSource.PLAYERS, 1, 1);
+            event.getMaid().level().playSound(null, BlockPos.containing(event.getMaid().position()), InitSounds.WATERMELON_HURT.get(), SoundSource.PLAYERS, 1, 1);
         else if(SableMaidRagdoll.CONFIG.sounds.metalPipe)
-            event.getMaid().level().playSound(null, BlockPos.containing(event.getMaid().position()), SableMaidRagdoll.PIPE.get(), SoundSource.PLAYERS, 1, 1);
+            event.getMaid().level().playSound(null, BlockPos.containing(event.getMaid().position()), InitSounds.PIPE.get(), SoundSource.PLAYERS, 1, 1);
         event.setCanceled(true);
     }
 
@@ -183,7 +191,7 @@ public class EventHandler {
                 !player.isShiftKeyDown() &&
                 e2 != null &&
                 e1.is(e2) &&
-                player.getMainHandItem().is(SableMaidRagdoll.MAID_TO_RAGDOLL_TAG);
+                player.getMainHandItem().is(InitTags.MAID_TO_RAGDOLL_TAG);
     }
 
     /**
@@ -196,7 +204,7 @@ public class EventHandler {
         if (maid.level().isClientSide) return false;
         if (maid.getVehicle() instanceof PartSeat) return false;
         return isOwnerAttackWithTag(maid, source)
-                || (SableMaidRagdoll.CONFIG.ragdollOnSpecialDamage && source.is(SableMaidRagdoll.ALWAYS_TO_RAGDOLL_TAG));
+                || (SableMaidRagdoll.CONFIG.ragdollOnSpecialDamage && source.is(InitTags.ALWAYS_TO_RAGDOLL_TAG));
     }
 
     private static Ragdoll ragdollOnDamage(ServerLevel level, DamageSource damageSource, EntityMaid maid){

@@ -2,7 +2,7 @@ package com.gly091020.SableMaidRagdoll.block.tnt_cake;
 
 import com.github.tartaricacid.touhoulittlemaid.entity.ai.edible.CakeEdible;
 import com.github.tartaricacid.touhoulittlemaid.entity.passive.EntityMaid;
-import com.gly091020.SableMaidRagdoll.SableMaidRagdoll;
+import com.gly091020.SableMaidRagdoll.init.InitBlocks;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.BlockGetter;
@@ -14,7 +14,7 @@ import net.minecraft.world.level.block.state.BlockState;
 public class TNTCakeEdible extends CakeEdible {
     @Override
     public boolean shouldMoveTo(EntityMaid maid, BlockPos pos, BlockState state) {
-        return state.is(SableMaidRagdoll.TNT_CAKE_BLOCK);
+        return state.is(InitBlocks.TNT_CAKE_BLOCK);
     }
 
     @Override
