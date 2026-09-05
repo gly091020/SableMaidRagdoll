@@ -22,7 +22,27 @@ public class ModItemModelProvider extends ItemModelProvider {
         basicItem(InitItems.SONIC_WAVE_ITEM.get());
         spawnEggItem(InitItems.RAGDOLLABLE_MAID_SPAWN_EGG.get());
         spawnEggItem(InitItems.WINE_FOX_SPAWN_EGG.get());
+        spawnEggItem(InitItems.RAGDOLLABLE_WINE_FOX_SPAWN_EGG.get());
         simpleBlockItem(InitBlocks.TNT_CAKE_BLOCK.get());
+
+        getBuilder("mob_cannon")
+                .parent(new ModelFile.UncheckedModelFile("builtin/entity"))
+                .transforms()
+                .transform(ItemDisplayContext.THIRD_PERSON_RIGHT_HAND)
+                .rotation(75, 45, 0).translation(0, 2.5F, 0).scale(0.375F, 0.375F, 0.375F).end()
+                .transform(ItemDisplayContext.THIRD_PERSON_LEFT_HAND)
+                .rotation(75, 45, 0).translation(0, 2.5F, 0).scale(0.375F, 0.375F, 0.375F).end()
+                .transform(ItemDisplayContext.FIRST_PERSON_RIGHT_HAND)
+                .rotation(0, 45, 0).translation(0, 0, 0).scale(0.4F, 0.4F, 0.4F).end()
+                .transform(ItemDisplayContext.FIRST_PERSON_LEFT_HAND)
+                .rotation(0, -135, 0).translation(0, 0, 0).scale(0.4F, 0.4F, 0.4F).end()
+                .transform(ItemDisplayContext.GROUND)
+                .rotation(0, 0, 0).translation(0, 3, 0).scale(0.25F, 0.25F, 0.25F).end()
+                .transform(ItemDisplayContext.GUI)
+                .rotation(30, -135, 0).translation(0, -3, 0).scale(0.3F, 0.3F, 0.3F).end()
+                .transform(ItemDisplayContext.FIXED)
+                .rotation(0, 0, 0).translation(0, 0, 0).scale(0.5F, 0.5F, 0.5F).end()
+                .end();
 
         getBuilder("copy_ragdoll_id")
                 .parent(new ModelFile.UncheckedModelFile("item/generated"))

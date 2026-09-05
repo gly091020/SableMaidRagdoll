@@ -22,6 +22,8 @@ public class SableMaidRagdoll {
         InitItems.init(bus);
         InitBlocks.init(bus);
         InitBlockEntities.init(bus);
+        InitMenus.init(bus);
+        InitCapabilities.init(bus);
         InitSounds.init(bus);
         InitDataComponents.init(bus);
         InitAttachmentTypes.init(bus);

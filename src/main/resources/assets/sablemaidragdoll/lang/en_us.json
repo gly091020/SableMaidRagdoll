@@ -72,6 +72,10 @@
   "advancements.sablemaidragdoll.maid_knocked_away_100.description": "Are you trying to take over i狐TV's job?",
   "advancements.sablemaidragdoll.to_maid_100.title": "We Need More Maid Ragdolls",
   "advancements.sablemaidragdoll.to_maid_100.description": "Tormenting maids is too cruel — torment yourself instead",
+  "advancements.sablemaidragdoll.mob_cannon.title": "?! A Cannon?!",
+  "advancements.sablemaidragdoll.mob_cannon.description": "Not just for love fox to use",
+  "advancements.sablemaidragdoll.double_cannon.title": "!? Double Cannon, Double Trouble?!",
+  "advancements.sablemaidragdoll.double_cannon.description": "Oh no, oh no",
 
   "item.sablemaidragdoll.sonic_wave": "Ultrasonic Wave Generator",
   "item.sablemaidragdoll.sonic_wave.tip": "Especially lethal to gly...",
@@ -93,5 +97,16 @@
 
   "text.autoconfig.sablemaidragdoll.option.laoWuWineFox": "Laowu Maid",
   "text.autoconfig.sablemaidragdoll.option.laoWuWineFox.dance": "Dance",
-  "text.sablemaidragdoll.please_owner": "Please, don't hit me..."
+  "text.sablemaidragdoll.please_owner": "Please, don't hit me...",
+
+  "block.sablemaidragdoll.mob_cannon": "Mob Cannon",
+  "hud.sablemaidragdoll.mob_cannon_aim.title": "Adjusting Mob Cannon direction",
+  "hud.sablemaidragdoll.mob_cannon_aim.angle": "Pitch %s° | Yaw %s°",
+  "hud.sablemaidragdoll.mob_cannon_aim.snap": "Hold Shift to snap to whole degrees",
+  "hud.sablemaidragdoll.mob_cannon_aim.release": "Release the key to finish",
+  "key.sablemaidragdoll.aim_cannon": "Aim Mob Cannon",
+  "screen.sablemaidragdoll.mob_cannon": "Mob Cannon",
+
+  "item.sablemaidragdoll.ragdollanle_wine_fox_spawn_egg": "Ragdollable Wine Fox Spawn Egg",
+  "text.autoconfig.sablemaidragdoll.option.items.mobCannon": "Mob Cannon"
 }

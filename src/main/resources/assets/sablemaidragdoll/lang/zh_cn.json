@@ -93,5 +93,20 @@
 
   "text.autoconfig.sablemaidragdoll.option.laoWuWineFox": "酒狐哈气",
   "text.autoconfig.sablemaidragdoll.option.laoWuWineFox.dance": "跳舞",
-  "text.sablemaidragdoll.please_owner": "求你别打了……"
+  "text.sablemaidragdoll.please_owner": "求你别打了……",
+
+  "block.sablemaidragdoll.mob_cannon": "生物大炮",
+  "hud.sablemaidragdoll.mob_cannon_aim.title": "正在调整生物大炮方向",
+  "hud.sablemaidragdoll.mob_cannon_aim.angle": "俯仰 %s° | 水平 %s°",
+  "hud.sablemaidragdoll.mob_cannon_aim.snap": "按住 Shift 取整角度",
+  "hud.sablemaidragdoll.mob_cannon_aim.release": "松开按键完成调整",
+  "key.sablemaidragdoll.aim_cannon": "调整生物大炮方向",
+  "screen.sablemaidragdoll.mob_cannon": "生物大炮",
+
+  "item.sablemaidragdoll.ragdollanle_wine_fox_spawn_egg": "可布娃娃化酒狐刷怪蛋",
+  "text.autoconfig.sablemaidragdoll.option.items.mobCannon": "生物大炮",
+  "advancements.sablemaidragdoll.mob_cannon.title": "！？大炮？！",
+  "advancements.sablemaidragdoll.mob_cannon.description": "不只能i狐用",
+  "advancements.sablemaidragdoll.double_cannon.title": "！？大火包火大？！",
+  "advancements.sablemaidragdoll.double_cannon.description": "坏了坏了"
 }

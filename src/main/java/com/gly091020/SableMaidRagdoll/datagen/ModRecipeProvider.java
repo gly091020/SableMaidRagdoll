@@ -62,6 +62,13 @@ public class ModRecipeProvider extends RecipeProvider {
                 .requires(Items.TNT)
                 .unlockedBy("get", InventoryChangeTrigger.TriggerInstance.hasItems(Items.CAKE))
                 .save(recipeOutput, modId("tnt_cake_item"));
+
+        ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, InitItems.MOB_CANNON_ITEM.get())
+                .requires(Items.DISPENSER)
+                .requires(Items.GUNPOWDER)
+                .requires(InitItems.CHEAT_DEATH_BAUBLE_ITEM.get())
+                .unlockedBy("get", InventoryChangeTrigger.TriggerInstance.hasItems(Items.DISPENSER))
+                .save(recipeOutput, modId("mob_cannon"));
     }
 
     private static ResourceLocation modId(String path) {

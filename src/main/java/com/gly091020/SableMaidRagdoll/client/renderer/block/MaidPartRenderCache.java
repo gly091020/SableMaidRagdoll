@@ -1,4 +1,4 @@
-package com.gly091020.SableMaidRagdoll.client;
+package com.gly091020.SableMaidRagdoll.client.renderer.block;
 
 import com.github.tartaricacid.simplebedrockmodel.client.bedrock.model.BedrockPart;
 import com.github.tartaricacid.touhoulittlemaid.client.model.bedrock.BedrockModel;

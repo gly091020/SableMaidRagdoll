@@ -37,7 +37,10 @@ public class MaidCreativeTab {
         if(SableMaidRagdoll.CONFIG.items.spawnEggs){
             output.accept(InitItems.RAGDOLLABLE_MAID_SPAWN_EGG.get());
             output.accept(InitItems.WINE_FOX_SPAWN_EGG.get());
+            output.accept(InitItems.RAGDOLLABLE_WINE_FOX_SPAWN_EGG.get());
         }
+        if(SableMaidRagdoll.CONFIG.items.mobCannon)
+            output.accept(InitItems.MOB_CANNON_ITEM.get());
         output.accept(InitItems.COPY_RAGDOLL_ID_ITEM.get());
     }
 

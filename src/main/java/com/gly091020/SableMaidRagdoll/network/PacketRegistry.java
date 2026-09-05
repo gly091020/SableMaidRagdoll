@@ -17,5 +17,11 @@ public class PacketRegistry {
                 ServerboundBroomManPacket.STREAM_CODEC,
                 ServerboundBroomManPacket::handle
         );
+
+        registrar.playToServer(
+                ServerboundMobCannonAimPacket.TYPE,
+                ServerboundMobCannonAimPacket.STREAM_CODEC,
+                ServerboundMobCannonAimPacket::handle
+        );
     }
 }

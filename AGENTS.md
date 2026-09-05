@@ -5,6 +5,7 @@
 - 不需要过多注释，仅在api部分使用`/**`注释
 - `../SableRagdollLib`为此模组前置，需要时也可编辑
 - 其他子项目的代码编写前需要经过允许
+- 不要阅读/参考`CallResponse`模组的代码，除非特殊要求
 
 ## Project Structure & Module Organization
 

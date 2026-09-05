@@ -128,9 +128,9 @@ public class EventHandler {
             fairy.level().playSound(null, BlockPos.containing(fairy.position()), InitSounds.PIPE.get(), SoundSource.PLAYERS, 1, 1);
     }
 
-    private static final ResourceLocation BABY_FAIRY = ResourceLocation.fromNamespaceAndPath(TouhouLittleMaid.MOD_ID, "fairy/baby_fairy");
-    private static final ResourceLocation NEW_FAIRY = ResourceLocation.fromNamespaceAndPath(TouhouLittleMaid.MOD_ID, "fairy/new_fairy");
-    private static void createFairyRagdoll(ServerLevel level, EntityFairy fairy, Vector3d maidMotion){
+    public static final ResourceLocation BABY_FAIRY = ResourceLocation.fromNamespaceAndPath(TouhouLittleMaid.MOD_ID, "fairy/baby_fairy");
+    public static final ResourceLocation NEW_FAIRY = ResourceLocation.fromNamespaceAndPath(TouhouLittleMaid.MOD_ID, "fairy/new_fairy");
+    public static void createFairyRagdoll(ServerLevel level, EntityFairy fairy, Vector3d maidMotion){
         Vector3d forward = JOMLConversion.toJOML(fairy.getLookAngle());
         Vector3d axis = forward.cross(new Vector3d(0,1,0));
         var id = fairy.isBaby() ? BABY_FAIRY : NEW_FAIRY;

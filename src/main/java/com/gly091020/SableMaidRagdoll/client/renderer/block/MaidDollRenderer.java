@@ -1,4 +1,4 @@
-package com.gly091020.SableMaidRagdoll.client;
+package com.gly091020.SableMaidRagdoll.client.renderer.block;
 
 import com.github.tartaricacid.touhoulittlemaid.api.client.render.MaidRenderState;
 import com.github.tartaricacid.touhoulittlemaid.client.sound.data.MaidSoundInstanceAtPos;

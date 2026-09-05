@@ -39,6 +39,7 @@ public class SableMaidRagdollConfig implements ConfigData {
         public boolean tntCake = true;
         public boolean sonicWave = true;
         public boolean spawnEggs = true;
+        public boolean mobCannon = true;
     }
 
     public static class Sounds{

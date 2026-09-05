@@ -1,4 +1,4 @@
-package com.gly091020.SableMaidRagdoll.client;
+package com.gly091020.SableMaidRagdoll.client.screen;
 
 import com.github.tartaricacid.touhoulittlemaid.client.resource.listener.EmojiReloadListener;
 import com.gly091020.SableMaidRagdoll.init.InitAttachmentTypes;

@@ -57,9 +57,24 @@ public class ModAdvancementProvider extends AdvancementProvider {
             var cheatDeath = itemObtained(saver, existingFileHelper, root, "cheat_death_bauble", com.gly091020.SableMaidRagdoll.init.InitItems.CHEAT_DEATH_BAUBLE_ITEM.get());
             itemObtained(saver, existingFileHelper, cheatDeath, "maid_mace", com.gly091020.SableMaidRagdoll.init.InitItems.MAID_MACE_ITEM.get());
             var maidDoll = itemObtained(saver, existingFileHelper, cheatDeath, "player_cheat_death", MaidCreativeTab.getDollDisplayStack(), AdvancementType.GOAL);
+            var mobCannon = itemObtained(saver, existingFileHelper, cheatDeath, "mob_cannon", com.gly091020.SableMaidRagdoll.init.InitItems.MOB_CANNON_ITEM.get());
 
             maidEvent(saver, existingFileHelper, root, "hit_maid_ragdoll", MaidRagdollAdvancementEvents.HIT_MAID.getName(), InitItems.FAVORABILITY_TOOL_REDUCE);
             maidEvent(saver, existingFileHelper, maidDoll, "control_maid", MaidRagdollAdvancementEvents.CONTROL_MAID.getName(), InitItems.GARAGE_KIT);
+            Advancement.Builder.advancement()
+                    .parent(mobCannon)
+                    .display(
+                            com.gly091020.SableMaidRagdoll.init.InitItems.MOB_CANNON_ITEM.get(),
+                            Component.translatable("advancements.sablemaidragdoll.double_cannon.title"),
+                            Component.translatable("advancements.sablemaidragdoll.double_cannon.description"),
+                            null,
+                            AdvancementType.CHALLENGE,
+                            true,
+                            true,
+                            true
+                    )
+                    .addCriterion("double_cannon", MaidEventTrigger.create(MaidRagdollAdvancementEvents.DOUBLE_CANNON.getName()))
+                    .save(saver, ResourceLocation.fromNamespaceAndPath(SableMaidRagdoll.MODID, "double_cannon"), existingFileHelper);
 
             statMilestone(saver, existingFileHelper, root, "maid_knocked_away_100", com.gly091020.SableMaidRagdoll.init.InitItems.MAID_MACE_ITEM.get(),
                     InitCustomStats.MAID_KNOCKED_AWAY.get(), 100);
