@@ -23,9 +23,9 @@ public class MobCannonScreen extends AbstractContainerScreen<MobCannonMenu> {
 
     private static final int CANNON_X = 25;
     private static final int CANNON_Y = 45;
-    private static final int CANNON_SCALE = 20;
-    private static final int CANNON_X_ROT = 35;
-    private static final double CANNON_Y_ROT = 45;
+    private static final int CANNON_SCALE = 25;
+    private static final int CANNON_X_ROT = 15;
+    private static final double CANNON_Y_ROT = 180;
 
     private static MobCannonBlockEntity preview;
 
@@ -65,7 +65,7 @@ public class MobCannonScreen extends AbstractContainerScreen<MobCannonMenu> {
         poseStack.pushPose();
         poseStack.translate(left + CANNON_X + CANNON_SCALE / 2.0, top + CANNON_Y + CANNON_SCALE / 2.0, 100);
         poseStack.scale(CANNON_SCALE, -CANNON_SCALE, CANNON_SCALE);
-        poseStack.translate(-0.5, -0.5, -0.5);
+        poseStack.translate(-0.5, -0.5, 10);
         renderer.render(cannon, 0.0F, poseStack, guiGraphics.bufferSource(), LightTexture.FULL_BRIGHT, OverlayTexture.NO_OVERLAY);
         poseStack.popPose();
     }

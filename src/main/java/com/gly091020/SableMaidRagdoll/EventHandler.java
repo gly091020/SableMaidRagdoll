@@ -171,6 +171,8 @@ public class EventHandler {
         if (ownerAttack && event.getMaid().getOwner() instanceof ServerPlayer player) {
             if(AuthorUtil.isLoveWineFoxTV(player))
                 event.getMaid().getChatBubbleManager().addChatBubble(TextChatBubbleData.type2(Component.translatable("text.sablemaidragdoll.please_owner")));
+            if(AuthorUtil.isChicken(player))
+                event.getMaid().level().playSound(null, BlockPos.containing(event.getMaid().position()), InitSounds.CHICKEN.get(), SoundSource.PLAYERS, 1, 1);
             player.awardStat(Stats.CUSTOM.get(InitCustomStats.MAID_KNOCKED_AWAY.get()));
             InitTrigger.MAID_EVENT.get().trigger(player, MaidRagdollAdvancementEvents.HIT_MAID.getName());
         }

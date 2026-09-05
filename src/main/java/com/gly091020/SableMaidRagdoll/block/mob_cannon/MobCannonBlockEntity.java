@@ -12,6 +12,7 @@ import com.gly091020.SableMaidRagdoll.SableMaidRagdoll;
 import com.gly091020.SableMaidRagdoll.block.parts.MaidFairyPartBlockEntity;
 import com.gly091020.SableMaidRagdoll.compat.player_ragdoll.PlayerRagdollUtil;
 import com.gly091020.SableMaidRagdoll.compat.util.CompatMods;
+import com.gly091020.SableMaidRagdoll.init.InitSounds;
 import com.gly091020.SableMaidRagdoll.item.spawn_egg.SMRDeferredSpawnEggItem;
 import com.gly091020.SableMaidRagdoll.menu.MobCannonMenu;
 import com.gly091020.SableMaidRagdoll.util.MaidRagdollAdvancementEvents;
@@ -51,17 +52,19 @@ import net.minecraft.world.item.component.CustomData;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.items.IItemHandlerModifiable;
 import org.jetbrains.annotations.Nullable;
 import org.joml.Vector3d;
 
+import java.util.List;
+
 import static com.gly091020.SableMaidRagdoll.EventHandler.BABY_FAIRY;
 import static com.gly091020.SableMaidRagdoll.EventHandler.NEW_FAIRY;
 import static com.gly091020.SableMaidRagdoll.init.InitBlockEntities.MOB_CANNON_BLOCK_ENTITY;
-import static com.gly091020.SableMaidRagdoll.init.InitItems.MOB_CANNON_ITEM;
-import static com.gly091020.SableMaidRagdoll.init.InitItems.SONIC_WAVE_ITEM;
+import static com.gly091020.SableMaidRagdoll.init.InitItems.*;
 import static com.gly091020.SableRagdollLib.api.ScheduleManager.scheduleDelayed;
 
 public class MobCannonBlockEntity extends BlockEntity implements IItemHandlerModifiable, MenuProvider {
@@ -237,7 +240,9 @@ public class MobCannonBlockEntity extends BlockEntity implements IItemHandlerMod
                     itemStack.is(Items.TNT) ||
                     itemStack.is(Items.REDSTONE) ||
                     itemStack.is(SONIC_WAVE_ITEM) ||
-                    itemStack.is(MOB_CANNON_ITEM);
+                    itemStack.is(MOB_CANNON_ITEM) ||
+                    itemStack.is(MAID_MACE_ITEM) ||
+                    itemStack.is(InitItems.SMART_SLAB_EMPTY);
         return bool && specialItem;
     }
 
@@ -270,6 +275,7 @@ public class MobCannonBlockEntity extends BlockEntity implements IItemHandlerMod
 
     public void tryFire(){
         if(level == null)return;
+        collectMaid();
         if (getCooldown() <= 0 && level.hasNeighborSignal(getBlockPos()) && canFire()) {
             fire();
             cooldown = 1.0;
@@ -278,7 +284,9 @@ public class MobCannonBlockEntity extends BlockEntity implements IItemHandlerMod
             else if(getStackInSlot(1).is(SONIC_WAVE_ITEM))
                 cooldown = 0.25;
             setChanged();
-            level.playSound(null, getBlockPos(), SoundEvents.GENERIC_EXPLODE.value(), SoundSource.BLOCKS, 1.0F, 1.0F);
+            if(SableMaidRagdoll.CONFIG.sounds.drop)
+                level.playSound(null, getBlockPos(), InitSounds.CANNON_LAUNCH.get(), SoundSource.BLOCKS, 1.0F, 1.0F);
+            else level.playSound(null, getBlockPos(), SoundEvents.GENERIC_EXPLODE.value(), SoundSource.BLOCKS, 1.0F, 1.0F);
         }
         if (getCooldown() > 0) {
             cooldown = Math.max(0, getCooldown() - 1 / 20d);
@@ -295,6 +303,27 @@ public class MobCannonBlockEntity extends BlockEntity implements IItemHandlerMod
         if(entity == null)return;
         toRagdoll(entity, force.scale(5));
         consumeItem();
+    }
+
+    public void collectMaid(){
+        if(!(level instanceof ServerLevel))return;
+        if(!getStackInSlot(1).is(InitItems.SMART_SLAB_EMPTY))return;
+        if(!getStackInSlot(0).isEmpty())return;
+        var pos = getReallyPos();
+        List<EntityMaid> maids = level.getEntitiesOfClass(
+                EntityMaid.class,
+                new AABB(pos, pos).inflate(5),
+                entity -> entity.distanceToSqr(pos) <= 25
+        );
+        if(maids.isEmpty())return;
+
+        var stack = new ItemStack(InitItems.SMART_SLAB_HAS_MAID.get(), 1);
+        var maid = maids.getFirst();
+        AbstractStoreMaidItem.storeMaidData(stack, maids.getFirst());
+        maid.discard();
+        maid.playSound(SoundEvents.PLAYER_SPLASH, 1.0F, level.random.nextFloat() * 0.1F + 0.9F);
+        setStackInSlot(0, stack);
+        getStackInSlot(1).shrink(1);
     }
 
     public boolean canFire(){
@@ -380,11 +409,17 @@ public class MobCannonBlockEntity extends BlockEntity implements IItemHandlerMod
         InitTrigger.MAID_EVENT.get().trigger(player, MaidRagdollAdvancementEvents.DOUBLE_CANNON.getName());
     }
 
-    public static void launchMaid(ServerLevel level, EntityMaid maid, Vector3d force, boolean addMaid){
+    public boolean isExplosion(){
+        return getStackInSlot(1).is(MAID_MACE_ITEM);
+    }
+
+    public void launchMaid(ServerLevel level, EntityMaid maid, Vector3d force, boolean addMaid){
         var id = ResourceLocation.fromNamespaceAndPath(SableMaidRagdoll.MODID, maid.getModelId().replace(":", "/"));
         var parts = RagdollHelper.createRagdoll(level, maid.position().add(0, 0.5, 0), new Vec3(-90, -maid.getYHeadRot(), 0),
                 id);
         if(parts == null)return;
+        if(isExplosion())
+            parts.getExtraData().putBoolean("explosion", true);
         // 等待 2tick 是为了等待刚体创建在施加推力
         scheduleDelayed(level, 2, () -> {
             parts.addLinearImpulse(force, true);
@@ -394,11 +429,13 @@ public class MobCannonBlockEntity extends BlockEntity implements IItemHandlerMod
             parts.addEntity(maid);
     }
 
-    public static void launchFairy(ServerLevel level, EntityFairy fairy, Vector3d force, boolean addFairy){
+    public void launchFairy(ServerLevel level, EntityFairy fairy, Vector3d force, boolean addFairy){
         var id = fairy.isBaby() ? BABY_FAIRY : NEW_FAIRY;
         var parts = RagdollHelper.createRagdoll(level, fairy.position().add(0, 0.5, 0), new Vec3(-90, -fairy.getYHeadRot(), 0),
                 id);
         if(parts == null)return;
+        if(isExplosion())
+            parts.getExtraData().putBoolean("explosion", true);
         parts.getSublevels().forEach(subLevel -> {
             if(subLevel.getPlot().getEmbeddedLevelAccessor().getBlockEntity(BlockPos.ZERO) instanceof MaidFairyPartBlockEntity blockEntity){
                 blockEntity.setFairyType(FairyType.values()[fairy.getFairyTypeOrdinal()]);
