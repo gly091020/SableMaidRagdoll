@@ -313,7 +313,7 @@ public class MobCannonBlockEntity extends BlockEntity implements IItemHandlerMod
         List<EntityMaid> maids = level.getEntitiesOfClass(
                 EntityMaid.class,
                 new AABB(pos, pos).inflate(5),
-                entity -> entity.distanceToSqr(pos) <= 25
+                entity -> entity.distanceToSqr(pos) <= 25 && entity.getOwner() != null
         );
         if(maids.isEmpty())return;
 
