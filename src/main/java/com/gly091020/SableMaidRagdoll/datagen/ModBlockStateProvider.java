@@ -17,6 +17,8 @@ public class ModBlockStateProvider extends BlockStateProvider {
     protected void registerStatesAndModels() {
         simpleBlock(InitBlocks.MAID_PART_BLOCK.get(),
                 models().getBuilder("maid_part").texture("particle", modLoc("block/maid_part")));
+        simpleBlock(InitBlocks.MOB_CANNON_BLOCK.get(),
+                models().getBuilder("mob_cannon").texture("particle", mcLoc("block/oak_planks")));
         simpleBlock(InitBlocks.MAID_FAIRY_PART_BLOCK.get(),
                 models().getBuilder("maid_fairy_part").texture("particle", modLoc("block/maid_part")));
         horizontalBlock(InitBlocks.MAID_DOLL_BLOCK.get(),

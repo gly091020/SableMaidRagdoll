@@ -10,6 +10,7 @@ import net.minecraft.data.PackOutput;
 import net.minecraft.data.tags.DamageTypeTagsProvider;
 import net.minecraft.data.tags.ItemTagsProvider;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.damagesource.DamageTypes;
 import net.minecraft.world.item.Items;
@@ -31,6 +32,9 @@ public class ModTagsProvider {
         protected void addTags(HolderLookup.Provider provider) {
             tag(TagKey.create(Registries.BLOCK, ResourceLocation.fromNamespaceAndPath("sableragdolllib", "ragdoll_part")))
                     .add(InitBlocks.MAID_PART_BLOCK.get());
+
+            tag(BlockTags.MINEABLE_WITH_AXE)
+                    .add(InitBlocks.MOB_CANNON_BLOCK.get());
         }
     }
 

@@ -34,6 +34,7 @@ public class ModLootTableProvider extends LootTableProvider {
             dropSelf(consumer, InitBlocks.MAID_PART_BLOCK.get());
             dropSelf(consumer, InitBlocks.MAID_FAIRY_PART_BLOCK.get());
             dropSelf(consumer, InitBlocks.MAID_DOLL_BLOCK.get());
+            dropSelf(consumer, InitBlocks.MOB_CANNON_BLOCK.get());
             consumer.accept(InitBlocks.TNT_CAKE_BLOCK.get().getLootTable(), new LootTable.Builder());
         }
     }
