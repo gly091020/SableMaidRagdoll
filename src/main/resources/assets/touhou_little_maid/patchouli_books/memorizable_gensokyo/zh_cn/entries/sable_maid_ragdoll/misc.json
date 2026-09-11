@@ -1,0 +1,21 @@
+{
+  "sortnum": 8,
+  "name": "工具、刷怪蛋与命令",
+  "icon": "sablemaidragdoll:copy_ragdoll_id",
+  "category": "touhou_little_maid:sable_maid_ragdoll",
+  "pages": [
+    {
+      "type": "patchouli:spotlight",
+      "item": "sablemaidragdoll:copy_ragdoll_id",
+      "text": "右键女仆即可把她的布娃娃 ID 复制到剪贴板。这个 ID 就是数据包与资源包用来给模型绑定布娃娃的依据。"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "可布娃娃化女仆刷怪蛋可以生成一只一开始就能布娃娃化的女仆；酒狐刷怪蛋与可布娃娃化酒狐刷怪蛋则会生成酒狐女仆（需要安装对应模型包）。"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "按键为 $(k:key.sablemaidragdoll.open_emoji)（表情选择）与 $(k:key.sablemaidragdoll.aim_cannon)（调整生物大炮方向）。$(br2)管理员还可以使用 /sable_maid_ragdoll 命令，用它生成任意已安装模型的测试女仆、蛋糕盒、布娃娃和手办。"
+    }
+  ]
+}

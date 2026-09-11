@@ -1,0 +1,29 @@
+{
+  "sortnum": 6,
+  "name": "生物大炮",
+  "icon": "sablemaidragdoll:mob_cannon",
+  "category": "touhou_little_maid:sable_maid_ragdoll",
+  "pages": [
+    {
+      "type": "patchouli:crafting",
+      "recipe": "sablemaidragdoll:mob_cannon",
+      "text": "一台用来发射生物而不是物品的发射器。发射的生物从一般都是布娃娃，不支持也可以正常发射。"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "对着大炮按下 $(k:key.sablemaidragdoll.aim_cannon) 即可调整方向，然后拖动鼠标瞄准；按住 Shift 可以把角度取整，松开按键完成调整。"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "中间的槽位是弹药槽：$(li)$(l:touhou_little_maid:other/camera_and_photo)女仆照片$(/l)：发射照片里的女仆并消耗照片；$(li)装有女仆的魂符：发射其中的女仆并清空魂符，可重复使用；$(li)任意刷怪蛋：生成并发射对应生物，不消耗刷怪蛋。"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "右下角的槽位是升级槽：$(li)弓：增加散射角度；$(li)TNT：发射初速度变为三倍；$(li)红石粉：冷却缩短至 0.5 秒；$(li)超声波发生器：冷却缩短至 0.25 秒；$(li)女仆重锤：发射出去的布娃娃落地时产生一次爆炸。"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "给大炮接上红石信号，它就会以 1 秒每次的速度开火，配合冷却升级还能更快。支持布娃娃化的女仆会在发射时变成布娃娃，不能布娃娃化的生物则会被直接击飞。$(br2)实在缺弹药时，也可以把一台生物大炮放进另一台的升级槽、并让弹药槽留空：大炮会转而把周围最近的玩家装填进去，且每次红石脉冲只能发射一次。被这样发射出去的玩家，还有一个隐藏成就等着。"
+    }
+  ]
+}

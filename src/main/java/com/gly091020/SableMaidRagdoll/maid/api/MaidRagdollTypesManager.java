@@ -3,6 +3,8 @@ package com.gly091020.SableMaidRagdoll.maid.api;
 import com.gly091020.SableMaidRagdoll.block.maid_doll.MaidDollData;
 import com.gly091020.SableMaidRagdoll.block.mob_cannon.MobCannonBlockEntity;
 import com.gly091020.SableRagdollLib.api.Ragdoll;
+import com.gly091020.SableRagdollLib.api.RagdollHelper;
+import com.gly091020.SableRagdollLib.api.RagdollManager;
 import com.gly091020.SableRagdollLib.block.AbstractPartBlockEntity;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.datafixers.util.Pair;
@@ -62,12 +64,31 @@ public class MaidRagdollTypesManager {
         if (ragdoll == null) return null;
         // 等待 2tick 是为了等待刚体创建在施加推力
         scheduleDelayed(serverLevel, 2, () -> {
-            ragdoll.addAngularImpulse(linearImpulse, true);
-            ragdoll.addLinearImpulse(angularImpulse, true);
+            ragdoll.addAngularImpulse(angularImpulse, true);
+            ragdoll.addLinearImpulse(linearImpulse, true);
         });
         if (addEntity)
             ragdoll.addEntity(entity);
         return ragdoll;
+    }
+
+    public static Ragdoll createRagdollFromDoll(ServerLevel serverLevel, Entity entity, Vec3 position, Vec3 rotation, Vec3 linearImpulse, Vec3 angularImpulse, boolean addEntity, MaidDollData data) {
+        var t = getType(data.ragdollType());
+        if (t == null) return null;
+        var ragdoll = RagdollHelper.createRagdoll(serverLevel, position, rotation, t.getRagdollId(data));
+        if (ragdoll == null) return null;
+        // 等待 2tick 是为了等待刚体创建在施加推力
+        scheduleDelayed(serverLevel, 2, () -> {
+            ragdoll.addAngularImpulse(angularImpulse, true);
+            ragdoll.addLinearImpulse(linearImpulse, true);
+        });
+        if (addEntity)
+            ragdoll.addEntity(entity);
+        return ragdoll;
+    }
+
+    public static Ragdoll createRagdollFromDoll(Entity entity, Vec3 position, Vec3 rotation, Vec3 linearImpulse, Vec3 angularImpulse, boolean addEntity, MaidDollData data) {
+        return entity.level() instanceof ServerLevel serverLevel ? createRagdollFromDoll(serverLevel, entity, position, rotation, linearImpulse, angularImpulse, addEntity, data) : null;
     }
 
     public static Ragdoll createRagdoll(Entity entity, Vec3 position, Vec3 rotation, Vec3 linearImpulse, Vec3 angularImpulse, boolean addEntity) {

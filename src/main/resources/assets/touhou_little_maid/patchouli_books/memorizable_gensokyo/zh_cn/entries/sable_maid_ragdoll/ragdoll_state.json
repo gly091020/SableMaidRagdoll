@@ -1,0 +1,16 @@
+{
+  "sortnum": 1,
+  "name": "布娃娃态",
+  "icon": "sablemaidragdoll:mod_icon",
+  "category": "touhou_little_maid:sable_maid_ragdoll",
+  "pages": [
+    {
+      "type": "patchouli:text",
+      "text": "默认情况下，女仆会在这些时候变成布娃娃：$(li)被杀死时；$(li)被主人用特定物品攻击时；$(li)从蛋糕盒里出来时。$(br2)另外两种情况默认关闭：被扫帚撞到时，以及受到指定类型的伤害时。全部都可以在设置中开关。"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "变成布娃娃后，女仆就是一个物理物体了：她会顺着斜面滑落、被打中会翻滚，也会被其他布娃娃、玩家、生物和载具结构推动。高速撞到东西时还会发出碰撞音效。$(br2)破坏任意一个部位，整个布娃娃都会消失，女仆随之恢复。"
+    }
+  ]
+}

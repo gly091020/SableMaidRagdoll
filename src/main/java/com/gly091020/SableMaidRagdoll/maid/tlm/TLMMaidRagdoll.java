@@ -129,6 +129,11 @@ public class TLMMaidRagdoll implements IMaidRagdoll {
     }
 
     @Override
+    public @Nullable ResourceLocation getRagdollId(MaidDollData data) {
+        return ResourceLocation.fromNamespaceAndPath(SableMaidRagdoll.MODID, data.modelID().replace(":", "/"));
+    }
+
+    @Override
     public Ragdoll toMaidRagdoll(ServerLevel level, Entity entity, Vec3 position, Vec3 rotation) {
         var id = getRagdollId(entity);
         if(id == null)return null;

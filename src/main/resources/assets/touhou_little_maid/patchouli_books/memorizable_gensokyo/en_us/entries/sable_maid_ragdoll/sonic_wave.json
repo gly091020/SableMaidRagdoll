@@ -1,0 +1,17 @@
+{
+  "sortnum": 5,
+  "name": "Sonic Wave Generator",
+  "icon": "sablemaidragdoll:sonic_wave",
+  "category": "touhou_little_maid:sable_maid_ragdoll",
+  "pages": [
+    {
+      "type": "patchouli:spotlight",
+      "item": "sablemaidragdoll:sonic_wave",
+      "text": "Right-click to shout a sonic boom in a wide cone in front of you. Living entities caught in it are knocked back, and maids that support ragdolling are turned into ragdolls and blown away instead.$(br2)It has a two second cooldown."
+    },
+    {
+      "type": "patchouli:crafting",
+      "recipe": "sablemaidragdoll:sonic_wave_item"
+    }
+  ]
+}

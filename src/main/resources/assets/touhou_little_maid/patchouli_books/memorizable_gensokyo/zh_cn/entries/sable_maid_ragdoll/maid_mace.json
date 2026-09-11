@@ -1,0 +1,21 @@
+{
+  "sortnum": 4,
+  "name": "女仆重锤",
+  "icon": "sablemaidragdoll:maid_mace",
+  "category": "touhou_little_maid:sable_maid_ragdoll",
+  "pages": [
+    {
+      "type": "patchouli:spotlight",
+      "item": "sablemaidragdoll:maid_mace",
+      "text": "右键自己的女仆，把她朝正上方发射出去。她落地砸到东西的瞬间，布娃娃会发生一次爆炸——不会破坏方块，但周围的东西都会得到一个非常强烈的离场提示。"
+    },
+    {
+      "type": "altar_recipe",
+      "recipe_id": "sablemaidragdoll:maid_mace"
+    },
+    {
+      "type": "patchouli:crafting",
+      "recipe": "sablemaidragdoll:maid_mace1"
+    }
+  ]
+}

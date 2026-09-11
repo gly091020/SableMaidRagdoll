@@ -1,0 +1,21 @@
+{
+  "sortnum": 8,
+  "name": "Tools, Eggs and Commands",
+  "icon": "sablemaidragdoll:copy_ragdoll_id",
+  "category": "touhou_little_maid:sable_maid_ragdoll",
+  "pages": [
+    {
+      "type": "patchouli:spotlight",
+      "item": "sablemaidragdoll:copy_ragdoll_id",
+      "text": "Right-click a maid to copy her ragdoll ID to the clipboard. That ID is what data packs and resource packs use to give a model its ragdoll."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "The Ragdollable Maid Spawn Egg spawns a maid that can be ragdolled right away. The Wine Fox Spawn Eggs spawn the Wine Fox maid, when that model pack is installed."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "Keybinds are $(k:key.sablemaidragdoll.open_emoji) for the emote wheel and $(k:key.sablemaidragdoll.aim_cannon) for aiming a cannon.$(br2)Operators also get the /sable_maid_ragdoll command, which can spawn test maids, boxes, ragdolls and garage kits of any installed model."
+    }
+  ]
+}

@@ -79,7 +79,7 @@ public class EventHandler {
             damage = event.getEntity().getPersistentData().getFloat("smr_last_damage");
             event.getEntity().getPersistentData().remove("smr_last_damage");
         }else damage = 1;
-        maidMotion.mul(Math.clamp(damage / 5, 0.3, 1.5));
+        maidMotion.mul(Math.clamp(damage / 5, 0.3, 1.5)).mul(0.5);
         if(event.getSource().getEntity() != null)
             event.getEntity().lookAt(EntityAnchorArgument.Anchor.EYES, event.getSource().getEntity().getEyePosition());
         var rag = MaidRagdollTypesManager.createRagdoll(event.getEntity(), JOMLConversion.toMojang(maidMotion), Vec3.ZERO, false);

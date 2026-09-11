@@ -1,0 +1,16 @@
+{
+  "sortnum": 1,
+  "name": "Ragdoll State",
+  "icon": "sablemaidragdoll:mod_icon",
+  "category": "touhou_little_maid:sable_maid_ragdoll",
+  "pages": [
+    {
+      "type": "patchouli:text",
+      "text": "By default a maid turns into a ragdoll when:$(li)she is killed;$(li)her owner hits her with a weapon the mod listens to;$(li)she is let out of a maid cake box.$(br2)Two more cases are off by default: bumping into a broom, and taking damage of a configurable type."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "As a ragdoll she is a physics object. She slides down slopes, tumbles when hit, and can be pushed by other ragdolls, players, mobs and sub-level machines. Ragdolls that slam into something at speed also play an impact sound.$(br2)Breaking a single part destroys the entire ragdoll and restores the maid."
+    }
+  ]
+}

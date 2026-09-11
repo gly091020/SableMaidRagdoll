@@ -1,0 +1,22 @@
+{
+  "sortnum": 2,
+  "name": "Cheat Death Bauble",
+  "icon": "sablemaidragdoll:cheat_death_bauble",
+  "category": "touhou_little_maid:sable_maid_ragdoll",
+  "pages": [
+    {
+      "type": "patchouli:spotlight",
+      "item": "sablemaidragdoll:cheat_death_bauble",
+      "text": "A maid bauble. While it is equipped, a maid that is hit while below 5 health - or that takes a killing blow - turns into a ragdoll instead of being hurt.$(br2)The ragdoll heals her by 2 health every second. Once she is back at 20 health the ragdoll disappears and the maid gets up again, ready to work. Each rescue costs the bauble one point of durability."
+    },
+    {
+      "type": "altar_recipe",
+      "recipe_id": "sablemaidragdoll:cheat_death_bauble"
+    },
+    {
+      "type": "patchouli:crafting",
+      "recipe": "sablemaidragdoll:cheat_death_bauble1",
+      "text": "It can also be put together at a normal crafting table."
+    }
+  ]
+}

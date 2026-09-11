@@ -334,17 +334,17 @@ public class MobCannonBlockEntity extends BlockEntity implements IItemHandlerMod
     }
 
     public void toRagdoll(Entity entity, Vec3 force){
+        var rag = MaidRagdollTypesManager.createRagdoll(entity, force.scale(10), new Vec3(-10, 0, 0), true);
+        if(isExplosion() && rag != null)
+            rag.getExtraData().putBoolean("explosion", true);
+        if(rag != null)return;
         if(CompatMods.PLAYER_RAGDOLL.isLoaded() && entity instanceof ServerPlayer player){
             PlayerRagdollUtil.launch(player, force.scale(25));
             return;
         }
         if(CompatMods.PLAYER_RAGDOLL.isLoaded() && entity instanceof LivingEntity livingEntity){
             PlayerRagdollUtil.launchMob(livingEntity, force.scale(25));
-            return;
         }
-        var rag = MaidRagdollTypesManager.createRagdoll(entity, force, new Vec3(-10, 0, 0), true);
-        if(isExplosion() && rag != null)
-            rag.getExtraData().putBoolean("explosion", true);
     }
 
     public boolean isExplosion(){

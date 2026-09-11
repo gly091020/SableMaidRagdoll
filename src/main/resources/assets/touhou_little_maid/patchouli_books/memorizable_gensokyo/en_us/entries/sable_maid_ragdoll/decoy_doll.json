@@ -1,0 +1,29 @@
+{
+  "sortnum": 3,
+  "name": "Decoy Maid Doll",
+  "icon": "sablemaidragdoll:player_cheat_death",
+  "category": "touhou_little_maid:sable_maid_ragdoll",
+  "pages": [
+    {
+      "type": "patchouli:spotlight",
+      "item": "sablemaidragdoll:player_cheat_death",
+      "text": "Right-click one of your own maids to copy her model into the doll. Using the bound doll afterwards makes you fall over as that maid's ragdoll - the perfect way to feign death."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "Lying down, right-click with the doll to toggle control mode. While it is on you can still walk, jump and fight as a ragdoll; while it is off you simply lie there. Sneak + use clears the stored model.$(br2)While riding the ragdoll, press $(k:key.sablemaidragdoll.open_emoji) to pick an emote, which is then shown above it."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "Sneak + right-click on a block places the bound doll as a decoration. Breaking that block gives the doll back."
+    },
+    {
+      "type": "altar_recipe",
+      "recipe_id": "sablemaidragdoll:player_cheat_death"
+    },
+    {
+      "type": "patchouli:crafting",
+      "recipe": "sablemaidragdoll:player_cheat_death1"
+    }
+  ]
+}

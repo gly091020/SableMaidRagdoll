@@ -38,6 +38,10 @@ public interface IMaidRagdoll {
     @Nullable
     ResourceLocation getRagdollId(Entity entity);
 
+    // 获得布娃娃id
+    @Nullable
+    ResourceLocation getRagdollId(MaidDollData data);
+
     // 创建布娃娃
     @Nullable
     Ragdoll toMaidRagdoll(ServerLevel serverLevel, Entity entity, Vec3 position, Vec3 rotation);

@@ -1,0 +1,29 @@
+{
+  "sortnum": 6,
+  "name": "Mob Cannon",
+  "icon": "sablemaidragdoll:mob_cannon",
+  "category": "touhou_little_maid:sable_maid_ragdoll",
+  "pages": [
+    {
+      "type": "patchouli:crafting",
+      "recipe": "sablemaidragdoll:mob_cannon",
+      "text": "A dispenser that launches creatures instead of items. Whatever it fires leaves the barrel as a ragdoll."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "Look at the cannon and hold $(k:key.sablemaidragdoll.aim_cannon) to adjust its direction, then drag the mouse. Hold shift to snap the angles to whole degrees and release the key when you are done."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "The middle slot is the ammo slot:$(li)a $(l:touhou_little_maid:other/camera_and_photo)Maid Photo$(/l) fires its maid and is consumed;$(li)a Soul Spell holding a maid fires her and is left empty and reusable;$(li)any spawn egg spawns its creature and fires it, without being used up."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "The lower right slot is the upgrade slot:$(li)Bow - adds spread;$(li)TNT - triples launch speed;$(li)Redstone Dust - cooldown down to 0.5 s;$(li)Ultrasonic Wave Generator - cooldown down to 0.25 s;$(li)Maid Mace - the ragdoll explodes where it lands."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "A redstone signal makes the cannon fire once per second, or faster with a cooldown upgrade. Maids become ragdolls as they are launched, and anything that cannot be ragdolled is simply thrown.$(br2)In a pinch you can put a Mob Cannon into another cannon's upgrade slot and leave the ammo empty: it will then load the nearest player, firing on every redstone pulse instead of continuously. Anyone fired that way has a hidden advancement to find."
+    }
+  ]
+}

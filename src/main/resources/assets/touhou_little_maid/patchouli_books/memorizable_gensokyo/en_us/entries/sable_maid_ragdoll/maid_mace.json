@@ -1,0 +1,21 @@
+{
+  "sortnum": 4,
+  "name": "Maid Mace",
+  "icon": "sablemaidragdoll:maid_mace",
+  "category": "touhou_little_maid:sable_maid_ragdoll",
+  "pages": [
+    {
+      "type": "patchouli:spotlight",
+      "item": "sablemaidragdoll:maid_mace",
+      "text": "Right-click one of your own maids to launch her straight up. Her ragdoll explodes the moment it slams into something - the blast destroys no blocks, but anything nearby gets a very strong hint to leave."
+    },
+    {
+      "type": "altar_recipe",
+      "recipe_id": "sablemaidragdoll:maid_mace"
+    },
+    {
+      "type": "patchouli:crafting",
+      "recipe": "sablemaidragdoll:maid_mace1"
+    }
+  ]
+}

@@ -123,7 +123,7 @@ public class PlayerCheatDeathItem extends BlockItem {
     }
 
     private boolean toBeRagdoll(ServerPlayer player, MaidDollData data){
-        var rag = MaidRagdollTypesManager.createRagdoll(player, player.position().add(0, 0.5, 0), new Vec3(0, -player.getYHeadRot(), 0), Vec3.ZERO, Vec3.ZERO, false);
+        var rag = MaidRagdollTypesManager.createRagdollFromDoll(player, player.position().add(0, 0.5, 0), new Vec3(0, -player.getYHeadRot(), 0), Vec3.ZERO, Vec3.ZERO, false, data);
         if(rag == null)return false;
         var motion = JOMLConversion.toJOML(player.getDeltaMovement()).mul(10);
         Vector3d forward = JOMLConversion.toJOML(player.getLookAngle());

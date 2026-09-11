@@ -1,0 +1,20 @@
+{
+  "sortnum": 0,
+  "name": "A Maid Made of Physics",
+  "icon": "sablemaidragdoll:mod_icon",
+  "category": "touhou_little_maid:sable_maid_ragdoll",
+  "pages": [
+    {
+      "type": "patchouli:text",
+      "text": "This mod gives maids a real physics body. A maid in ragdoll state is no longer a normal entity: she falls apart into loose parts that tumble, roll, and can be pushed around by players, mobs and moving contraptions.$(br2)Break any of her parts and the whole ragdoll is gone - the maid is back as a regular entity."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "Not every model can be ragdolled. Turn on advanced tooltips with F3 + H and open a maid's model screen: supported models are marked with a \"Supports ragdoll\" line, and their ragdoll ID is shown as well."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "Everything added by this mod can be switched off one by one in the mod's config screen, so this category doubles as a checklist of what is currently enabled."
+    }
+  ]
+}

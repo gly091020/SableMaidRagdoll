@@ -1,0 +1,29 @@
+{
+  "sortnum": 3,
+  "name": "替身女仆玩偶",
+  "icon": "sablemaidragdoll:player_cheat_death",
+  "category": "touhou_little_maid:sable_maid_ragdoll",
+  "pages": [
+    {
+      "type": "patchouli:spotlight",
+      "item": "sablemaidragdoll:player_cheat_death",
+      "text": "右键自己的女仆即可把她的模型复制到玩偶上。绑定之后使用玩偶，玩家就会以该女仆的模型倒下装死。"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "躺下后再右键可以切换控制模式：开启时，即使以布娃娃形态也能照常行走、跳跃、战斗；关闭时只能躺着。潜行使用会清除已绑定的模型。$(br2)以布娃娃形态躺着时，按下 $(k:key.sablemaidragdoll.open_emoji) 可以选择表情，表情会显示在布娃娃上方。"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "潜行对着方块右键可以把已绑定的玩偶摆在地上当装饰，破坏方块就能把玩偶取回。"
+    },
+    {
+      "type": "altar_recipe",
+      "recipe_id": "sablemaidragdoll:player_cheat_death"
+    },
+    {
+      "type": "patchouli:crafting",
+      "recipe": "sablemaidragdoll:player_cheat_death1"
+    }
+  ]
+}

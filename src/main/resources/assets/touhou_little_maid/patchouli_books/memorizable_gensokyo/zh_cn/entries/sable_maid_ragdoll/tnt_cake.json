@@ -1,0 +1,17 @@
+{
+  "sortnum": 7,
+  "name": "TNT蛋糕",
+  "icon": "sablemaidragdoll:tnt_cake",
+  "category": "touhou_little_maid:sable_maid_ragdoll",
+  "pages": [
+    {
+      "type": "patchouli:spotlight",
+      "item": "sablemaidragdoll:tnt_cake",
+      "text": "塞满了 TNT 的蛋糕。玩家吃下一片会中毒。$(br2)女仆也愿意吃它，而且不会增加好感度；当女仆吃完一片的瞬间，蛋糕就会爆炸，把附近的女仆都崩上天。"
+    },
+    {
+      "type": "patchouli:crafting",
+      "recipe": "sablemaidragdoll:tnt_cake_item"
+    }
+  ]
+}
