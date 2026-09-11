@@ -4,6 +4,7 @@ import com.github.tartaricacid.touhoulittlemaid.init.InitItems;
 import com.gly091020.SableMaidRagdoll.SableMaidRagdoll;
 import com.gly091020.SableMaidRagdoll.init.InitBlocks;
 import com.gly091020.SableMaidRagdoll.init.InitTags;
+import com.gly091020.SableMaidRagdoll.maid.tlm.init.TLMInitBlocks;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.PackOutput;
@@ -31,7 +32,7 @@ public class ModTagsProvider {
         @Override
         protected void addTags(HolderLookup.Provider provider) {
             tag(TagKey.create(Registries.BLOCK, ResourceLocation.fromNamespaceAndPath("sableragdolllib", "ragdoll_part")))
-                    .add(InitBlocks.MAID_PART_BLOCK.get());
+                    .add(TLMInitBlocks.MAID_PART_BLOCK.get());
 
             tag(BlockTags.MINEABLE_WITH_AXE)
                     .add(InitBlocks.MOB_CANNON_BLOCK.get());
@@ -51,8 +52,8 @@ public class ModTagsProvider {
                     .addTag(TagKey.create(Registries.ITEM, ResourceLocation.withDefaultNamespace("anvil")))
                     .addTag(TagKey.create(Registries.ITEM, ResourceLocation.withDefaultNamespace("doors")))
                     .addTag(TagKey.create(Registries.ITEM, ResourceLocation.withDefaultNamespace("shovels")))
-                    .add(InitItems.MAID_BEACON.get())
-                    .add(InitItems.BOOKSHELF.get())
+                    .addOptional(InitItems.MAID_BEACON.getId())
+                    .addOptional(InitItems.BOOKSHELF.getId())
                     .addOptionalTag(ResourceLocation.fromNamespaceAndPath("superbwarfare", "hammer"))
                     .addOptionalTag(ResourceLocation.fromNamespaceAndPath("c", "tools/wrench"))
                     .addOptional(ResourceLocation.fromNamespaceAndPath("iammusicplayer", "boombox"))

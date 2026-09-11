@@ -1,21 +1,21 @@
 package com.gly091020.SableMaidRagdoll.item;
 
-import com.github.tartaricacid.touhoulittlemaid.entity.passive.EntityMaid;
 import com.gly091020.SableMaidRagdoll.SableMaidRagdoll;
 import com.gly091020.SableMaidRagdoll.init.InitSounds;
+import com.gly091020.SableMaidRagdoll.maid.api.MaidRagdollTypesManager;
 import com.gly091020.SableMaidRagdoll.util.AuthorUtil;
-import com.gly091020.SableRagdollLib.api.RagdollHelper;
 import com.gly091020.SableRagdollLib.api.ScheduleManager;
 import com.gly091020.SableRagdollLib.entity.PartSeat;
+import dev.ryanhcode.sable.companion.math.JOMLConversion;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
@@ -82,7 +82,7 @@ public class SonicWaveItem extends Item {
             var dir = to.normalize();
             if(look.dot(dir) < HALF_ANGLE_COS)continue;
             double falloff = 1 - dist / RANGE;
-            if(entity instanceof EntityMaid maid && blowMaidAway(level, maid, dir))continue;
+            if(blowMaidAway(level, entity, dir))continue;
             entity.knockback(PUSH_STRENGTH * falloff, -dir.x, -dir.z);
             entity.setDeltaMovement(entity.getDeltaMovement().add(0, 0.35 * falloff + 0.1, 0));
             entity.hurtMarked = true;
@@ -92,15 +92,10 @@ public class SonicWaveItem extends Item {
         }
     }
 
-    private static boolean blowMaidAway(ServerLevel level, EntityMaid maid, Vec3 dir){
-        var ragdollID = ResourceLocation.fromNamespaceAndPath(SableMaidRagdoll.MODID, maid.getModelId().replace(":", "/"));
-        var ragdoll = RagdollHelper.createRagdoll(level, maid.position().add(0, 1, 0), ragdollID);
+    private static boolean blowMaidAway(ServerLevel level, Entity entity, Vec3 dir){
+        var ragdoll = MaidRagdollTypesManager.createRagdoll(entity, entity.position().add(0, 1, 0), Vec3.ZERO,
+                dir.scale(8).add(0, 2, 0), new Vec3(0, 5, 0), true);
         if(ragdoll == null)return false;
-        ragdoll.addEntity(maid);
-        ScheduleManager.scheduleDelayed(level, 2, () -> {
-            ragdoll.addLinearImpulse(dir.scale(8).add(0, 2, 0), true);
-            ragdoll.addAngularImpulse(new Vec3(0, 5, 0), true);
-        });
         return true;
     }
 }

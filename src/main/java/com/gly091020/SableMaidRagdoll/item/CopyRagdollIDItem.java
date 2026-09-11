@@ -1,10 +1,8 @@
 package com.gly091020.SableMaidRagdoll.item;
 
-import com.github.tartaricacid.touhoulittlemaid.entity.passive.EntityMaid;
-import com.gly091020.SableMaidRagdoll.SableMaidRagdoll;
+import com.gly091020.SableMaidRagdoll.maid.api.MaidRagdollTypesManager;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.sounds.SimpleSoundInstance;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -34,9 +32,11 @@ public class CopyRagdollIDItem extends Item {
 
     @OnlyIn(Dist.CLIENT)
     public InteractionResult interactionResult(LivingEntity target){
-        if(!(target instanceof EntityMaid maid))return InteractionResult.SUCCESS;
+        var type = MaidRagdollTypesManager.getSupportType(target);
+        if(type == null)return InteractionResult.SUCCESS;
 
-        var id = ResourceLocation.fromNamespaceAndPath(SableMaidRagdoll.MODID, maid.getModelId().replace(":", "/"));
+        var id = type.getRagdollId(target);
+        if(id == null)return InteractionResult.SUCCESS;
         Minecraft.getInstance().keyboardHandler.setClipboard(id.toString());
         Minecraft.getInstance().getSoundManager().play(SimpleSoundInstance.forUI(SoundEvents.EXPERIENCE_ORB_PICKUP, 1));
 

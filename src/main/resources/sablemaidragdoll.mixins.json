@@ -2,23 +2,24 @@
   "required": true,
   "minVersion": "0.8",
   "package": "com.gly091020.SableMaidRagdoll.mixin",
+  "plugin": "com.gly091020.SableMaidRagdoll.MaidRagdollMixinConfigPlugin",
   "compatibilityLevel": "JAVA_21",
   "mixins": [
-    "BroomEntityMixin",
-    "BroomMixin",
-    "EmojiReloadListenerMixin",
-    "EntityBoxMixin",
-    "IMaidEdibleBlockMixin",
+    "tlm.BroomEntityMixin",
+    "tlm.BroomMixin",
+    "tlm.EmojiReloadListenerMixin",
+    "tlm.EntityBoxMixin",
+    "tlm.IMaidEdibleBlockMixin",
     "love_loathe.CallResponseHurtMixin",
     "love_loathe.EmotionManagerMixin",
     "love_loathe.StandUpActionMixin",
     "maid_spell.MaidSpellAllyEventsMixin"
   ],
   "client": [
-    "BedrockModelAccessor",
-    "CustomPackLoaderMixin",
-    "MaidModelGuiMixin",
-    "TextureManagerMixin"
+    "tlm.BedrockModelAccessor",
+    "tlm.CustomPackLoaderMixin",
+    "tlm.MaidModelGuiMixin",
+    "tlm.TextureManagerMixin"
   ],
   "injectors": {
     "defaultRequire": 1

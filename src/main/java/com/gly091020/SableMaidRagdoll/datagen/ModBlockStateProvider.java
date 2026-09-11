@@ -2,6 +2,7 @@ package com.gly091020.SableMaidRagdoll.datagen;
 
 import com.gly091020.SableMaidRagdoll.SableMaidRagdoll;
 import com.gly091020.SableMaidRagdoll.init.InitBlocks;
+import com.gly091020.SableMaidRagdoll.maid.tlm.init.TLMInitBlocks;
 import net.minecraft.data.PackOutput;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.neoforged.neoforge.client.model.generators.BlockStateProvider;
@@ -15,11 +16,11 @@ public class ModBlockStateProvider extends BlockStateProvider {
 
     @Override
     protected void registerStatesAndModels() {
-        simpleBlock(InitBlocks.MAID_PART_BLOCK.get(),
+        simpleBlock(TLMInitBlocks.MAID_PART_BLOCK.get(),
                 models().getBuilder("maid_part").texture("particle", modLoc("block/maid_part")));
         simpleBlock(InitBlocks.MOB_CANNON_BLOCK.get(),
                 models().getBuilder("mob_cannon").texture("particle", mcLoc("block/oak_planks")));
-        simpleBlock(InitBlocks.MAID_FAIRY_PART_BLOCK.get(),
+        simpleBlock(TLMInitBlocks.MAID_FAIRY_PART_BLOCK.get(),
                 models().getBuilder("maid_fairy_part").texture("particle", modLoc("block/maid_part")));
         horizontalBlock(InitBlocks.MAID_DOLL_BLOCK.get(),
                 models().getBuilder("maid_doll").texture("particle", mcLoc("block/white_wool")));

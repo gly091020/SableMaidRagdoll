@@ -1,6 +1,7 @@
 package com.gly091020.SableMaidRagdoll.network;
 
 import com.gly091020.SableMaidRagdoll.SableMaidRagdoll;
+import com.gly091020.SableMaidRagdoll.maid.api.MaidRagdollTypesManager;
 import net.neoforged.neoforge.network.event.RegisterPayloadHandlersEvent;
 
 public class PacketRegistry {
@@ -13,15 +14,11 @@ public class PacketRegistry {
         );
 
         registrar.playToServer(
-                ServerboundBroomManPacket.TYPE,
-                ServerboundBroomManPacket.STREAM_CODEC,
-                ServerboundBroomManPacket::handle
-        );
-
-        registrar.playToServer(
                 ServerboundMobCannonAimPacket.TYPE,
                 ServerboundMobCannonAimPacket.STREAM_CODEC,
                 ServerboundMobCannonAimPacket::handle
         );
+
+        MaidRagdollTypesManager.registryNetwork(registrar);
     }
 }

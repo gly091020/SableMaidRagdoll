@@ -1,11 +1,8 @@
 package com.gly091020.SableMaidRagdoll.client.renderer.block;
 
-import com.github.tartaricacid.touhoulittlemaid.api.client.render.MaidRenderState;
-import com.github.tartaricacid.touhoulittlemaid.client.sound.data.MaidSoundInstanceAtPos;
-import com.github.tartaricacid.touhoulittlemaid.entity.passive.EntityMaid;
-import com.github.tartaricacid.touhoulittlemaid.init.InitSounds;
-import com.github.tartaricacid.touhoulittlemaid.util.EntityCacheUtil;
 import com.gly091020.SableMaidRagdoll.block.maid_doll.MaidDollBlockEntity;
+import com.gly091020.SableMaidRagdoll.maid.api.MaidRagdollTypesManager;
+import com.gly091020.SableMaidRagdoll.maid.api.MaidSoundType;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
 import dev.ryanhcode.sable.companion.SableCompanion;
@@ -21,9 +18,6 @@ import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.block.HorizontalDirectionalBlock;
 
-import java.util.Objects;
-import java.util.concurrent.ExecutionException;
-
 public class MaidDollRenderer implements BlockEntityRenderer<MaidDollBlockEntity> {
     private final BlockEntityRendererProvider.Context context;
     public MaidDollRenderer(BlockEntityRendererProvider.Context context) {
@@ -36,17 +30,8 @@ public class MaidDollRenderer implements BlockEntityRenderer<MaidDollBlockEntity
         var level = maidDollBlockEntity.getLevel();
         if(modelID.isEmpty() || level == null)return;
 
-        EntityMaid maid;
-        try {
-            maid = (EntityMaid) EntityCacheUtil.ENTITY_CACHE.get(EntityMaid.TYPE, () -> {
-                Entity e = EntityMaid.TYPE.create(level);
-                return Objects.requireNonNullElseGet(e, () -> new EntityMaid(level));
-            });
-        } catch (ExecutionException | ClassCastException ignored) {return;}
-        EntityCacheUtil.clearMaidDataResidue(maid, true);
-        maid.setModelId(modelID);
-        maid.renderState = MaidRenderState.GARAGE_KIT;
-        maid.setInSittingPose(true);
+        Entity maid = MaidRagdollTypesManager.getRenderEntity(maidDollBlockEntity.getLevel(), maidDollBlockEntity.getMaidDollData());
+        if(maid == null)return;
 
         poseStack.pushPose();
         poseStack.scale(0.5f, 0.5f, 0.5f);
@@ -60,10 +45,7 @@ public class MaidDollRenderer implements BlockEntityRenderer<MaidDollBlockEntity
         if(maidDollBlockEntity.triggerPat){
             maidDollBlockEntity.triggerPat = false;
             var pos = SableCompanion.INSTANCE.projectOutOfSubLevel(level, (Position) maidDollBlockEntity.getBlockPos().getCenter());
-            Minecraft.getInstance().getSoundManager().play(new MaidSoundInstanceAtPos(
-                    InitSounds.MAID_IDLE.get(), maidDollBlockEntity.getSoundID(),
-                    pos.x, pos.y, pos.z, 0.5f, 1
-            ));
+            MaidRagdollTypesManager.playSound(maidDollBlockEntity.getRagdollTypeID(), level, pos, maidDollBlockEntity.getSoundID(), MaidSoundType.IDLE, 0.5f);
             Minecraft.getInstance().getSoundManager().play(new SimpleSoundInstance(
                     SoundEvents.WOOL_PLACE, SoundSource.BLOCKS, 1, 1, level.random, maidDollBlockEntity.getBlockPos()
             ));

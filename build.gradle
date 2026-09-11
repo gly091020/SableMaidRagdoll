@@ -209,7 +209,7 @@ publishMods {
     file = jar.archiveFile
     changelog = "${mod_name} ${mod_version}"
     // 正式版改成 STABLE，测试版用 ALPHA / BETA
-    type = BETA
+    type = ALPHA
     modLoaders.add("neoforge")
     displayName = "${mod_name} ${mod_version}"
     version = mod_version

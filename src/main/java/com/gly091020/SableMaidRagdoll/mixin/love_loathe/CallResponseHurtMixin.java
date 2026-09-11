@@ -3,6 +3,7 @@ package com.gly091020.SableMaidRagdoll.mixin.love_loathe;
 import com.bawnorton.mixinsquared.TargetHandler;
 import com.github.tartaricacid.touhoulittlemaid.entity.passive.EntityMaid;
 import com.gly091020.SableMaidRagdoll.EventHandler;
+import com.gly091020.SableMaidRagdoll.maid.tlm.util.TLMMixinFunction;
 import net.minecraft.world.damagesource.DamageSource;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Pseudo;
@@ -27,7 +28,7 @@ public class CallResponseHurtMixin {
     @Inject(method = "@MixinSquared:Handler", at = @At("HEAD"), cancellable = true, require = 0)
     private void sableMaidRagdoll$skipCallResponseBypass(DamageSource source, float amount,
                                                          CallbackInfoReturnable<Boolean> cir, CallbackInfo ci) {
-        if (EventHandler.shouldSkipCallResponseBypass((EntityMaid) (Object) this, source)) {
+        if (TLMMixinFunction.shouldSkipCallResponseBypass((EntityMaid) (Object) this, source)) {
             ci.cancel();
         }
     }

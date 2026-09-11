@@ -3,6 +3,7 @@ package com.gly091020.SableMaidRagdoll.datagen;
 import com.gly091020.SableMaidRagdoll.SableMaidRagdoll;
 import com.gly091020.SableMaidRagdoll.init.InitBlocks;
 import com.gly091020.SableMaidRagdoll.init.InitItems;
+import com.gly091020.SableMaidRagdoll.maid.tlm.init.TLMInitItems;
 import net.minecraft.data.PackOutput;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.neoforged.neoforge.client.model.generators.ItemModelProvider;
@@ -20,9 +21,9 @@ public class ModItemModelProvider extends ItemModelProvider {
         basicItem(InitItems.MAID_MACE_ITEM.get());
         basicItem(InitItems.MOD_ICON_ITEM.get());
         basicItem(InitItems.SONIC_WAVE_ITEM.get());
-        spawnEggItem(InitItems.RAGDOLLABLE_MAID_SPAWN_EGG.get());
-        spawnEggItem(InitItems.WINE_FOX_SPAWN_EGG.get());
-        spawnEggItem(InitItems.RAGDOLLABLE_WINE_FOX_SPAWN_EGG.get());
+        spawnEggItem(TLMInitItems.RAGDOLLABLE_MAID_SPAWN_EGG.get());
+        spawnEggItem(TLMInitItems.WINE_FOX_SPAWN_EGG.get());
+        spawnEggItem(TLMInitItems.RAGDOLLABLE_WINE_FOX_SPAWN_EGG.get());
         simpleBlockItem(InitBlocks.TNT_CAKE_BLOCK.get());
 
         getBuilder("mob_cannon")

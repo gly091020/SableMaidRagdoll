@@ -1,11 +1,12 @@
 package com.gly091020.SableMaidRagdoll.client;
 
 import com.gly091020.SableMaidRagdoll.SableMaidRagdoll;
-import com.gly091020.SableMaidRagdoll.client.renderer.block.*;
+import com.gly091020.SableMaidRagdoll.client.model.MaidDollDefaultModel;
+import com.gly091020.SableMaidRagdoll.client.renderer.block.MaidDollRenderer;
+import com.gly091020.SableMaidRagdoll.client.renderer.block.MobCannonItemRenderer;
+import com.gly091020.SableMaidRagdoll.client.renderer.block.MobCannonRenderer;
 import com.gly091020.SableMaidRagdoll.client.renderer.item.PlayerCheatDeathItemRenderer;
-import com.gly091020.SableMaidRagdoll.client.screen.EmojiSelectScreen;
 import com.gly091020.SableMaidRagdoll.client.screen.MobCannonScreen;
-import com.gly091020.SableMaidRagdoll.geo.GeoMaidModelRenderer;
 import com.gly091020.SableMaidRagdoll.init.InitBlockEntities;
 import com.gly091020.SableMaidRagdoll.init.InitItems;
 import com.gly091020.SableMaidRagdoll.init.InitMenus;
@@ -30,14 +31,6 @@ public class ClientEventHandler {
     @SubscribeEvent
     public static void onClientSetup(FMLClientSetupEvent event) {
         BlockEntityRenderers.register(
-                InitBlockEntities.MAID_PART_BLOCK_ENTITY.get(),
-                (context) -> new MaidPartRenderer(context.getEntityRenderer().getItemInHandRenderer())
-        );
-        BlockEntityRenderers.register(
-                InitBlockEntities.MAID_FAIRY_PART_BLOCK_ENTITY.get(),
-                context -> new MaidFairyPartRenderer()
-        );
-        BlockEntityRenderers.register(
                 InitBlockEntities.MAID_DOLL_BLOCK_ENTITY.get(),
                 MaidDollRenderer::new
         );
@@ -45,12 +38,6 @@ public class ClientEventHandler {
                 InitBlockEntities.MOB_CANNON_BLOCK_ENTITY.get(),
                 MobCannonRenderer::new
         );
-    }
-
-    @SubscribeEvent
-    public static void onResourceReload(AddReloadListenerEvent event) {
-        MaidPartRenderCache.clear();
-        GeoMaidModelRenderer.clear();
     }
 
     @SubscribeEvent
@@ -68,6 +55,11 @@ public class ClientEventHandler {
                 return new MobCannonItemRenderer();
             }
         }, InitItems.MOB_CANNON_ITEM.get());
+    }
+
+    @SubscribeEvent
+    public static void onRegisterLayerDefinitions(EntityRenderersEvent.RegisterLayerDefinitions event) {
+        event.registerLayerDefinition(MaidDollDefaultModel.LAYER_LOCATION, MaidDollDefaultModel::createBodyLayer);
     }
 
     @SubscribeEvent
@@ -96,11 +88,6 @@ public class ClientEventHandler {
             MobCannonAimManager.tryStart(mc);
         }
         MobCannonAimManager.tick(mc, AIM_CANNON.isDown());
-        while (OPEN_EMOJI.consumeClick()) {
-            if (!MobCannonAimManager.isAiming()) {
-                EmojiSelectScreen.tryOpen();
-            }
-        }
     }
 
     @SubscribeEvent

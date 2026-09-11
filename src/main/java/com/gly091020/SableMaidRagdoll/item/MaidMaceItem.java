@@ -1,20 +1,17 @@
 package com.gly091020.SableMaidRagdoll.item;
 
-import com.github.tartaricacid.touhoulittlemaid.entity.passive.EntityMaid;
 import com.gly091020.SableMaidRagdoll.SableMaidRagdoll;
 import com.gly091020.SableMaidRagdoll.init.InitSounds;
-import com.gly091020.SableRagdollLib.api.RagdollHelper;
-import com.gly091020.SableRagdollLib.api.ScheduleManager;
+import com.gly091020.SableMaidRagdoll.maid.api.MaidRagdollTypesManager;
 import com.gly091020.SableRagdollLib.entity.PartSeat;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.TamableAnimal;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -32,18 +29,12 @@ public class MaidMaceItem extends Item {
     @Override
     public InteractionResult interactLivingEntity(ItemStack stack, Player player, LivingEntity entity, InteractionHand hand) {
         if(!SableMaidRagdoll.CONFIG.items.maidMace)return InteractionResult.PASS;
-        if(!(entity instanceof EntityMaid maid) || maid.getVehicle() instanceof PartSeat ||
+        if(!(entity instanceof TamableAnimal maid) || maid.getVehicle() instanceof PartSeat ||
                 maid.getOwnerUUID() == null || !maid.getOwnerUUID().equals(player.getUUID()))return InteractionResult.PASS;
         if(player.level().isClientSide)return InteractionResult.SUCCESS;
-        var ragdollID = ResourceLocation.fromNamespaceAndPath(SableMaidRagdoll.MODID, maid.getModelId().replace(":", "/"));
-        var rag = RagdollHelper.createRagdoll((ServerLevel) player.level(), maid.position().add(0, 1, 0), ragdollID);
+        var rag = MaidRagdollTypesManager.createRagdoll(entity, entity.position().add(0, 1, 0), Vec3.ZERO, new Vec3(0, 10, 0), new Vec3(0, 10, 0), true);
         if(rag == null)return InteractionResult.SUCCESS;
-        rag.addEntity(maid);
         rag.getExtraData().putBoolean("explosion", true);
-        ScheduleManager.scheduleDelayed((ServerLevel) player.level(), 2, () -> {
-            rag.addLinearImpulse(new Vec3(0, 10, 0), true);
-            rag.addAngularImpulse(new Vec3(0, 10, 0), false);
-        });
         addCooldown(stack, player);
         if(SableMaidRagdoll.CONFIG.sounds.drop)
             player.level().playSound(null, BlockPos.containing(player.position()), InitSounds.DROP.get(), SoundSource.PLAYERS, 1, 1f);

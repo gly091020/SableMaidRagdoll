@@ -1,47 +1,45 @@
 package com.gly091020.SableMaidRagdoll.client.renderer.item;
 
-import com.github.tartaricacid.touhoulittlemaid.api.client.render.MaidRenderState;
-import com.github.tartaricacid.touhoulittlemaid.entity.passive.EntityMaid;
-import com.github.tartaricacid.touhoulittlemaid.util.EntityCacheUtil;
+import com.gly091020.SableMaidRagdoll.client.model.MaidDollDefaultModel;
 import com.gly091020.SableMaidRagdoll.init.InitDataComponents;
+import com.gly091020.SableMaidRagdoll.maid.api.MaidRagdollTypesManager;
 import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.geom.EntityModelSet;
 import net.minecraft.client.renderer.BlockEntityWithoutLevelRenderer;
 import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderDispatcher;
 import net.minecraft.client.renderer.entity.EntityRenderDispatcher;
-import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
 
-import java.util.Objects;
-import java.util.concurrent.ExecutionException;
-
 public class PlayerCheatDeathItemRenderer extends BlockEntityWithoutLevelRenderer {
+    private final EntityModelSet modelSet;
+    private MaidDollDefaultModel<Entity> defaultModel;
+
     public PlayerCheatDeathItemRenderer(BlockEntityRenderDispatcher dispatcher, EntityModelSet modelSet) {
         super(dispatcher, modelSet);
+        this.modelSet = modelSet;
     }
 
     @Override
     public void renderByItem(ItemStack stack, ItemDisplayContext context, PoseStack poseStack, MultiBufferSource bufferSource, int light, int overlay) {
         var level = Minecraft.getInstance().level;
         if(level == null)return;
-        var modelID = stack.get(InitDataComponents.MAID_MODEL);
-        EntityMaid maid;
-        try {
-            maid = (EntityMaid) EntityCacheUtil.ENTITY_CACHE.get(EntityMaid.TYPE, () -> {
-                Entity e = EntityMaid.TYPE.create(level);
-                return Objects.requireNonNullElseGet(e, () -> new EntityMaid(level));
-            });
-        } catch (ExecutionException | ClassCastException ignored) {return;}
-        EntityCacheUtil.clearMaidDataResidue(maid, true);
-        if(modelID == null)
-            maid.setCustomName(Component.literal("=>").append(Minecraft.getInstance().getGameProfile().getName()));
-        else maid.setModelId(modelID);
-        maid.renderState = MaidRenderState.GARAGE_KIT;
-        maid.setInSittingPose(true);
+        var data = stack.get(InitDataComponents.MAID_DOLL_DATA);
+        if(data == null){
+            renderDefaultModel(poseStack, bufferSource, light, overlay);
+            return;
+        }
+        var entity = MaidRagdollTypesManager.getRenderEntity(level, data);
+        if(entity == null){
+            renderDefaultModel(poseStack, bufferSource, light, overlay);
+            return;
+        }
 
         poseStack.pushPose();
         poseStack.scale(0.5f, 0.5f, 0.5f);
@@ -50,10 +48,25 @@ public class PlayerCheatDeathItemRenderer extends BlockEntityWithoutLevelRendere
         boolean isShowHitBox = render.shouldRenderHitBoxes();
         render.setRenderShadow(false);
         render.setRenderHitBoxes(false);
-        render.render(maid, 0, 0, 0, 0, 0,
+        render.render(entity, 0, 0, 0, 0, 0,
                 poseStack, bufferSource, light);
         render.setRenderHitBoxes(isShowHitBox);
         render.setRenderShadow(true);
+        poseStack.popPose();
+    }
+
+    private void renderDefaultModel(PoseStack poseStack, MultiBufferSource bufferSource, int light, int overlay) {
+        var player = Minecraft.getInstance().player;
+        if(player == null)return;
+        if(defaultModel == null)
+            defaultModel = new MaidDollDefaultModel<>(modelSet.bakeLayer(MaidDollDefaultModel.LAYER_LOCATION));
+
+        ResourceLocation texture = player.getSkin().texture();
+        VertexConsumer consumer = bufferSource.getBuffer(RenderType.entityCutoutNoCull(texture));
+        poseStack.pushPose();
+        poseStack.translate(0.5, 0.8, 0.5);
+        poseStack.scale(0.65f, -0.65f, -0.65f);
+        defaultModel.renderToBuffer(poseStack, consumer, light, overlay, 0xFFFFFFFF);
         poseStack.popPose();
     }
 }

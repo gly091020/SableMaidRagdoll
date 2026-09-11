@@ -2,9 +2,6 @@ package com.gly091020.SableMaidRagdoll.init;
 
 import com.gly091020.SableMaidRagdoll.SableMaidRagdoll;
 import com.gly091020.SableMaidRagdoll.item.*;
-import com.gly091020.SableMaidRagdoll.item.spawn_egg.RagdollableMaidSpawnEgg;
-import com.gly091020.SableMaidRagdoll.item.spawn_egg.RagdollableWineFoxSpawnEgg;
-import com.gly091020.SableMaidRagdoll.item.spawn_egg.WineFoxSpawnEgg;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
@@ -15,10 +12,7 @@ import net.neoforged.neoforge.registries.DeferredRegister;
 import static com.gly091020.SableMaidRagdoll.init.InitBlocks.MOB_CANNON_BLOCK;
 
 public class InitItems {
-    private static final DeferredRegister<Item> ITEMS = DeferredRegister.create(Registries.ITEM, SableMaidRagdoll.MODID);
-    public static final DeferredHolder<Item, WineFoxSpawnEgg> WINE_FOX_SPAWN_EGG = ITEMS.register("winefox_spawn_egg", r -> new WineFoxSpawnEgg());
-    public static final DeferredHolder<Item, RagdollableMaidSpawnEgg> RAGDOLLABLE_MAID_SPAWN_EGG = ITEMS.register("ragdollanle_maid_spawn_egg", r -> new RagdollableMaidSpawnEgg());
-    public static final DeferredHolder<Item, RagdollableWineFoxSpawnEgg> RAGDOLLABLE_WINE_FOX_SPAWN_EGG = ITEMS.register("ragdollanle_wine_fox_spawn_egg", r -> new RagdollableWineFoxSpawnEgg());
+    public static final DeferredRegister<Item> ITEMS = DeferredRegister.create(Registries.ITEM, SableMaidRagdoll.MODID);
     public static final DeferredHolder<Item, BlockItem> TNT_CAKE_ITEM = ITEMS.register("tnt_cake", r -> new BlockItem(InitBlocks.TNT_CAKE_BLOCK.get(), new Item.Properties().stacksTo(1)));
     public static final DeferredHolder<Item, SonicWaveItem> SONIC_WAVE_ITEM = ITEMS.register("sonic_wave", resourceLocation -> new SonicWaveItem());
     public static final DeferredHolder<Item, MaidMaceItem> MAID_MACE_ITEM = ITEMS.register("maid_mace", resourceLocation -> new MaidMaceItem());

@@ -1,14 +1,13 @@
 package com.gly091020.SableMaidRagdoll.util;
 
-import com.github.tartaricacid.touhoulittlemaid.client.resource.CustomPackLoader;
-import com.github.tartaricacid.touhoulittlemaid.entity.passive.DefaultMaidSoundPack;
 import com.gly091020.SableMaidRagdoll.SableMaidRagdoll;
+import com.gly091020.SableMaidRagdoll.block.maid_doll.MaidDollData;
 import com.gly091020.SableMaidRagdoll.init.InitCreativeModeTab;
 import com.gly091020.SableMaidRagdoll.init.InitDataComponents;
 import com.gly091020.SableMaidRagdoll.init.InitItems;
-import com.gly091020.SableRagdollLib.common.DefFileLoader;
+import com.gly091020.SableMaidRagdoll.maid.api.MaidRagdollTypesManager;
+import com.gly091020.SableMaidRagdoll.maid.tlm.init.TLMInitItems;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.fml.loading.FMLEnvironment;
@@ -18,7 +17,7 @@ import net.neoforged.neoforge.registries.DeferredRegister;
 public class MaidCreativeTab {
     public static ItemStack getDollDisplayStack(){
         var stack = new ItemStack(InitItems.PLAYER_CHEAT_DEATH_ITEM.get(), 1);
-        stack.set(InitDataComponents.MAID_MODEL, "authors_and_credits:wine_fox_taisho");
+        stack.set(InitDataComponents.MAID_DOLL_DATA, new MaidDollData("tlm", "authors_and_credits:wine_fox_taisho", "", false));
         return stack;
     }
 
@@ -34,26 +33,15 @@ public class MaidCreativeTab {
             output.accept(InitItems.SONIC_WAVE_ITEM.get());
         if(SableMaidRagdoll.CONFIG.items.tntCake)
             output.accept(InitItems.TNT_CAKE_ITEM.get());
-        if(SableMaidRagdoll.CONFIG.items.spawnEggs){
-            output.accept(InitItems.RAGDOLLABLE_MAID_SPAWN_EGG.get());
-            output.accept(InitItems.WINE_FOX_SPAWN_EGG.get());
-            output.accept(InitItems.RAGDOLLABLE_WINE_FOX_SPAWN_EGG.get());
-        }
         if(SableMaidRagdoll.CONFIG.items.mobCannon)
             output.accept(InitItems.MOB_CANNON_ITEM.get());
+        MaidRagdollTypesManager.appendCreateTabItem(output);
         output.accept(InitItems.COPY_RAGDOLL_ID_ITEM.get());
     }
 
     public static void getAllDollItem(CreativeModeTab.ItemDisplayParameters parameters, CreativeModeTab.Output output){
         if(FMLEnvironment.dist.isDedicatedServer())return;
-        for (String modelID : CustomPackLoader.MAID_MODELS.getModelIdSet()) {
-            var ragdollID = ResourceLocation.fromNamespaceAndPath(SableMaidRagdoll.MODID, modelID.replace(":", "/"));
-            if(DefFileLoader.getDefFile(ragdollID) == null)continue;
-            var stack = new ItemStack(InitItems.PLAYER_CHEAT_DEATH_ITEM.get(), 1);
-            stack.set(InitDataComponents.MAID_MODEL, modelID);
-            stack.set(InitDataComponents.MAID_SOUND, DefaultMaidSoundPack.DEFAULT_SOUND_PACK_ID);
-            output.accept(stack);
-        }
+        MaidRagdollTypesManager.generateCreateTabDoll(output);
     }
 
     public static DeferredHolder<CreativeModeTab, CreativeModeTab> createDollTab(DeferredRegister<CreativeModeTab> REGISTRY){

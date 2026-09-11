@@ -35,7 +35,7 @@ public class ModRecipeProvider extends RecipeProvider {
         AltarRecipeBuilder.shapeless(RecipeCategory.MISC, InitItems.MAID_MACE_ITEM.get())
                 .power(1.0F)
                 .requires(InitItems.CHEAT_DEATH_BAUBLE_ITEM.get())
-                .requires(3, commonTag("storage_blocks/iron"))
+                .requires(1, commonTag("storage_blocks/iron"))
                 .save(recipeOutput, modId("maid_mace"));
 
         AltarRecipeBuilder.shapeless(RecipeCategory.MISC, InitItems.PLAYER_CHEAT_DEATH_ITEM.get())
@@ -43,6 +43,27 @@ public class ModRecipeProvider extends RecipeProvider {
                 .requires(InitItems.CHEAT_DEATH_BAUBLE_ITEM.get())
                 .requires(commonTag("gems/diamond"))
                 .save(recipeOutput, modId("player_cheat_death"));
+
+        ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, InitItems.CHEAT_DEATH_BAUBLE_ITEM.get())
+                .requires(Items.YELLOW_DYE)
+                .requires(ItemTags.WOOL)
+                .requires(commonTag("ingots/iron"))
+                .unlockedBy("get", InventoryChangeTrigger.TriggerInstance.hasItems(Items.IRON_INGOT))
+                .save(recipeOutput, modId("cheat_death_bauble2"));
+
+        ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, InitItems.MAID_MACE_ITEM.get())
+                .requires(InitItems.CHEAT_DEATH_BAUBLE_ITEM.get())
+                .requires(commonTag("storage_blocks/iron"))
+                .requires(commonTag("ingots/iron"))
+                .unlockedBy("get", InventoryChangeTrigger.TriggerInstance.hasItems(Items.IRON_INGOT))
+                .save(recipeOutput, modId("maid_mace1"));
+
+        ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, InitItems.PLAYER_CHEAT_DEATH_ITEM.get())
+                .requires(InitItems.CHEAT_DEATH_BAUBLE_ITEM.get())
+                .requires(commonTag("gems/diamond"))
+                .requires(commonTag("ingots/iron"))
+                .unlockedBy("get", InventoryChangeTrigger.TriggerInstance.hasItems(Items.IRON_INGOT))
+                .save(recipeOutput, modId("player_cheat_death1"));
 
         ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, InitItems.CHEAT_DEATH_BAUBLE_ITEM.get())
                 .requires(Items.YELLOW_DYE)

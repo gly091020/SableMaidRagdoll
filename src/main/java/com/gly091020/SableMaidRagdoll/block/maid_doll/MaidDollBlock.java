@@ -1,6 +1,5 @@
 package com.gly091020.SableMaidRagdoll.block.maid_doll;
 
-import com.github.tartaricacid.touhoulittlemaid.block.BlockGarageKit;
 import com.gly091020.SableMaidRagdoll.init.InitDataComponents;
 import com.gly091020.SableMaidRagdoll.init.InitItems;
 import com.mojang.serialization.MapCodec;
@@ -31,6 +30,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.List;
 
 public class MaidDollBlock extends HorizontalDirectionalBlock implements EntityBlock, BlockWithSubLevelCollisionCallback {
+    public static final VoxelShape BLOCK_AABB = Block.box(4, 0, 4, 12, 16, 12);
     public MaidDollBlock(Properties properties) {
         super(properties);
     }
@@ -56,8 +56,7 @@ public class MaidDollBlock extends HorizontalDirectionalBlock implements EntityB
         BlockEntity blockentity = builder.getOptionalParameter(LootContextParams.BLOCK_ENTITY);
         var s = new ItemStack(InitItems.PLAYER_CHEAT_DEATH_ITEM.get());
         if(!(blockentity instanceof MaidDollBlockEntity blockEntity))return List.of(s);
-        s.set(InitDataComponents.MAID_MODEL, blockEntity.getModelID());
-        s.set(InitDataComponents.MAID_SOUND, blockEntity.getSoundID());
+        s.set(InitDataComponents.MAID_DOLL_DATA, new MaidDollData(blockEntity.getRagdollTypeID(), blockEntity.getModelID(), blockEntity.getSoundID(), blockEntity.isControlMode()));
         return List.of(s);
     }
 
@@ -75,7 +74,7 @@ public class MaidDollBlock extends HorizontalDirectionalBlock implements EntityB
 
     @Override
     protected VoxelShape getShape(BlockState p_60555_, BlockGetter p_60556_, BlockPos p_60557_, CollisionContext p_60558_) {
-        return BlockGarageKit.BLOCK_AABB;
+        return BLOCK_AABB;
     }
 
     @Override
@@ -90,9 +89,7 @@ public class MaidDollBlock extends HorizontalDirectionalBlock implements EntityB
         var be = level.getBlockEntity(pos);
         var r = super.getCloneItemStack(state, target, level, pos, player);
         if(!(be instanceof MaidDollBlockEntity blockEntity))return r;
-        r.set(InitDataComponents.MAID_SOUND, blockEntity.getSoundID());
-        r.set(InitDataComponents.MAID_MODEL, blockEntity.getModelID());
-        r.set(InitDataComponents.ENABLE_CONTROL, blockEntity.isControlMode());
+        r.set(InitDataComponents.MAID_DOLL_DATA, new MaidDollData(blockEntity.getRagdollTypeID(), blockEntity.getModelID(), blockEntity.getSoundID(), blockEntity.isControlMode()));
         return r;
     }
 

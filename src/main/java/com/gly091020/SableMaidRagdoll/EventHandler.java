@@ -1,191 +1,130 @@
 package com.gly091020.SableMaidRagdoll;
 
-import com.github.tartaricacid.touhoulittlemaid.TouhouLittleMaid;
-import com.github.tartaricacid.touhoulittlemaid.api.event.MaidDamageEvent;
-import com.github.tartaricacid.touhoulittlemaid.api.event.MaidDeathEvent;
-import com.github.tartaricacid.touhoulittlemaid.api.event.MaidHurtEvent;
-import com.github.tartaricacid.touhoulittlemaid.entity.chatbubble.implement.TextChatBubbleData;
-import com.github.tartaricacid.touhoulittlemaid.entity.monster.EntityFairy;
-import com.github.tartaricacid.touhoulittlemaid.entity.monster.FairyType;
-import com.github.tartaricacid.touhoulittlemaid.entity.passive.EntityMaid;
-import com.github.tartaricacid.touhoulittlemaid.init.InitTrigger;
-import com.gly091020.SableMaidRagdoll.block.parts.MaidFairyPartBlockEntity;
 import com.gly091020.SableMaidRagdoll.command.MaidRagdollCommand;
-import com.gly091020.SableMaidRagdoll.compat.util.CompatMods;
-import com.gly091020.SableMaidRagdoll.compat.util.MaidRollManager;
-import com.gly091020.SableMaidRagdoll.compat.util.WineFoxHurtDancingManager;
+import com.gly091020.SableMaidRagdoll.compat.CompatMods;
+import com.gly091020.SableMaidRagdoll.compat.tlm.WineFoxHurtDancingManager;
 import com.gly091020.SableMaidRagdoll.init.InitCustomStats;
 import com.gly091020.SableMaidRagdoll.init.InitSounds;
 import com.gly091020.SableMaidRagdoll.init.InitTags;
+import com.gly091020.SableMaidRagdoll.init.InitTrigger;
+import com.gly091020.SableMaidRagdoll.maid.api.MaidRagdollTypesManager;
+import com.gly091020.SableMaidRagdoll.maid.api.MaidSoundType;
 import com.gly091020.SableMaidRagdoll.util.AuthorUtil;
-import com.gly091020.SableMaidRagdoll.util.MaidCollisionHandler;
 import com.gly091020.SableMaidRagdoll.util.MaidRagdollAdvancementEvents;
 import com.gly091020.SableRagdollLib.api.Ragdoll;
-import com.gly091020.SableRagdollLib.api.RagdollHelper;
 import com.gly091020.SableRagdollLib.api.RagdollManager;
 import com.gly091020.SableRagdollLib.api.ScheduleManager;
 import com.gly091020.SableRagdollLib.api.event.EntityHurtBySubLevelEvent;
 import com.gly091020.SableRagdollLib.api.event.RagdollPartCollisionEvent;
+import com.gly091020.SableRagdollLib.block.AbstractPartBlockEntity;
 import com.gly091020.SableRagdollLib.entity.PartSeat;
 import dev.ryanhcode.sable.companion.math.JOMLConversion;
 import net.minecraft.commands.arguments.EntityAnchorArgument;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.stats.Stats;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.damagesource.DamageTypes;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.TamableAnimal;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.BlockGetter;
+import net.minecraft.world.level.Explosion;
+import net.minecraft.world.level.ExplosionDamageCalculator;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.event.RegisterCommandsEvent;
-import net.neoforged.neoforge.event.entity.living.LivingDamageEvent;
 import net.neoforged.neoforge.event.entity.living.LivingDeathEvent;
-import net.neoforged.neoforge.event.tick.ServerTickEvent;
+import net.neoforged.neoforge.event.entity.living.LivingIncomingDamageEvent;
 import org.joml.Vector3d;
-
-import static com.gly091020.SableRagdollLib.api.ScheduleManager.scheduleDelayed;
 
 @EventBusSubscriber(modid = SableMaidRagdoll.MODID)
 public class EventHandler {
     @SubscribeEvent
-    public static void onMaidHurt(MaidDamageEvent event){
+    public static void onMaidHurt(LivingIncomingDamageEvent event){
         if(event.isCanceled())return;
-        if(event.getMaid().level().isClientSide)return;
+        if(event.getEntity().level().isClientSide)return;
+        if(!MaidRagdollTypesManager.isSupport(event.getEntity()))return;
         float damage = event.getAmount();
-        float health = event.getMaid().getHealth();
+        float health = event.getEntity().getHealth();
 
         if (health > damage)return;
-        event.getMaid().getPersistentData().putFloat("smr_last_damage", event.getAmount());
+        event.getEntity().getPersistentData().putFloat("smr_last_damage", event.getAmount());
     }
 
     @SubscribeEvent
-    public static void onMaidDie(MaidDeathEvent event){
+    public static void onMaidDie(LivingDeathEvent event){
         if(!SableMaidRagdoll.CONFIG.ragdollOnDeath)return;
         if(event.isCanceled())return;
-        if(!(event.getMaid().level() instanceof ServerLevel level))return;
-        if(event.getMaid().getVehicle() instanceof PartSeat){
-            event.getMaid().stopRiding();
+        if(!(event.getEntity().level() instanceof ServerLevel level))return;
+        if(!MaidRagdollTypesManager.isSupport(event.getEntity()))return;
+        if(event.getEntity().getVehicle() instanceof PartSeat){
+            event.getEntity().stopRiding();
             ScheduleManager.scheduleDelayed(level, 4, () -> onMaidDie(event));
             return;
         }
         if(event.getSource().is(DamageTypes.GENERIC_KILL) || event.getSource().is(DamageTypes.FELL_OUT_OF_WORLD))return;
-        var maidMotion = JOMLConversion.toJOML(event.getMaid().getDeltaMovement()).mul(3);
+        var maidMotion = JOMLConversion.toJOML(event.getEntity().getDeltaMovement()).mul(3);
 
         float damage;
-        if(event.getMaid().getPersistentData().contains("smr_last_damage", Tag.TAG_FLOAT)) {
-            damage = event.getMaid().getPersistentData().getFloat("smr_last_damage");
-            event.getMaid().getPersistentData().remove("smr_last_damage");
+        if(event.getEntity().getPersistentData().contains("smr_last_damage", Tag.TAG_FLOAT)) {
+            damage = event.getEntity().getPersistentData().getFloat("smr_last_damage");
+            event.getEntity().getPersistentData().remove("smr_last_damage");
         }else damage = 1;
         maidMotion.mul(Math.clamp(damage / 5, 0.3, 1.5));
         if(event.getSource().getEntity() != null)
-            event.getMaid().lookAt(EntityAnchorArgument.Anchor.EYES, event.getSource().getEntity().getEyePosition());
-        createRagdoll(level, event.getMaid(), maidMotion, false);
-        scheduleDelayed(level, 4, () -> event.getMaid().setInvisible(true));
+            event.getEntity().lookAt(EntityAnchorArgument.Anchor.EYES, event.getSource().getEntity().getEyePosition());
+        var rag = MaidRagdollTypesManager.createRagdoll(event.getEntity(), JOMLConversion.toMojang(maidMotion), Vec3.ZERO, false);
+        if(rag == null)return;
 
         if(SableMaidRagdoll.CONFIG.sounds.hungry)
-            event.getMaid().level().playSound(null, BlockPos.containing(event.getMaid().position()), InitSounds.HUNGRY.get(), SoundSource.PLAYERS, 1,
+            event.getEntity().level().playSound(null, BlockPos.containing(event.getEntity().position()), InitSounds.HUNGRY.get(), SoundSource.PLAYERS, 1,
                     1f + level.random.nextFloat());
     }
 
     @SubscribeEvent
-    public static void onMaidFairyDie(LivingDeathEvent event){
-        if(!SableMaidRagdoll.CONFIG.ragdollOnDeath)return;
-        if(event.isCanceled())return;
-        if(!(event.getEntity().level() instanceof ServerLevel level))return;
-        if(!(event.getEntity() instanceof EntityFairy fairy))return;
-        if(event.getSource().getEntity() == null)return;
-
-        createFairyRagdoll(level, fairy, JOMLConversion.toJOML(fairy.getDeltaMovement().scale(3)));
-        scheduleDelayed(level, 4, () -> fairy.setInvisible(true));
-        if(SableMaidRagdoll.CONFIG.sounds.hungry)
-            fairy.level().playSound(null, BlockPos.containing(fairy.position()), InitSounds.HUNGRY.get(), SoundSource.PLAYERS, 1,
-                    1f + level.random.nextFloat());
-    }
-
-    @SubscribeEvent
-    public static void onMaidFairyHurt(LivingDamageEvent.Post event){
-        if(!SableMaidRagdoll.CONFIG.ragdollOnOwnerAttack)return;
-        if(!(event.getEntity() instanceof EntityFairy fairy))return;
-        if(fairy.getVehicle() instanceof PartSeat)return;
-        if(!(fairy.level() instanceof ServerLevel serverLevel))return;
-
-        boolean flag1 = event.getSource().getEntity() instanceof Player player && player.getMainHandItem().is(InitTags.MAID_TO_RAGDOLL_TAG);
-        boolean flag2 = event.getSource().is(InitTags.ALWAYS_TO_RAGDOLL_TAG);
-        if(!flag1 && !flag2)return;
-
-        float damage = event.getNewDamage();
-        float health = fairy.getHealth();
-        if (health < damage) return;
-
-        createFairyRagdoll(serverLevel, fairy, JOMLConversion.toJOML(fairy.getDeltaMovement().scale(3)));
-        if(SableMaidRagdoll.CONFIG.sounds.metalPipe)
-            fairy.level().playSound(null, BlockPos.containing(fairy.position()), InitSounds.PIPE.get(), SoundSource.PLAYERS, 1, 1);
-    }
-
-    public static final ResourceLocation BABY_FAIRY = ResourceLocation.fromNamespaceAndPath(TouhouLittleMaid.MOD_ID, "fairy/baby_fairy");
-    public static final ResourceLocation NEW_FAIRY = ResourceLocation.fromNamespaceAndPath(TouhouLittleMaid.MOD_ID, "fairy/new_fairy");
-    public static void createFairyRagdoll(ServerLevel level, EntityFairy fairy, Vector3d maidMotion){
-        Vector3d forward = JOMLConversion.toJOML(fairy.getLookAngle());
-        Vector3d axis = forward.cross(new Vector3d(0,1,0));
-        var id = fairy.isBaby() ? BABY_FAIRY : NEW_FAIRY;
-        var parts = RagdollHelper.createRagdoll(level, fairy.position().add(0, 0.5, 0), new Vec3(0, -fairy.getYHeadRot(), 0),
-                id);
-        if(parts == null)return;
-        parts.getSublevels().forEach(subLevel -> {
-            if(subLevel.getPlot().getEmbeddedLevelAccessor().getBlockEntity(BlockPos.ZERO) instanceof MaidFairyPartBlockEntity blockEntity){
-                blockEntity.setFairyType(FairyType.values()[fairy.getFairyTypeOrdinal()]);
-                blockEntity.setRick(fairy.getName().getString().equals("rick"));
-                blockEntity.setModelType(fairy.isBaby() ? MaidFairyPartBlockEntity.ModelType.BABY : MaidFairyPartBlockEntity.ModelType.NEW);
-            }
-        });
-        // 等待 2tick 是为了等待刚体创建在施加推力
-        scheduleDelayed(level, 2, () -> {
-            parts.addAngularImpulse(axis, true);
-            parts.addLinearImpulse(maidMotion, true);
-            if(fairy.isAlive())
-                parts.addEntity(fairy);
-        });
-    }
-
-    @SubscribeEvent
-    public static void onOwnerAttack(MaidHurtEvent event){
-        if (!(event.getMaid().level() instanceof ServerLevel level)) return;
-        if (event.getMaid().getVehicle() instanceof PartSeat) return;
+    public static void onOwnerAttack(LivingIncomingDamageEvent event){
+        if (!(event.getEntity().level() instanceof ServerLevel level)) return;
+        if (event.getEntity().getVehicle() instanceof PartSeat) return;
+        if(!MaidRagdollTypesManager.isSupport(event.getEntity()))return;
 
         float damage = event.getAmount();
-        float health = event.getMaid().getHealth();
+        float health = event.getEntity().getHealth();
         if (health < damage) return;
 
-        boolean ownerAttack = isOwnerAttackWithTag(event.getMaid(), event.getSource());
+        boolean ownerAttack = isOwnerAttackWithTag(event.getEntity(), event.getSource());
         boolean specialDamage = SableMaidRagdoll.CONFIG.ragdollOnSpecialDamage && event.getSource().is(InitTags.ALWAYS_TO_RAGDOLL_TAG);
         if (!ownerAttack && !specialDamage) return;
 
-        var rag = ragdollOnDamage(level, event.getSource(), event.getMaid());
+        var rag = ragdollOnDamage(event.getSource(), event.getEntity());
         if(rag == null)return;
-        if (ownerAttack && event.getMaid().getOwner() instanceof ServerPlayer player) {
+        if (ownerAttack && event.getEntity() instanceof TamableAnimal tamableAnimal && tamableAnimal.getOwner() instanceof ServerPlayer player) {
             if(AuthorUtil.isLoveWineFoxTV(player))
-                event.getMaid().getChatBubbleManager().addChatBubble(TextChatBubbleData.type2(Component.translatable("text.sablemaidragdoll.please_owner")));
+                MaidRagdollTypesManager.addChatBubble(event.getEntity(), Component.translatable("text.sablemaidragdoll.please_owner"));
             if(AuthorUtil.isChicken(player))
-                event.getMaid().level().playSound(null, BlockPos.containing(event.getMaid().position()), InitSounds.CHICKEN.get(), SoundSource.PLAYERS, 1, 1);
+                event.getEntity().level().playSound(null, BlockPos.containing(event.getEntity().position()), InitSounds.CHICKEN.get(), SoundSource.PLAYERS, 1, 1);
             player.awardStat(Stats.CUSTOM.get(InitCustomStats.MAID_KNOCKED_AWAY.get()));
-            InitTrigger.MAID_EVENT.get().trigger(player, MaidRagdollAdvancementEvents.HIT_MAID.getName());
+            InitTrigger.EVENT_TRIGGER.get().trigger(player, MaidRagdollAdvancementEvents.HIT_MAID.getName());
         }
-        if(CompatMods.LAOWU_WINE_FOX && specialDamage && event.getSource().is(InitTags.LAOWU_HURT_DANCE))
+        if(CompatMods.LAOWU_WINE_FOX.isLoaded() && specialDamage && event.getSource().is(InitTags.LAOWU_HURT_DANCE))
             WineFoxHurtDancingManager.startDancing(rag);
         if(ownerAttack && SableMaidRagdoll.CONFIG.sounds.watermelonHurt)
-            event.getMaid().level().playSound(null, BlockPos.containing(event.getMaid().position()), InitSounds.WATERMELON_HURT.get(), SoundSource.PLAYERS, 1, 1);
+            event.getEntity().level().playSound(null, BlockPos.containing(event.getEntity().position()), InitSounds.WATERMELON_HURT.get(), SoundSource.PLAYERS, 1, 1);
         else if(SableMaidRagdoll.CONFIG.sounds.metalPipe)
-            event.getMaid().level().playSound(null, BlockPos.containing(event.getMaid().position()), InitSounds.PIPE.get(), SoundSource.PLAYERS, 1, 1);
+            event.getEntity().level().playSound(null, BlockPos.containing(event.getEntity().position()), InitSounds.PIPE.get(), SoundSource.PLAYERS, 1, 1);
         event.setCanceled(true);
     }
 
-    private static boolean isOwnerAttackWithTag(EntityMaid maid, DamageSource source) {
+    public static boolean isOwnerAttackWithTag(Entity entity, DamageSource source) {
+        if(!(entity instanceof TamableAnimal maid))return false;
         var e1 = maid.getOwner();
         var e2 = source.getEntity();
         return SableMaidRagdoll.CONFIG.ragdollOnOwnerAttack &&
@@ -196,58 +135,24 @@ public class EventHandler {
                 player.getMainHandItem().is(InitTags.MAID_TO_RAGDOLL_TAG);
     }
 
-    /**
-     * 判断是否应跳过 callresponse 在 EntityMaid#hurt 入口的来源洗白。
-     * 由 MixinSquared 注入器调用：条件满足时取消 callresponse 的 handler，
-     * 让真实来源走完原版流程，MaidHurtEvent 里就能拿到攻击者。
-     * 这里不做血量判断，最终由 {@link #onOwnerAttack(MaidHurtEvent)} 用减免后的数值决定。
-     */
-    public static boolean shouldSkipCallResponseBypass(EntityMaid maid, DamageSource source) {
-        if (maid.level().isClientSide) return false;
-        if (maid.getVehicle() instanceof PartSeat) return false;
-        return isOwnerAttackWithTag(maid, source)
-                || (SableMaidRagdoll.CONFIG.ragdollOnSpecialDamage && source.is(InitTags.ALWAYS_TO_RAGDOLL_TAG));
-    }
-
-    private static Ragdoll ragdollOnDamage(ServerLevel level, DamageSource damageSource, EntityMaid maid){
+    private static Ragdoll ragdollOnDamage(DamageSource damageSource, Entity entity){
         var sourceEntity = damageSource.getEntity();
         var position = damageSource.getSourcePosition();
-        Vec3 direction = maid
+        Vec3 direction = entity
                 .position()
                 .subtract(position == null ? Vec3.ZERO : position)
                 .normalize();
         var maidMotion = JOMLConversion.toJOML(direction)
                 .mul(5)
                 .add(0, 1, 0);
-        Vector3d forward = JOMLConversion.toJOML(maid.getLookAngle());
+        Vector3d forward = JOMLConversion.toJOML(entity.getLookAngle());
         Vector3d axis = forward.cross(new Vector3d(0,-5,0));
         if (sourceEntity != null) {
-            maid.lookAt(EntityAnchorArgument.Anchor.EYES, sourceEntity.getEyePosition());
+            entity.lookAt(EntityAnchorArgument.Anchor.EYES, sourceEntity.getEyePosition());
         } else if (position != null) {
-            maid.lookAt(EntityAnchorArgument.Anchor.EYES, position);
+            entity.lookAt(EntityAnchorArgument.Anchor.EYES, position);
         }
-        return createRagdoll(level, maid, maidMotion, axis, true);
-    }
-
-    private static void createRagdoll(ServerLevel level, EntityMaid maid, Vector3d maidMotion, boolean addMaid){
-        Vector3d forward = JOMLConversion.toJOML(maid.getLookAngle());
-        Vector3d axis = forward.cross(new Vector3d(0,1,0));
-        createRagdoll(level, maid, maidMotion, axis, addMaid);
-    }
-
-    private static Ragdoll createRagdoll(ServerLevel level, EntityMaid maid, Vector3d maidMotion, Vector3d rotation, boolean addMaid){
-        var id = ResourceLocation.fromNamespaceAndPath(SableMaidRagdoll.MODID, maid.getModelId().replace(":", "/"));
-        var parts = RagdollHelper.createRagdoll(level, maid.position().add(0, 0.5, 0), new Vec3(0, -maid.getYHeadRot(), 0),
-                id);
-        if(parts == null)return null;
-        // 等待 2tick 是为了等待刚体创建在施加推力
-        scheduleDelayed(level, 2, () -> {
-            parts.addAngularImpulse(rotation, true);
-            parts.addLinearImpulse(maidMotion, true);
-        });
-        if(addMaid)
-            parts.addEntity(maid);
-        return parts;
+        return MaidRagdollTypesManager.createRagdoll(entity, entity.position(), JOMLConversion.toMojang(axis), JOMLConversion.toMojang(maidMotion), Vec3.ZERO, true);
     }
 
     @SubscribeEvent
@@ -256,16 +161,10 @@ public class EventHandler {
     }
 
     @SubscribeEvent
-    public static void onServerTick(ServerTickEvent.Pre event){
-        MaidRollManager.tick();
-        WineFoxHurtDancingManager.tick();
-    }
-
-    @SubscribeEvent
     public static void onHitEntity(EntityHurtBySubLevelEvent event){
         if(!(SableMaidRagdoll.CONFIG.maidKnockback))return;
         var r = RagdollManager.get(event.getSubLevel());
-        if(r == null || !(r.getEntity() instanceof EntityMaid maid))return;
+        if(r == null || !(r.getEntity() instanceof LivingEntity maid) || !(MaidRagdollTypesManager.isSupport(maid)))return;
         float damage = (float) (event.getMagnitude() * 24 - 4);
         if(damage <= 0)return;
         var rag = RagdollManager.get(event.getSubLevel());
@@ -283,8 +182,44 @@ public class EventHandler {
         if(event.getImpactVelocity() * event.getImpactVelocity() < 9)return;
         var pos2 = event.getPos2();
         if(pos2 == null)return;
-        MaidCollisionHandler.tryActivateSwitch(event.getLevel(), event.getSelfBE().getEntity(), event.getPos1(), pos2);
         if(event.getSelfBE().getEntity() == null)return;
-        MaidCollisionHandler.onCollision(event.getSelfBE().getEntity(), pos2, event.getSelfBE());
+        onCollision(event.getSelfBE().getEntity(), pos2, event.getSelfBE());
+        MaidRagdollTypesManager.onPartCollision(event.getSelfBE().getEntity(), pos2, event.getSelfBE());
+    }
+
+    private static void onCollision(Entity entity, BlockPos pos2, AbstractPartBlockEntity blockEntity){
+        var rag = RagdollManager.get(blockEntity);
+        if(blockEntity.getLevel() != null &&
+                (!(blockEntity.getLevel().getBlockEntity(pos2) instanceof AbstractPartBlockEntity other) ||
+                        other.getEntity() != blockEntity.getEntity()) && rag != null &&
+                rag.getExtraData().contains("explosion", Tag.TAG_BYTE) &&
+                rag.getExtraData().getBoolean("explosion")) {
+            final int level = 5;
+            ScheduleManager.scheduleDelayed((ServerLevel) entity.level(), 0, () ->
+                    blockEntity.getLevel().explode(entity, null, MaidExplosionDamageCalculator.INSTANCE,
+                            entity.position().add(0, 1, 0), level, false, Level.ExplosionInteraction.MOB));
+            // rag.remove();
+            // todo:不稳定的 java.lang.RuntimeException: Body has been removed
+            // fuck Sable
+            rag.getExtraData().remove("explosion");
+
+            if(SableMaidRagdoll.CONFIG.sounds.metalPipe)
+                entity.level().playSound(null, BlockPos.containing(entity.position()), com.gly091020.SableMaidRagdoll.init.InitSounds.PIPE.get(), SoundSource.PLAYERS, 1, 1f);
+        }
+
+        if(blockEntity.getLevel() != null && rag != null && rag.getExtraData().contains("PCDI_soundID", Tag.TAG_STRING) && entity.invulnerableTime > 0){
+            var soundID = rag.getExtraData().getString("PCDI_soundID");
+            var type = MaidRagdollTypesManager.getSupportType(entity);
+            if(type == null)return;
+            MaidRagdollTypesManager.playSound(type.getID(), blockEntity.getLevel(), entity.position(), soundID, MaidSoundType.HURT, 1);
+        }
+    }
+
+    private static class MaidExplosionDamageCalculator extends ExplosionDamageCalculator {
+        public static final MaidExplosionDamageCalculator INSTANCE = new MaidExplosionDamageCalculator();
+        @Override
+        public boolean shouldBlockExplode(Explosion p_46094_, BlockGetter p_46095_, BlockPos p_46096_, BlockState p_46097_, float p_46098_) {
+            return false;
+        }
     }
 }

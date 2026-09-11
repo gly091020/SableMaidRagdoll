@@ -2,11 +2,6 @@ package com.gly091020.SableMaidRagdoll.client;
 
 import com.gly091020.SableMaidRagdoll.SableMaidRagdoll;
 import com.gly091020.SableMaidRagdoll.SableMaidRagdollConfig;
-import com.gly091020.SableMaidRagdoll.compat.love_loathe.ChargeSoundManager;
-import com.gly091020.SableMaidRagdoll.compat.love_loathe.RagdollBroadcastMessages;
-import com.gly091020.SableMaidRagdoll.compat.util.CompatMods;
-import com.gly091020.SableMaidRagdoll.editor.MaidRagdollEditorRegistry;
-import com.gly091020.SableRagdollLib.SableRagdollLib;
 import com.gly091020.SableRagdollLib.client.button.Button;
 import com.gly091020.SableRagdollLib.client.button.ButtonGuiProvider;
 import me.shedaniel.autoconfig.AutoConfig;
@@ -31,14 +26,7 @@ public class SableMaidRagdollClient {
     );
 
     public SableMaidRagdollClient(ModContainer mc){
-        if(SableRagdollLib.hasLDLib())
-            MaidRagdollEditorRegistry.init();
         mc.registerExtensionPoint(IConfigScreenFactory.class, (m, p) -> AutoConfig.getConfigScreen(SableMaidRagdollConfig.class, p).get());
         AutoConfig.getGuiRegistry(SableMaidRagdollConfig.class).registerAnnotationProvider(new ButtonGuiProvider(), Button.class);
-
-        if(CompatMods.LOVE_LOATHE) {
-            ChargeSoundManager.init();
-            RagdollBroadcastMessages.init();
-        }
     }
 }

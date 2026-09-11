@@ -1,23 +1,12 @@
 package com.gly091020.SableMaidRagdoll.block.mob_cannon;
 
-import com.github.tartaricacid.touhoulittlemaid.api.event.MaidAndItemTransformEvent;
-import com.github.tartaricacid.touhoulittlemaid.entity.monster.EntityFairy;
-import com.github.tartaricacid.touhoulittlemaid.entity.monster.FairyType;
-import com.github.tartaricacid.touhoulittlemaid.entity.passive.EntityMaid;
-import com.github.tartaricacid.touhoulittlemaid.init.InitDataComponent;
-import com.github.tartaricacid.touhoulittlemaid.init.InitItems;
-import com.github.tartaricacid.touhoulittlemaid.init.InitTrigger;
-import com.github.tartaricacid.touhoulittlemaid.item.AbstractStoreMaidItem;
 import com.gly091020.SableMaidRagdoll.SableMaidRagdoll;
-import com.gly091020.SableMaidRagdoll.block.parts.MaidFairyPartBlockEntity;
+import com.gly091020.SableMaidRagdoll.compat.CompatMods;
 import com.gly091020.SableMaidRagdoll.compat.player_ragdoll.PlayerRagdollUtil;
-import com.gly091020.SableMaidRagdoll.compat.util.CompatMods;
 import com.gly091020.SableMaidRagdoll.init.InitSounds;
 import com.gly091020.SableMaidRagdoll.item.spawn_egg.SMRDeferredSpawnEggItem;
+import com.gly091020.SableMaidRagdoll.maid.api.MaidRagdollTypesManager;
 import com.gly091020.SableMaidRagdoll.menu.MobCannonMenu;
-import com.gly091020.SableMaidRagdoll.util.MaidRagdollAdvancementEvents;
-import com.gly091020.SableRagdollLib.api.RagdollHelper;
-import com.gly091020.SableRagdollLib.api.ScheduleManager;
 import dev.ryanhcode.sable.companion.SableCompanion;
 import dev.ryanhcode.sable.companion.math.JOMLConversion;
 import dev.ryanhcode.sable.sublevel.SubLevel;
@@ -31,7 +20,6 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
@@ -41,31 +29,21 @@ import net.minecraft.world.MenuProvider;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.MobSpawnType;
-import net.minecraft.world.entity.ai.targeting.TargetingConditions;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.SpawnEggItem;
-import net.minecraft.world.item.component.CustomData;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
-import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.items.IItemHandlerModifiable;
 import org.jetbrains.annotations.Nullable;
-import org.joml.Vector3d;
 
-import java.util.List;
-
-import static com.gly091020.SableMaidRagdoll.EventHandler.BABY_FAIRY;
-import static com.gly091020.SableMaidRagdoll.EventHandler.NEW_FAIRY;
 import static com.gly091020.SableMaidRagdoll.init.InitBlockEntities.MOB_CANNON_BLOCK_ENTITY;
 import static com.gly091020.SableMaidRagdoll.init.InitItems.*;
-import static com.gly091020.SableRagdollLib.api.ScheduleManager.scheduleDelayed;
 
 public class MobCannonBlockEntity extends BlockEntity implements IItemHandlerModifiable, MenuProvider {
     private NonNullList<ItemStack> stacks = NonNullList.withSize(2, ItemStack.EMPTY);
@@ -233,8 +211,7 @@ public class MobCannonBlockEntity extends BlockEntity implements IItemHandlerMod
         boolean specialItem = true;
         if(i == 0)
             specialItem = itemStack.getItem() instanceof SpawnEggItem ||
-                    itemStack.is(InitItems.PHOTO) ||
-                    itemStack.is(InitItems.SMART_SLAB_HAS_MAID);
+                    MaidRagdollTypesManager.hasEntity(itemStack);
         if(i == 1)
             specialItem = itemStack.is(Items.BOW) ||
                     itemStack.is(Items.TNT) ||
@@ -242,7 +219,7 @@ public class MobCannonBlockEntity extends BlockEntity implements IItemHandlerMod
                     itemStack.is(SONIC_WAVE_ITEM) ||
                     itemStack.is(MOB_CANNON_ITEM) ||
                     itemStack.is(MAID_MACE_ITEM) ||
-                    itemStack.is(InitItems.SMART_SLAB_EMPTY);
+                    MaidRagdollTypesManager.isCannonSpecialItem(itemStack);
         return bool && specialItem;
     }
 
@@ -275,7 +252,6 @@ public class MobCannonBlockEntity extends BlockEntity implements IItemHandlerMod
 
     public void tryFire(){
         if(level == null)return;
-        collectMaid();
         if (getCooldown() <= 0 && level.hasNeighborSignal(getBlockPos()) && canFire()) {
             fire();
             cooldown = 1.0;
@@ -296,51 +272,23 @@ public class MobCannonBlockEntity extends BlockEntity implements IItemHandlerMod
 
     public void fire() {
         if(!(level instanceof ServerLevel))return;
-        var force = getAimVector();
+        var force = JOMLConversion.toJOML(getAimVector());
         if(getStackInSlot(1).is(Items.TNT))
-            force = force.scale(3);
-        var entity = getEntity(force);
+            force.mul(3);
+        var entity = getEntity(JOMLConversion.toMojang(force));
         if(entity == null)return;
-        toRagdoll(entity, force.scale(5));
-        consumeItem();
-    }
-
-    public void collectMaid(){
-        if(!(level instanceof ServerLevel))return;
-        if(!getStackInSlot(1).is(InitItems.SMART_SLAB_EMPTY))return;
-        if(!getStackInSlot(0).isEmpty())return;
-        var pos = getReallyPos();
-        List<EntityMaid> maids = level.getEntitiesOfClass(
-                EntityMaid.class,
-                new AABB(pos, pos).inflate(5),
-                entity -> entity.distanceToSqr(pos) <= 25 && entity.getOwner() != null
-        );
-        if(maids.isEmpty())return;
-
-        var stack = new ItemStack(InitItems.SMART_SLAB_HAS_MAID.get(), 1);
-        var maid = maids.getFirst();
-        AbstractStoreMaidItem.storeMaidData(stack, maids.getFirst());
-        maid.discard();
-        maid.playSound(SoundEvents.PLAYER_SPLASH, 1.0F, level.random.nextFloat() * 0.1F + 0.9F);
-        setStackInSlot(0, stack);
-        getStackInSlot(1).shrink(1);
+        MaidRagdollTypesManager.onCannonLaunch(this, entity, force);
+        var mj = JOMLConversion.toMojang(force);
+        entity.setDeltaMovement(mj);
+        toRagdoll(entity, mj);
     }
 
     public boolean canFire(){
         if(isPlayerMode())return true;
         var launchStack = getStackInSlot(0);
-        var maid = (launchStack.is(InitItems.SMART_SLAB_HAS_MAID) || launchStack.is(InitItems.PHOTO)) && launchStack.has(InitDataComponent.MAID_INFO);
+        var maid = MaidRagdollTypesManager.hasEntity(launchStack);
         var spawnEgg = launchStack.getItem() instanceof SpawnEggItem;
         return maid || spawnEgg;
-    }
-
-    public void consumeItem(){
-        var launchStack = getStackInSlot(0);
-        if(launchStack.is(InitItems.SMART_SLAB_HAS_MAID)){
-            setStackInSlot(0, InitItems.SMART_SLAB_EMPTY.toStack(1));
-        }else if(launchStack.is(InitItems.PHOTO)){
-            launchStack.shrink(1);
-        }
     }
 
     public Vec3 getReallyPos(){
@@ -353,16 +301,12 @@ public class MobCannonBlockEntity extends BlockEntity implements IItemHandlerMod
         var pos = getReallyPos();
         var launchStack = getStackInSlot(0);
         Entity entity = null;
-        if(launchStack.getItem() instanceof AbstractStoreMaidItem) {
-            CustomData compoundData = launchStack.get(InitDataComponent.MAID_INFO);
-            if (compoundData == null) return null;
-            var maid = new EntityMaid(level);
-            CompoundTag maidCompound = compoundData.copyTag();
-            var event = new MaidAndItemTransformEvent.ToMaid(maid, launchStack, maidCompound);
-            NeoForge.EVENT_BUS.post(event);
-
-            maid.load(maidCompound);
-            entity = maid;
+        if(MaidRagdollTypesManager.hasEntity(launchStack)) {
+            var pair = MaidRagdollTypesManager.releaseEntityFromItem(level, launchStack);
+            if(pair != null) {
+                entity = pair.getFirst();
+                setStackInSlot(0, pair.getSecond());
+            }
         }else if(launchStack.getItem() instanceof SpawnEggItem spawnEggItem){
             entity = spawnEggItem.getType(launchStack).spawn(serverLevel, getBlockPos(), MobSpawnType.SPAWN_EGG);
             if(launchStack.getItem() instanceof SMRDeferredSpawnEggItem smrDeferredSpawnEggItem)
@@ -390,65 +334,20 @@ public class MobCannonBlockEntity extends BlockEntity implements IItemHandlerMod
     }
 
     public void toRagdoll(Entity entity, Vec3 force){
-        if(!(level instanceof ServerLevel serverLevel))return;
-        if(entity instanceof EntityMaid maid){
-            launchMaid(serverLevel, maid, JOMLConversion.toJOML(force), true);
-        }else if(entity instanceof EntityFairy fairy) {
-            launchFairy(serverLevel, fairy, JOMLConversion.toJOML(force), true);
-        }else if(isPlayerMode() && entity instanceof ServerPlayer player){
-            launchPlayer(player, force);
-        }else if(CompatMods.PLAYER_RAGDOLL && entity instanceof LivingEntity livingEntity){
-            ScheduleManager.scheduleDelayed(serverLevel, 2, () -> PlayerRagdollUtil.launchMob(livingEntity, force.scale(3)));
+        if(CompatMods.PLAYER_RAGDOLL.isLoaded() && entity instanceof ServerPlayer player){
+            PlayerRagdollUtil.launch(player, force.scale(25));
+            return;
         }
-    }
-
-    public static void launchPlayer(ServerPlayer player, Vec3 force){
-        player.setDeltaMovement(force);
-        if(CompatMods.PLAYER_RAGDOLL)
-            PlayerRagdollUtil.launch(player, force.scale(10));
-        InitTrigger.MAID_EVENT.get().trigger(player, MaidRagdollAdvancementEvents.DOUBLE_CANNON.getName());
+        if(CompatMods.PLAYER_RAGDOLL.isLoaded() && entity instanceof LivingEntity livingEntity){
+            PlayerRagdollUtil.launchMob(livingEntity, force.scale(25));
+            return;
+        }
+        var rag = MaidRagdollTypesManager.createRagdoll(entity, force, new Vec3(-10, 0, 0), true);
+        if(isExplosion() && rag != null)
+            rag.getExtraData().putBoolean("explosion", true);
     }
 
     public boolean isExplosion(){
         return getStackInSlot(1).is(MAID_MACE_ITEM);
-    }
-
-    public void launchMaid(ServerLevel level, EntityMaid maid, Vector3d force, boolean addMaid){
-        var id = ResourceLocation.fromNamespaceAndPath(SableMaidRagdoll.MODID, maid.getModelId().replace(":", "/"));
-        var parts = RagdollHelper.createRagdoll(level, maid.position().add(0, 0.5, 0), new Vec3(-90, -maid.getYHeadRot(), 0),
-                id);
-        if(parts == null)return;
-        if(isExplosion())
-            parts.getExtraData().putBoolean("explosion", true);
-        // 等待 2tick 是为了等待刚体创建在施加推力
-        scheduleDelayed(level, 2, () -> {
-            parts.addLinearImpulse(force, true);
-            parts.addAngularImpulse(new Vec3(-10, 0, 0), true);
-        });
-        if(addMaid)
-            parts.addEntity(maid);
-    }
-
-    public void launchFairy(ServerLevel level, EntityFairy fairy, Vector3d force, boolean addFairy){
-        var id = fairy.isBaby() ? BABY_FAIRY : NEW_FAIRY;
-        var parts = RagdollHelper.createRagdoll(level, fairy.position().add(0, 0.5, 0), new Vec3(-90, -fairy.getYHeadRot(), 0),
-                id);
-        if(parts == null)return;
-        if(isExplosion())
-            parts.getExtraData().putBoolean("explosion", true);
-        parts.getSublevels().forEach(subLevel -> {
-            if(subLevel.getPlot().getEmbeddedLevelAccessor().getBlockEntity(BlockPos.ZERO) instanceof MaidFairyPartBlockEntity blockEntity){
-                blockEntity.setFairyType(FairyType.values()[fairy.getFairyTypeOrdinal()]);
-                blockEntity.setRick(fairy.getName().getString().equals("rick"));
-                blockEntity.setModelType(fairy.isBaby() ? MaidFairyPartBlockEntity.ModelType.BABY : MaidFairyPartBlockEntity.ModelType.NEW);
-            }
-        });
-        // 等待 2tick 是为了等待刚体创建在施加推力
-        scheduleDelayed(level, 2, () -> {
-            parts.addLinearImpulse(force, true);
-            parts.addAngularImpulse(new Vec3(-10, 0, 0), true);
-        });
-        if(addFairy)
-            parts.addEntity(fairy);
     }
 }

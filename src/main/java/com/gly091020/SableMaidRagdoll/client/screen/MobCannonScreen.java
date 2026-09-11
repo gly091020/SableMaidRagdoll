@@ -2,6 +2,7 @@ package com.gly091020.SableMaidRagdoll.client.screen;
 
 import com.gly091020.SableMaidRagdoll.SableMaidRagdoll;
 import com.gly091020.SableMaidRagdoll.block.mob_cannon.MobCannonBlockEntity;
+import com.gly091020.SableMaidRagdoll.compat.CompatMods;
 import com.gly091020.SableMaidRagdoll.init.InitBlocks;
 import com.gly091020.SableMaidRagdoll.menu.MobCannonMenu;
 import net.minecraft.client.Minecraft;
@@ -18,6 +19,8 @@ import net.minecraft.world.entity.player.Inventory;
 public class MobCannonScreen extends AbstractContainerScreen<MobCannonMenu> {
     private static final ResourceLocation BACKGROUND =
             ResourceLocation.fromNamespaceAndPath(SableMaidRagdoll.MODID, "textures/gui/mob_cannon.png");
+    private static final ResourceLocation BACKGROUND_WINE_FOX =
+            ResourceLocation.fromNamespaceAndPath(SableMaidRagdoll.MODID, "textures/gui/mob_cannon_winefox.png");
     private static final int BACKGROUND_WIDTH = 177;
     private static final int BACKGROUND_HEIGHT = 168;
 
@@ -52,7 +55,8 @@ public class MobCannonScreen extends AbstractContainerScreen<MobCannonMenu> {
         int x = (this.width - this.imageWidth) / 2;
         int y = (this.height - this.imageHeight) / 2;
 
-        guiGraphics.blit(BACKGROUND, x, y, 0, 0, BACKGROUND_WIDTH, BACKGROUND_HEIGHT, BACKGROUND_WIDTH, BACKGROUND_HEIGHT);
+        guiGraphics.blit(CompatMods.WINFOX_LITTLE_MAID.isLoaded() ? BACKGROUND_WINE_FOX : BACKGROUND,
+                x, y, 0, 0, BACKGROUND_WIDTH, BACKGROUND_HEIGHT, BACKGROUND_WIDTH, BACKGROUND_HEIGHT);
         renderCannon(guiGraphics, leftPos, topPos);
     }
 

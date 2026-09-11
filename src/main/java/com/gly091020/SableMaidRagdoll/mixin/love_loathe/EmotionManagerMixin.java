@@ -17,7 +17,6 @@ import java.util.List;
         "com.github.JumDa5he.callresponse.compat.emotion.EmotionForgettingManager",
         "com.github.JumDa5he.callresponse.compat.emotion.EmotionPassiveManager",
 }, remap = false)
-@Pseudo
 public class EmotionManagerMixin {
     @Redirect(method = "onServerTick", at = @At(value = "INVOKE",
             target = "Lnet/minecraft/world/level/Level;getEntitiesOfClass(Ljava/lang/Class;Lnet/minecraft/world/phys/AABB;)Ljava/util/List;"))

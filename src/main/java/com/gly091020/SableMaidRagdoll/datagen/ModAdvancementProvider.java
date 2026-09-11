@@ -1,19 +1,14 @@
 package com.gly091020.SableMaidRagdoll.datagen;
 
-import com.github.tartaricacid.touhoulittlemaid.advancements.maid.MaidEventTrigger;
-import com.github.tartaricacid.touhoulittlemaid.init.InitItems;
 import com.gly091020.SableMaidRagdoll.SableMaidRagdoll;
+import com.gly091020.SableMaidRagdoll.advancements.MaidRagdollEventTrigger;
 import com.gly091020.SableMaidRagdoll.init.InitCustomStats;
 import com.gly091020.SableMaidRagdoll.util.MaidCreativeTab;
 import com.gly091020.SableMaidRagdoll.util.MaidRagdollAdvancementEvents;
 import net.minecraft.advancements.Advancement;
 import net.minecraft.advancements.AdvancementHolder;
 import net.minecraft.advancements.AdvancementType;
-import net.minecraft.advancements.critereon.EntityPredicate;
-import net.minecraft.advancements.critereon.InventoryChangeTrigger;
-import net.minecraft.advancements.critereon.MinMaxBounds;
-import net.minecraft.advancements.critereon.PlayerPredicate;
-import net.minecraft.advancements.critereon.PlayerTrigger;
+import net.minecraft.advancements.critereon.*;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -24,6 +19,7 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.stats.Stats;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.level.ItemLike;
 import net.neoforged.neoforge.common.data.AdvancementProvider;
 import net.neoforged.neoforge.common.data.ExistingFileHelper;
@@ -59,8 +55,8 @@ public class ModAdvancementProvider extends AdvancementProvider {
             var maidDoll = itemObtained(saver, existingFileHelper, cheatDeath, "player_cheat_death", MaidCreativeTab.getDollDisplayStack(), AdvancementType.GOAL);
             var mobCannon = itemObtained(saver, existingFileHelper, cheatDeath, "mob_cannon", com.gly091020.SableMaidRagdoll.init.InitItems.MOB_CANNON_ITEM.get());
 
-            maidEvent(saver, existingFileHelper, root, "hit_maid_ragdoll", MaidRagdollAdvancementEvents.HIT_MAID.getName(), InitItems.FAVORABILITY_TOOL_REDUCE);
-            maidEvent(saver, existingFileHelper, maidDoll, "control_maid", MaidRagdollAdvancementEvents.CONTROL_MAID.getName(), InitItems.GARAGE_KIT);
+            maidEvent(saver, existingFileHelper, root, "hit_maid_ragdoll", MaidRagdollAdvancementEvents.HIT_MAID.getName(), Items.NETHERITE_SWORD);
+            maidEvent(saver, existingFileHelper, maidDoll, "control_maid", MaidRagdollAdvancementEvents.CONTROL_MAID.getName(), Items.ARMOR_STAND);
             Advancement.Builder.advancement()
                     .parent(mobCannon)
                     .display(
@@ -73,7 +69,7 @@ public class ModAdvancementProvider extends AdvancementProvider {
                             true,
                             true
                     )
-                    .addCriterion("double_cannon", MaidEventTrigger.create(MaidRagdollAdvancementEvents.DOUBLE_CANNON.getName()))
+                    .addCriterion("double_cannon", MaidRagdollEventTrigger.create(MaidRagdollAdvancementEvents.DOUBLE_CANNON.getName()))
                     .save(saver, ResourceLocation.fromNamespaceAndPath(SableMaidRagdoll.MODID, "double_cannon"), existingFileHelper);
 
             statMilestone(saver, existingFileHelper, root, "maid_knocked_away_100", com.gly091020.SableMaidRagdoll.init.InitItems.MAID_MACE_ITEM.get(),
@@ -129,7 +125,7 @@ public class ModAdvancementProvider extends AdvancementProvider {
                             true,
                             false
                     )
-                    .addCriterion("maid_event", MaidEventTrigger.create(event))
+                    .addCriterion("maid_event", MaidRagdollEventTrigger.create(event))
                     .save(saver, ResourceLocation.fromNamespaceAndPath(SableMaidRagdoll.MODID, id), helper);
         }
 

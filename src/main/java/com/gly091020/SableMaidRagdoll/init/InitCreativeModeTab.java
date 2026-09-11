@@ -1,6 +1,5 @@
 package com.gly091020.SableMaidRagdoll.init;
 
-import com.github.tartaricacid.touhoulittlemaid.init.InitCreativeTabs;
 import com.gly091020.SableMaidRagdoll.SableMaidRagdoll;
 import com.gly091020.SableMaidRagdoll.util.MaidCreativeTab;
 import net.minecraft.core.registries.Registries;
@@ -18,7 +17,6 @@ public class InitCreativeModeTab {
             r -> CreativeModeTab.builder()
                     .title(Component.translatable("itemGroup.sable_maid_ragdoll.main"))
                     .icon(() -> InitItems.MOD_ICON_ITEM.get().getDefaultInstance())
-                    .withTabsBefore(InitCreativeTabs.MAIN_TAB.getId())
                     .displayItems(MaidCreativeTab::getAllMainItem)
                     .build());
     public static DeferredHolder<CreativeModeTab, CreativeModeTab> DOLL_TAB;
