@@ -16,14 +16,6 @@ public class MaidRagdollMixinConfigPlugin implements IMixinConfigPlugin {
         if(isModMixin(mixinClassName, "maid_spell"))return CompatMods.WINFOX_LITTLE_MAID_SPELL.isLoaded();
         if(isModMixin(mixinClassName, "love_loathe"))return CompatMods.LOVE_LOATHE.isLoaded();
 
-        if (mixinClassName.equals("com.gly091020.SableMaidRagdoll.mixin.tlm.BroomMixin")) {
-            try {
-                Class.forName("com.github.tartaricacid.touhoulittlemaid.entity.item.EntityBroom");
-                return true;
-            } catch (ClassNotFoundException e) {
-                return false;
-            }
-        }
         return true;
     }
 

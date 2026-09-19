@@ -114,7 +114,7 @@ public class EventHandler {
             player.awardStat(Stats.CUSTOM.get(InitCustomStats.MAID_KNOCKED_AWAY.get()));
             InitTrigger.EVENT_TRIGGER.get().trigger(player, MaidRagdollAdvancementEvents.HIT_MAID.getName());
         }
-        if(CompatMods.LAOWU_WINE_FOX.isLoaded() && specialDamage && event.getSource().is(InitTags.LAOWU_HURT_DANCE))
+        if(CompatMods.LAOWU_WINE_FOX.isLoaded() && SableMaidRagdoll.CONFIG.laoWuWineFox.dance && specialDamage && event.getSource().is(InitTags.LAOWU_HURT_DANCE))
             WineFoxHurtDancingManager.startDancing(rag);
         if(ownerAttack && SableMaidRagdoll.CONFIG.sounds.watermelonHurt)
             event.getEntity().level().playSound(null, BlockPos.containing(event.getEntity().position()), InitSounds.WATERMELON_HURT.get(), SoundSource.PLAYERS, 1, 1);
