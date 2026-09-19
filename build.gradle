@@ -155,9 +155,7 @@ dependencies {
     implementation("maven.modrinth:touhou-little-maid:${touhou_little_maid_version}")
     implementation(files("libs/LMML-1.21.1-9.0.0-beta.4-NeoForge.jar"))
     implementation(files("libs/LMRB-1.21.1-9.0.0-beta.6-NeoForge.jar"))
-    // LMRB 的实体与注册表类型继承自 Architectury
-    compileOnly "dev.architectury:architectury-neoforge:${architectury_api_version}"
-    runtimeOnly "dev.architectury:architectury-neoforge:${architectury_api_version}"
+    implementation "dev.architectury:architectury-neoforge:${architectury_api_version}"
 
     implementation("dev.ryanhcode.sable:sable-neoforge-${project.minecraft_version}:${project.sable_version}")
     implementation "me.shedaniel.cloth:cloth-config-neoforge:${cloth_config_version}"
