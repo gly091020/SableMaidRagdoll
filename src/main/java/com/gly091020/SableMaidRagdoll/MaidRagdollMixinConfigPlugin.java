@@ -15,6 +15,7 @@ public class MaidRagdollMixinConfigPlugin implements IMixinConfigPlugin {
         if(isModMixin(mixinClassName, "tlm"))return CompatMods.WINFOX_LITTLE_MAID.isLoaded();
         if(isModMixin(mixinClassName, "maid_spell"))return CompatMods.WINFOX_LITTLE_MAID_SPELL.isLoaded();
         if(isModMixin(mixinClassName, "love_loathe"))return CompatMods.LOVE_LOATHE.isLoaded();
+        if(isModMixin(mixinClassName, "lmrb"))return CompatMods.LITTLE_MAID_REBIRTH.isLoaded();
 
         return true;
     }

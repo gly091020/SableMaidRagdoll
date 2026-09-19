@@ -6,6 +6,7 @@ public enum CompatMods {
     LOVE_LOATHE("callresponse"),
     PLAYER_RAGDOLL("sable_player_ragdoll"),
     LAOWU_WINE_FOX("laowu_maid_1786527352"),
+    LITTLE_MAID_REBIRTH("littlemaidrebirth"),
     WINFOX_LITTLE_MAID("touhou_little_maid"),
     WINFOX_LITTLE_MAID_SPELL("touhou_little_maid_spell");
 

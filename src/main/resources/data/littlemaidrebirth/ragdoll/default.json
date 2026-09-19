@@ -1,0 +1,262 @@
+{
+  "mainBody": "body",
+  "render": {
+    "head": {
+      "parts": [
+        {
+          "partName": "bipedHead"
+        }
+      ],
+      "transform": [
+        0.0,
+        4.0,
+        0.0
+      ]
+    },
+    "body": {
+      "parts": [
+        {
+          "partName": "bipedBody"
+        },
+        {
+          "partName": "Skirt"
+        }
+      ],
+      "transform": [
+        0.0,
+        -3.5,
+        0.0
+      ]
+    },
+    "armLeft": {
+      "parts": [
+        {
+          "partName": "bipedLeftArm"
+        }
+      ],
+      "transform": [
+        -1.0,
+        -3.0,
+        0.0
+      ]
+    },
+    "armRight": {
+      "parts": [
+        {
+          "partName": "bipedRightArm"
+        }
+      ],
+      "transform": [
+        1.0,
+        -3.0,
+        0.0
+      ]
+    },
+    "legLeft": {
+      "parts": [
+        {
+          "partName": "bipedLeftLeg"
+        }
+      ],
+      "transform": [
+        -0.5,
+        -4.5,
+        0.0
+      ]
+    },
+    "legRight": {
+      "parts": [
+        {
+          "partName": "bipedRightLeg"
+        }
+      ],
+      "transform": [
+        0.5,
+        -4.5,
+        0.0
+      ]
+    }
+  },
+  "joints": [
+    {
+      "posA": [
+        0.0,
+        -3.5,
+        0.0
+      ],
+      "posB": [
+        0.0,
+        3.0,
+        0.0
+      ],
+      "settings": {
+        "contacts": false,
+        "motor": {
+          "stiffness": 300,
+          "damping": 20
+        }
+      },
+      "A": "head",
+      "B": "body"
+    },
+    {
+      "posA": [
+        4.5,
+        1.5,
+        -0.5
+      ],
+      "posB": [
+        0.0,
+        3.0,
+        0.0
+      ],
+      "A": "body",
+      "B": "armLeft"
+    },
+    {
+      "posA": [
+        -4.5,
+        1.5,
+        -0.5
+      ],
+      "posB": [
+        0.0,
+        3.0,
+        0.0
+      ],
+      "A": "body",
+      "B": "armRight"
+    },
+    {
+      "posA": [
+        1.5,
+        -4.5,
+        0.0
+      ],
+      "posB": [
+        -0.5,
+        4.5,
+        0.0
+      ],
+      "A": "body",
+      "B": "legLeft"
+    },
+    {
+      "posA": [
+        -1.5,
+        -4.5,
+        0.0
+      ],
+      "posB": [
+        -0.5,
+        4.5,
+        0.0
+      ],
+      "A": "body",
+      "B": "legRight"
+    }
+  ],
+  "type": "littlemaidrebirth:maid",
+  "allParts": [
+    "head",
+    "body",
+    "armLeft",
+    "armRight",
+    "legLeft",
+    "legRight"
+  ],
+  "hitbox": {
+    "head": [
+      4,
+      4,
+      4,
+      12,
+      12,
+      12
+    ],
+    "body": [
+      5,
+      4,
+      6,
+      11,
+      11,
+      10
+    ],
+    "armLeft": [
+      7,
+      4,
+      7,
+      9,
+      12,
+      9
+    ],
+    "armRight": [
+      7,
+      4,
+      7,
+      9,
+      12,
+      9
+    ],
+    "legLeft": [
+      6,
+      3,
+      6,
+      9,
+      12,
+      10
+    ],
+    "legRight": [
+      6,
+      3,
+      6,
+      9,
+      12,
+      10
+    ]
+  },
+  "position": {
+    "head": {
+      "transform": [
+        -8.0,
+        20.0,
+        -8.0
+      ]
+    },
+    "body": {
+      "transform": [
+        -8.0,
+        12.5,
+        -8.0
+      ]
+    },
+    "armLeft": {
+      "transform": [
+        -4.0,
+        11.0,
+        -8.0
+      ]
+    },
+    "armRight": {
+      "transform": [
+        -12.0,
+        11.0,
+        -8.0
+      ]
+    },
+    "legLeft": {
+      "transform": [
+        -6.5,
+        4.5,
+        -8.0
+      ]
+    },
+    "legRight": {
+      "transform": [
+        -9.5,
+        4.5,
+        -8.0
+      ]
+    }
+  }
+}

@@ -207,9 +207,13 @@ public class EventHandler {
                 entity.level().playSound(null, BlockPos.containing(entity.position()), com.gly091020.SableMaidRagdoll.init.InitSounds.PIPE.get(), SoundSource.PLAYERS, 1, 1f);
         }
 
-        if(blockEntity.getLevel() != null && rag != null && rag.getExtraData().contains("PCDI_soundID", Tag.TAG_STRING) && entity.invulnerableTime > 0){
+        if(blockEntity.getLevel() != null && rag != null &&
+                rag.getExtraData().contains("PCDI_soundID", Tag.TAG_STRING) &&
+                rag.getExtraData().contains("PCDI_typeID", Tag.TAG_STRING) &&
+                entity.invulnerableTime > 0){
             var soundID = rag.getExtraData().getString("PCDI_soundID");
-            var type = MaidRagdollTypesManager.getSupportType(entity);
+            var typeID = rag.getExtraData().getString("PCDI_typeID");
+            var type = MaidRagdollTypesManager.getType(typeID);
             if(type == null)return;
             MaidRagdollTypesManager.playSound(type.getID(), blockEntity.getLevel(), entity.position(), soundID, MaidSoundType.HURT, 1);
         }

@@ -134,6 +134,7 @@ public class PlayerCheatDeathItem extends BlockItem {
             rag.addAngularImpulse(axis, false);
         });
         rag.getExtraData().putString("PCDI_soundID", data.soundID());
+        rag.getExtraData().putString("PCDI_typeID", data.ragdollType());
         if(SableMaidRagdoll.CONFIG.sounds.hungry)
             player.level().playSound(null, BlockPos.containing(player.position()), InitSounds.HUNGRY.get(), SoundSource.PLAYERS, 1,
                     1f + player.level().random.nextFloat());

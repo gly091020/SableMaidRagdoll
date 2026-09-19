@@ -5,15 +5,16 @@
   "plugin": "com.gly091020.SableMaidRagdoll.MaidRagdollMixinConfigPlugin",
   "compatibilityLevel": "JAVA_21",
   "mixins": [
+    "lmrb.LMInteractionHandlerMixin",
+    "love_loathe.CallResponseHurtMixin",
+    "love_loathe.EmotionManagerMixin",
+    "love_loathe.StandUpActionMixin",
+    "maid_spell.MaidSpellAllyEventsMixin",
     "tlm.BroomEntityMixin",
     "tlm.BroomMixin",
     "tlm.EmojiReloadListenerMixin",
     "tlm.EntityBoxMixin",
-    "tlm.IMaidEdibleBlockMixin",
-    "love_loathe.CallResponseHurtMixin",
-    "love_loathe.EmotionManagerMixin",
-    "love_loathe.StandUpActionMixin",
-    "maid_spell.MaidSpellAllyEventsMixin"
+    "tlm.IMaidEdibleBlockMixin"
   ],
   "client": [
     "tlm.BedrockModelAccessor",

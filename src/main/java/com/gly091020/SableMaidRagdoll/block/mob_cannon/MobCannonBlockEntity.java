@@ -342,7 +342,7 @@ public class MobCannonBlockEntity extends BlockEntity implements IItemHandlerMod
             PlayerRagdollUtil.launch(player, force.scale(25));
             return;
         }
-        if(CompatMods.PLAYER_RAGDOLL.isLoaded() && entity instanceof LivingEntity livingEntity){
+        if(CompatMods.PLAYER_RAGDOLL.isLoaded() && PlayerRagdollUtil.isSupport(entity) && entity instanceof LivingEntity livingEntity){
             PlayerRagdollUtil.launchMob(livingEntity, force.scale(25));
         }
     }

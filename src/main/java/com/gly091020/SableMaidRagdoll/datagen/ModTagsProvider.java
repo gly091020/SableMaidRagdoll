@@ -5,6 +5,7 @@ import com.gly091020.SableMaidRagdoll.SableMaidRagdoll;
 import com.gly091020.SableMaidRagdoll.init.InitBlocks;
 import com.gly091020.SableMaidRagdoll.init.InitTags;
 import com.gly091020.SableMaidRagdoll.maid.tlm.init.TLMInitBlocks;
+import dev.leo.sableplayerragdoll.SablePlayerRagdoll;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.PackOutput;

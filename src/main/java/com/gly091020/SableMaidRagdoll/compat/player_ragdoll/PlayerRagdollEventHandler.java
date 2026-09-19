@@ -22,6 +22,7 @@ public class PlayerRagdollEventHandler {
         if(!(event.getEntity() instanceof ServerPlayer serverPlayer))return;
         if(!SableMaidRagdoll.CONFIG.playerRagdoll.attackToRagDoll)return;
         if(!serverPlayer.getMainHandItem().is(InitTags.MAID_TO_RAGDOLL_TAG))return;
+        if(!PlayerRagdollUtil.isSupport(event.getTarget()))return;
 
         if(event.getTarget() instanceof LivingEntity livingEntity && !(event.getTarget() instanceof Player)){
             if(RagdollAPI.isMobRagdolled(livingEntity)){
