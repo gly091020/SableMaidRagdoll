@@ -166,6 +166,7 @@ dependencies {
 
     implementation "com.gly091020:sableragdolllib"
     compileOnly "com.github.JumDa5he:callresponse"
+    implementation(files("libs/revivemaid-1.21.1-neoforge-1.2.0.jar"))
 
     runtimeOnly "maven.modrinth:nU0bVIaL:BIogJv2D"
 

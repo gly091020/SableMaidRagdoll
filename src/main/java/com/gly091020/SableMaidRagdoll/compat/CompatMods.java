@@ -8,7 +8,8 @@ public enum CompatMods {
     LAOWU_WINE_FOX("laowu_maid_1786527352"),
     LITTLE_MAID_REBIRTH("littlemaidrebirth"),
     WINFOX_LITTLE_MAID("touhou_little_maid"),
-    WINFOX_LITTLE_MAID_SPELL("touhou_little_maid_spell");
+    WINFOX_LITTLE_MAID_SPELL("touhou_little_maid_spell"),
+    REVIVE_MAID("revivemaid");
 
     final String modID;
     final boolean isLoaded;

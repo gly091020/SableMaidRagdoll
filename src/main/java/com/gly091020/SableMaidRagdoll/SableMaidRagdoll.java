@@ -2,6 +2,7 @@ package com.gly091020.SableMaidRagdoll;
 
 import com.gly091020.SableMaidRagdoll.compat.player_ragdoll.PlayerRagdollUtil;
 import com.gly091020.SableMaidRagdoll.compat.CompatMods;
+import com.gly091020.SableMaidRagdoll.compat.revive_maid.ReviveMaidUtil;
 import com.gly091020.SableMaidRagdoll.datagen.SableMaidRagdollDatagen;
 import com.gly091020.SableMaidRagdoll.init.*;
 import com.gly091020.SableMaidRagdoll.network.PacketRegistry;
@@ -33,6 +34,8 @@ public class SableMaidRagdoll {
 
         if(CompatMods.PLAYER_RAGDOLL.isLoaded())
             PlayerRagdollUtil.init();
+        if(CompatMods.REVIVE_MAID.isLoaded())
+            ReviveMaidUtil.init();
 
         bus.addListener(PacketRegistry::onRegisterPayloadHandlers);
         bus.addListener(SableMaidRagdollDatagen::onGatherData);
