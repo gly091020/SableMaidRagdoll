@@ -107,7 +107,8 @@ public class LittleMaidPartRenderer extends AbstractPartBlockRenderer<LittleMaid
      */
     private static void renderHeldItems(LittleMaidPartBlockEntity blockEntity, ModelMultiBase model, ModelRenderer anchor,
                                         PoseStack poseStack, MultiBufferSource bufferSource, int light) {
-        if (!(blockEntity.getEntity() instanceof LivingEntity maid))
+        // 玩家骑在布娃娃上时不把玩家的手持物画到女仆手上
+        if (!(blockEntity.getEntity() instanceof LivingEntity maid) || maid instanceof Player)
             return;
         var arms = model.Arms;
         if (arms == null || arms.length < 2)

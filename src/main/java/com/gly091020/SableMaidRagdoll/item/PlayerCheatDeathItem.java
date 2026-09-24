@@ -90,7 +90,7 @@ public class PlayerCheatDeathItem extends BlockItem {
         var data = stack.get(InitDataComponents.MAID_DOLL_DATA.get());
         if(data == null)return InteractionResultHolder.pass(stack);
         if(level.isClientSide)return InteractionResultHolder.success(stack);
-        if(!toBeRagdoll((ServerPlayer) player, data))return InteractionResultHolder.pass(stack);
+        if(!toBeRagdoll((ServerPlayer) player, data, stack.getOrDefault(InitDataComponents.CONTROL_MODE, false)))return InteractionResultHolder.pass(stack);
         addCooldown(stack, player);
         return InteractionResultHolder.success(stack);
     }
@@ -109,20 +109,20 @@ public class PlayerCheatDeathItem extends BlockItem {
         var data = stack.get(InitDataComponents.MAID_DOLL_DATA.get());
         if(data == null)return InteractionResult.PASS;
         if(useOnContext.getLevel().isClientSide)return InteractionResult.SUCCESS;
-        if(!toBeRagdoll((ServerPlayer) useOnContext.getPlayer(), data))return InteractionResult.PASS;
+        if(!toBeRagdoll((ServerPlayer) useOnContext.getPlayer(), data, stack.getOrDefault(InitDataComponents.CONTROL_MODE, false)))return InteractionResult.PASS;
         addCooldown(useOnContext.getItemInHand(), useOnContext.getPlayer());
         return InteractionResult.SUCCESS;
     }
 
     private void addCooldown(ItemStack stack, Player player){
         player.awardStat(Stats.CUSTOM.get(InitCustomStats.TO_MAID.get()));
-        if(player instanceof ServerPlayer serverPlayer && stack.getOrDefault(InitDataComponents.MAID_DOLL_DATA, MaidDollData.EMPTY).control())
+        if(player instanceof ServerPlayer serverPlayer && stack.getOrDefault(InitDataComponents.CONTROL_MODE, false))
             InitTrigger.EVENT_TRIGGER.get().trigger(serverPlayer, MaidRagdollAdvancementEvents.CONTROL_MAID.getName());
         if(player.isCreative())return;
         player.getCooldowns().addCooldown(stack.getItem(), 20);
     }
 
-    private boolean toBeRagdoll(ServerPlayer player, MaidDollData data){
+    private boolean toBeRagdoll(ServerPlayer player, MaidDollData data, boolean control){
         var rag = MaidRagdollTypesManager.createRagdollFromDoll(player, player.position().add(0, 0.5, 0), new Vec3(0, -player.getYHeadRot(), 0), Vec3.ZERO, Vec3.ZERO, false, data);
         if(rag == null)return false;
         var motion = JOMLConversion.toJOML(player.getDeltaMovement()).mul(10);
@@ -139,7 +139,7 @@ public class PlayerCheatDeathItem extends BlockItem {
             player.level().playSound(null, BlockPos.containing(player.position()), InitSounds.HUNGRY.get(), SoundSource.PLAYERS, 1,
                     1f + player.level().random.nextFloat());
 
-        if(data.control())
+        if(control)
             RagdollControlManager.start(player, rag);
 
         return true;
@@ -148,8 +148,7 @@ public class PlayerCheatDeathItem extends BlockItem {
     @Override
     public boolean overrideOtherStackedOnMe(ItemStack stack, ItemStack other, Slot p_150894_, ClickAction clickAction, Player player, SlotAccess p_150897_) {
         if(other.isEmpty() && clickAction == ClickAction.SECONDARY){
-            var old = stack.getOrDefault(InitDataComponents.MAID_DOLL_DATA, MaidDollData.EMPTY);
-            stack.set(InitDataComponents.MAID_DOLL_DATA, new MaidDollData(old.ragdollType(), old.modelID(), old.soundID(), !old.control()));
+            stack.set(InitDataComponents.CONTROL_MODE, !stack.getOrDefault(InitDataComponents.CONTROL_MODE, false));
             if(player.level().isClientSide)
                 player.playSound(SoundEvents.EXPERIENCE_ORB_PICKUP);
             return true;
@@ -160,7 +159,7 @@ public class PlayerCheatDeathItem extends BlockItem {
     @Override
     public void appendHoverText(ItemStack p_41421_, TooltipContext p_339594_, List<Component> p_41423_, TooltipFlag p_41424_) {
         super.appendHoverText(p_41421_, p_339594_, p_41423_, p_41424_);
-        p_41423_.add(p_41421_.getOrDefault(InitDataComponents.MAID_DOLL_DATA, MaidDollData.EMPTY).control() ?
+        p_41423_.add(p_41421_.getOrDefault(InitDataComponents.CONTROL_MODE, false) ?
                 Component.translatable("item.sablemaidragdoll.player_cheat_death.open").withStyle(ChatFormatting.GREEN):
                 Component.translatable("item.sablemaidragdoll.player_cheat_death.close").withStyle(ChatFormatting.RED));
         p_41423_.add(Component.translatable("item.sablemaidragdoll.player_cheat_death.tip").withStyle(ChatFormatting.GRAY));

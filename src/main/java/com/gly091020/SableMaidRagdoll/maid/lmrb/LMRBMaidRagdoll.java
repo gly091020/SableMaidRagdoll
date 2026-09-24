@@ -40,7 +40,9 @@ import net.neoforged.neoforge.network.PacketDistributor;
 import net.neoforged.neoforge.network.registration.PayloadRegistrar;
 import net.sistr.littlemaidmodelloader.entity.compound.IHasMultiModel;
 import net.sistr.littlemaidmodelloader.resource.holder.TextureHolder;
+import net.sistr.littlemaidmodelloader.resource.manager.LMTextureManager;
 import net.sistr.littlemaidmodelloader.resource.util.LMSounds;
+import net.sistr.littlemaidmodelloader.resource.util.TextureColors;
 import net.sistr.littlemaidrebirth.LMRBMod;
 import net.sistr.littlemaidrebirth.entity.LittleMaidEntity;
 import net.sistr.littlemaidrebirth.setup.Registration;
@@ -95,9 +97,12 @@ public class LMRBMaidRagdoll implements IMaidRagdoll {
 
     @Override
     public @Nullable ResourceLocation getRagdollId(MaidDollData data) {
-        if (data.modelID().isEmpty())
+        var modelName = getModelName(data);
+        if (modelName.isEmpty())
             return null;
-        return ResourceLocation.fromNamespaceAndPath(ID, data.modelID().toLowerCase(Locale.ROOT));
+        // 玩偶数据里的 modelID 是复合字符串，不能整串塞进 ResourceLocation
+        var id = ResourceLocation.fromNamespaceAndPath(ID, modelName);
+        return DefFileLoader.getDefFile(id) == null ? null : id;
     }
 
     @Override
@@ -121,18 +126,67 @@ public class LMRBMaidRagdoll implements IMaidRagdoll {
     /** 把女仆当前的贴图信息写到布娃娃的所有部位方块实体上。 */
     public static void applyTexture(Ragdoll ragdoll, LittleMaidEntity maid) {
         TextureHolder holder = maid.getTextureHolder(IHasMultiModel.Layer.SKIN, IHasMultiModel.Part.HEAD);
-        int color = maid.getColorMM().getIndex();
-        boolean contract = maid.isContractMM();
+        applyTexture(ragdoll, holder.getTextureName(), maid.getColorMM().getIndex(), maid.isContractMM());
+    }
+
+    /** 把贴图信息写到布娃娃的所有部位方块实体上。 */
+    public static void applyTexture(Ragdoll ragdoll, String textureName, int color, boolean contract) {
         ragdoll.getSublevels().forEach(subLevel -> {
             if (subLevel.getPlot().getEmbeddedLevelAccessor().getBlockEntity(BlockPos.ZERO) instanceof LittleMaidPartBlockEntity blockEntity) {
-                blockEntity.setMaidTexture(holder.getTextureName(), color, contract);
+                blockEntity.setMaidTexture(textureName, color, contract);
             }
         });
     }
 
-    public static String getModelName(LittleMaidEntity maid) {
-        return maid.getTextureHolder(IHasMultiModel.Layer.SKIN, IHasMultiModel.Part.HEAD)
-                .getModelName().toLowerCase(Locale.ROOT);
+    /**
+     * 玩偶数据里 {@code modelID} 的编码格式：{@code 模型名|贴图包名|颜色索引|契约(0/1)}。
+     * <p>
+     * 这样不用改 {@link MaidDollData} 就能把外观三件套（贴图包、颜色、契约）一起存下来。
+     */
+    public static String getModelString(LittleMaidEntity maid) {
+        var holder = maid.getTextureHolder(IHasMultiModel.Layer.SKIN, IHasMultiModel.Part.HEAD);
+        return holder.getModelName().toLowerCase(Locale.ROOT)
+                + "|" + holder.getTextureName().toLowerCase(Locale.ROOT)
+                + "|" + maid.getColorMM().getIndex()
+                + "|" + (maid.isContractMM() ? 1 : 0);
+    }
+
+    private static String[] splitModelString(MaidDollData data) {
+        return data.modelID().toLowerCase(Locale.ROOT).split("\\|");
+    }
+
+    /** 模型名，决定用哪份布娃娃定义 */
+    public static String getModelName(MaidDollData data) {
+        var split = splitModelString(data);
+        return split.length == 0 ? "" : split[0];
+    }
+
+    /** 贴图包名 */
+    public static String getTextureName(MaidDollData data) {
+        var split = splitModelString(data);
+        return split.length > 1 ? split[1] : "";
+    }
+
+    /** 颜色索引，缺省为棕色 */
+    public static int getColorIndex(MaidDollData data) {
+        var split = splitModelString(data);
+        if (split.length > 2) {
+            try {
+                return Integer.parseInt(split[2]);
+            } catch (NumberFormatException ignored) {
+            }
+        }
+        return TextureColors.BROWN.getIndex();
+    }
+
+    /** 是否契约女仆，缺省为是 */
+    public static boolean isContract(MaidDollData data) {
+        var split = splitModelString(data);
+        return split.length <= 3 || !"0".equals(split[3]);
+    }
+
+    public static String getModelName(LittleMaidEntity maid){
+        return maid.getTextureHolder(IHasMultiModel.Layer.SKIN, IHasMultiModel.Part.HEAD).getModelName().toLowerCase(Locale.ROOT);
     }
 
     @Override
@@ -193,7 +247,27 @@ public class LMRBMaidRagdoll implements IMaidRagdoll {
     @Override
     public @Nullable MaidDollData getDataFromEntity(Entity entity) {
         if(!(entity instanceof LittleMaidEntity littleMaidEntity))return null;
-        return new MaidDollData(ID, getModelName(littleMaidEntity), littleMaidEntity.soundPlayer.getConfigHolder().getPackName(), false);
+        return new MaidDollData(ID, getModelString(littleMaidEntity), getSoundId(littleMaidEntity));
+    }
+
+    @OnlyIn(Dist.CLIENT)
+    public static TextureHolder getTextureFromData(MaidDollData data){
+        var textureName = getTextureName(data);
+        if (!textureName.isEmpty()) {
+            var holder = LMTextureManager.INSTANCE.getTexture(textureName).orElse(null);
+            if (holder != null) return holder;
+        }
+        return getDefaultTexture();
+    }
+
+    @OnlyIn(Dist.CLIENT)
+    public static TextureHolder getDefaultTexture(){
+        return LMTextureManager.INSTANCE.getTexture("Default").orElseThrow();
+    }
+
+    private static String getSoundId(LittleMaidEntity maid){
+        var config = maid.getConfigHolder();
+        return config.getName().toLowerCase();
     }
 
     @Override
@@ -215,6 +289,20 @@ public class LMRBMaidRagdoll implements IMaidRagdoll {
 
     @Override
     public void appendCreateTabItem(CreativeModeTab.Output output) {
+        if(!FMLEnvironment.dist.isClient())return;
+        createCreateTabItem(output);
+    }
+
+    @Override
+    public void attachMaidDollData(Ragdoll ragdoll, MaidDollData data) {
+        var textureName = getTextureName(data);
+        applyTexture(ragdoll, textureName.isEmpty() ? "Default" : textureName,
+                getColorIndex(data), isContract(data));
+    }
+
+    @OnlyIn(Dist.CLIENT)
+    private static void createCreateTabItem(CreativeModeTab.Output output){
+
     }
 
     @Override

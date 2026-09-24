@@ -95,4 +95,7 @@ public interface IMaidRagdoll {
 
     // 创造物品栏追加
     void appendCreateTabItem(CreativeModeTab.Output output);
+
+    // 附加女仆数据
+    void attachMaidDollData(Ragdoll ragdoll, MaidDollData data);
 }

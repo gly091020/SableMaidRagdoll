@@ -18,6 +18,7 @@ import org.slf4j.Logger;
 public class MaidDollBlockEntity extends BlockEntity {
     private static final Logger LOGGER = LogUtils.getLogger();
     private MaidDollData data = MaidDollData.EMPTY;
+    private boolean isControl = false;
     public MaidDollBlockEntity(BlockPos pos, BlockState state) {
         super(InitBlockEntities.MAID_DOLL_BLOCK_ENTITY.get(), pos, state);
     }
@@ -49,21 +50,17 @@ public class MaidDollBlockEntity extends BlockEntity {
         MaidDollData.CODEC.encodeStart(NbtOps.INSTANCE, data)
                 .resultOrPartial(LOGGER::error)
                 .ifPresent(r -> tag.put("data", r));
-    }
-
-    private void loadOld(CompoundTag tag){
-        if(tag.contains("modelID", Tag.TAG_STRING) && tag.contains("soundID", Tag.TAG_STRING) && tag.contains("control", Tag.TAG_BYTE))
-            data = new MaidDollData("tlm", tag.getString("modelID"), tag.getString("soundID"), tag.contains("control", Tag.TAG_BYTE));
+        tag.putBoolean("control", isControl);
     }
 
     @Override
     protected void loadAdditional(CompoundTag tag, HolderLookup.Provider provider) {
         super.loadAdditional(tag, provider);
-        if(tag.contains("data"))
-            MaidDollData.CODEC.parse(NbtOps.INSTANCE, tag.get("data"))
-                    .resultOrPartial(LOGGER::error)
-                    .ifPresent(r -> data = r);
-        else loadOld(tag);
+        MaidDollData.CODEC.parse(NbtOps.INSTANCE, tag.get("data"))
+                .resultOrPartial(LOGGER::error)
+                .ifPresent(r -> data = r);
+        if(tag.contains("control", Tag.TAG_BYTE))
+            isControl = tag.getBoolean("control");
 
         if(tag.contains("lastPat", Tag.TAG_LONG))
             lastPat = tag.getLong("lastPat");
@@ -104,6 +101,6 @@ public class MaidDollBlockEntity extends BlockEntity {
     }
 
     public boolean isControlMode() {
-        return data.control();
+        return isControl;
     }
 }

@@ -15,6 +15,8 @@ public class InitDataComponents {
     public static final DeferredHolder<DataComponentType<?>, DataComponentType<MaidDollData>> MAID_DOLL_DATA = DATA_COMPONENTS.register("maid_doll_data", r ->
             DataComponentType.<MaidDollData>builder().persistent(MaidDollData.CODEC).networkSynchronized(MaidDollData.STREAM_CODEC).build()
     );
+    public static final DeferredHolder<DataComponentType<?>, DataComponentType<Boolean>> CONTROL_MODE = DATA_COMPONENTS.register("control_mode", r ->
+            DataComponentType.<Boolean>builder().persistent(Codec.BOOL).networkSynchronized(ByteBufCodecs.BOOL).build());
 
     public static void init(IEventBus bus){
         DATA_COMPONENTS.register(bus);

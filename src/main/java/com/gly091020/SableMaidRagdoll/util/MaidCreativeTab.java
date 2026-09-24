@@ -17,7 +17,7 @@ import net.neoforged.neoforge.registries.DeferredRegister;
 public class MaidCreativeTab {
     public static ItemStack getDollDisplayStack(){
         var stack = new ItemStack(InitItems.PLAYER_CHEAT_DEATH_ITEM.get(), 1);
-        stack.set(InitDataComponents.MAID_DOLL_DATA, new MaidDollData("tlm", "authors_and_credits:wine_fox_taisho", "", false));
+        stack.set(InitDataComponents.MAID_DOLL_DATA, new MaidDollData("tlm", "authors_and_credits:wine_fox_taisho", ""));
         return stack;
     }
 

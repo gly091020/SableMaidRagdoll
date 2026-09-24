@@ -258,7 +258,7 @@ public class TLMMaidRagdoll implements IMaidRagdoll {
     @Override
     public @Nullable MaidDollData getDataFromEntity(Entity entity) {
         if(!(entity instanceof EntityMaid maid))return null;
-        return new MaidDollData(getID(), maid.getModelId(), maid.getSoundPackId(), false);
+        return new MaidDollData(getID(), maid.getModelId(), maid.getSoundPackId());
     }
 
     @Override
@@ -281,7 +281,7 @@ public class TLMMaidRagdoll implements IMaidRagdoll {
             var ragdollID = ResourceLocation.fromNamespaceAndPath(SableMaidRagdoll.MODID, modelID.replace(":", "/"));
             if(DefFileLoader.getDefFile(ragdollID) == null)continue;
             var stack = new ItemStack(com.gly091020.SableMaidRagdoll.init.InitItems.PLAYER_CHEAT_DEATH_ITEM.get(), 1);
-            stack.set(InitDataComponents.MAID_DOLL_DATA, new MaidDollData(getID(), modelID, DefaultMaidSoundPack.DEFAULT_SOUND_PACK_ID, false));
+            stack.set(InitDataComponents.MAID_DOLL_DATA, new MaidDollData(getID(), modelID, DefaultMaidSoundPack.DEFAULT_SOUND_PACK_ID));
             output.accept(stack);
         }
     }
@@ -293,6 +293,11 @@ public class TLMMaidRagdoll implements IMaidRagdoll {
             output.accept(TLMInitItems.WINE_FOX_SPAWN_EGG.get());
             output.accept(TLMInitItems.RAGDOLLABLE_WINE_FOX_SPAWN_EGG.get());
         }
+    }
+
+    @Override
+    public void attachMaidDollData(Ragdoll ragdoll, MaidDollData data) {
+
     }
 
     public static int giveGarageKit(CommandContext<CommandSourceStack> context) throws CommandSyntaxException {

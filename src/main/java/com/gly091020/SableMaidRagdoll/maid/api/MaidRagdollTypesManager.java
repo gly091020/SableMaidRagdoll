@@ -4,7 +4,6 @@ import com.gly091020.SableMaidRagdoll.block.maid_doll.MaidDollData;
 import com.gly091020.SableMaidRagdoll.block.mob_cannon.MobCannonBlockEntity;
 import com.gly091020.SableRagdollLib.api.Ragdoll;
 import com.gly091020.SableRagdollLib.api.RagdollHelper;
-import com.gly091020.SableRagdollLib.api.RagdollManager;
 import com.gly091020.SableRagdollLib.block.AbstractPartBlockEntity;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.datafixers.util.Pair;
@@ -77,6 +76,7 @@ public class MaidRagdollTypesManager {
         if (t == null) return null;
         var ragdoll = RagdollHelper.createRagdoll(serverLevel, position, rotation, t.getRagdollId(data));
         if (ragdoll == null) return null;
+        t.attachMaidDollData(ragdoll, data);
         // 等待 2tick 是为了等待刚体创建在施加推力
         scheduleDelayed(serverLevel, 2, () -> {
             ragdoll.addAngularImpulse(angularImpulse, true);

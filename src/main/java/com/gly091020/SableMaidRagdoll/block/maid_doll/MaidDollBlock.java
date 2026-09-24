@@ -56,7 +56,8 @@ public class MaidDollBlock extends HorizontalDirectionalBlock implements EntityB
         BlockEntity blockentity = builder.getOptionalParameter(LootContextParams.BLOCK_ENTITY);
         var s = new ItemStack(InitItems.PLAYER_CHEAT_DEATH_ITEM.get());
         if(!(blockentity instanceof MaidDollBlockEntity blockEntity))return List.of(s);
-        s.set(InitDataComponents.MAID_DOLL_DATA, new MaidDollData(blockEntity.getRagdollTypeID(), blockEntity.getModelID(), blockEntity.getSoundID(), blockEntity.isControlMode()));
+        s.set(InitDataComponents.MAID_DOLL_DATA, new MaidDollData(blockEntity.getRagdollTypeID(), blockEntity.getModelID(), blockEntity.getSoundID()));
+        s.set(InitDataComponents.CONTROL_MODE, blockEntity.isControlMode());
         return List.of(s);
     }
 
@@ -89,7 +90,8 @@ public class MaidDollBlock extends HorizontalDirectionalBlock implements EntityB
         var be = level.getBlockEntity(pos);
         var r = super.getCloneItemStack(state, target, level, pos, player);
         if(!(be instanceof MaidDollBlockEntity blockEntity))return r;
-        r.set(InitDataComponents.MAID_DOLL_DATA, new MaidDollData(blockEntity.getRagdollTypeID(), blockEntity.getModelID(), blockEntity.getSoundID(), blockEntity.isControlMode()));
+        r.set(InitDataComponents.MAID_DOLL_DATA, new MaidDollData(blockEntity.getRagdollTypeID(), blockEntity.getModelID(), blockEntity.getSoundID()));
+        r.set(InitDataComponents.CONTROL_MODE, blockEntity.isControlMode());
         return r;
     }
 

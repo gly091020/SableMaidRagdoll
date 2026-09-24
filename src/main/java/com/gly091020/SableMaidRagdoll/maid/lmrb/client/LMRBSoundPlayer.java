@@ -23,7 +23,7 @@ public final class LMRBSoundPlayer {
     }
 
     public static void play(String soundPack, String soundName, Vec3 pos, float volume) {
-        ConfigHolder config = LMConfigManager.INSTANCE.getTextureSoundConfig(soundPack)
+        ConfigHolder config = LMConfigManager.INSTANCE.getConfig(soundPack)
                 .orElseGet(LMConfigManager.INSTANCE::getAnyConfig);
         config.getSoundFileName(soundName.toLowerCase(Locale.ROOT)).ifPresent(soundFile ->
                 LMSoundManager.INSTANCE.getSound(soundFile).ifPresent(soundSet ->
