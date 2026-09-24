@@ -102,6 +102,7 @@ public class ModRecipeProvider extends RecipeProvider {
                 .requires(InitItems.PLAYER_CHEAT_DEATH_ITEM.get())
                 .requires(commonTag("ingots/iron"))
                 .requires(Items.NETHER_STAR)
+                .unlockedBy("get", InventoryChangeTrigger.TriggerInstance.hasItems(Items.NETHER_STAR))
                 .save(recipeOutput, modId("ragdoll_wand"));
     }
 
