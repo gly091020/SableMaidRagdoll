@@ -1,5 +1,6 @@
 package com.gly091020.SableMaidRagdoll.datagen;
 
+import com.github.tartaricacid.touhoulittlemaid.data.PowerAttachment;
 import com.github.tartaricacid.touhoulittlemaid.datagen.builder.AltarRecipeBuilder;
 import com.gly091020.SableMaidRagdoll.SableMaidRagdoll;
 import com.gly091020.SableMaidRagdoll.init.InitBlocks;
@@ -43,6 +44,12 @@ public class ModRecipeProvider extends RecipeProvider {
                 .requires(InitItems.CHEAT_DEATH_BAUBLE_ITEM.get())
                 .requires(commonTag("gems/diamond"))
                 .save(recipeOutput, modId("player_cheat_death"));
+
+        AltarRecipeBuilder.shapeless(RecipeCategory.MISC, InitItems.RAGDOLL_WAND_ITEM.get())
+                .power(PowerAttachment.MAX_POWER)
+                .requires(InitItems.PLAYER_CHEAT_DEATH_ITEM.get())
+                .requires(Items.NETHER_STAR)
+                .save(recipeOutput, modId("ragdoll_wand1"));
 
         ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, InitItems.CHEAT_DEATH_BAUBLE_ITEM.get())
                 .requires(Items.YELLOW_DYE)
@@ -90,6 +97,12 @@ public class ModRecipeProvider extends RecipeProvider {
                 .requires(InitItems.CHEAT_DEATH_BAUBLE_ITEM.get())
                 .unlockedBy("get", InventoryChangeTrigger.TriggerInstance.hasItems(Items.DISPENSER))
                 .save(recipeOutput, modId("mob_cannon"));
+
+        ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, InitItems.RAGDOLL_WAND_ITEM.get())
+                .requires(InitItems.PLAYER_CHEAT_DEATH_ITEM.get())
+                .requires(commonTag("ingots/iron"))
+                .requires(Items.NETHER_STAR)
+                .save(recipeOutput, modId("ragdoll_wand"));
     }
 
     private static ResourceLocation modId(String path) {

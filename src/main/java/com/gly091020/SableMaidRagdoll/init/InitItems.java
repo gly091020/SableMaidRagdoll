@@ -18,6 +18,7 @@ public class InitItems {
     public static final DeferredHolder<Item, MaidMaceItem> MAID_MACE_ITEM = ITEMS.register("maid_mace", resourceLocation -> new MaidMaceItem());
     public static final DeferredHolder<Item, CopyRagdollIDItem> COPY_RAGDOLL_ID_ITEM = ITEMS.register("copy_ragdoll_id", resourceLocation -> new CopyRagdollIDItem());
     public static final DeferredHolder<Item, PlayerCheatDeathItem> PLAYER_CHEAT_DEATH_ITEM = ITEMS.register("player_cheat_death", resourceLocation -> new PlayerCheatDeathItem());
+    public static final DeferredHolder<Item, RagdollWandItem> RAGDOLL_WAND_ITEM = ITEMS.register("ragdoll_wand", resourceLocation -> new RagdollWandItem());
     public static final DeferredHolder<Item, CheatDeathBaubleItem> CHEAT_DEATH_BAUBLE_ITEM = ITEMS.register("cheat_death_bauble", resourceLocation -> new CheatDeathBaubleItem());
     public static final DeferredHolder<Item, BlockItem> MOB_CANNON_ITEM = ITEMS.register("mob_cannon", resourceLocation -> new BlockItem(MOB_CANNON_BLOCK.get(), new Item.Properties()));
     public static final DeferredHolder<Item, Item> MOD_ICON_ITEM = ITEMS.register("mod_icon", resourceLocation -> new Item(new Item.Properties()));

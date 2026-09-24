@@ -25,6 +25,7 @@ public class MaidCreativeTab {
         if(FMLEnvironment.dist.isDedicatedServer())return;
         if(SableMaidRagdoll.CONFIG.items.playerCheatDeathItem)
             output.accept(InitItems.PLAYER_CHEAT_DEATH_ITEM.get());
+        output.accept(InitItems.RAGDOLL_WAND_ITEM.get());
         if(SableMaidRagdoll.CONFIG.items.cheatDeathBauble)
             output.accept(InitItems.CHEAT_DEATH_BAUBLE_ITEM.get());
         if(SableMaidRagdoll.CONFIG.items.maidMace)

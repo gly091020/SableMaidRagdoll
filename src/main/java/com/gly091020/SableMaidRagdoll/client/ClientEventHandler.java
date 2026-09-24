@@ -5,7 +5,9 @@ import com.gly091020.SableMaidRagdoll.client.model.MaidDollDefaultModel;
 import com.gly091020.SableMaidRagdoll.client.renderer.block.MaidDollRenderer;
 import com.gly091020.SableMaidRagdoll.client.renderer.block.MobCannonItemRenderer;
 import com.gly091020.SableMaidRagdoll.client.renderer.block.MobCannonRenderer;
+import com.gly091020.SableMaidRagdoll.client.renderer.RagdollWandHandRenderer;
 import com.gly091020.SableMaidRagdoll.client.renderer.item.PlayerCheatDeathItemRenderer;
+import com.gly091020.SableMaidRagdoll.client.renderer.item.RagdollWandItemRenderer;
 import com.gly091020.SableMaidRagdoll.client.screen.MobCannonScreen;
 import com.gly091020.SableMaidRagdoll.init.InitBlockEntities;
 import com.gly091020.SableMaidRagdoll.init.InitItems;
@@ -13,6 +15,8 @@ import com.gly091020.SableMaidRagdoll.init.InitMenus;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.BlockEntityWithoutLevelRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderers;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.entity.HumanoidArm;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
@@ -28,6 +32,8 @@ import static com.gly091020.SableMaidRagdoll.client.SableMaidRagdollClient.OPEN_
 
 @EventBusSubscriber(value = Dist.CLIENT, modid = SableMaidRagdoll.MODID)
 public class ClientEventHandler {
+    private static RagdollWandItemRenderer ragdollWandRenderer;
+
     @SubscribeEvent
     public static void onClientSetup(FMLClientSetupEvent event) {
         BlockEntityRenderers.register(
@@ -55,6 +61,37 @@ public class ClientEventHandler {
                 return new MobCannonItemRenderer();
             }
         }, InitItems.MOB_CANNON_ITEM.get());
+        ragdollWandRenderer = new RagdollWandItemRenderer(Minecraft.getInstance().getBlockEntityRenderDispatcher(),
+                Minecraft.getInstance().getEntityModels());
+        event.registerItem(new IClientItemExtensions() {
+            @Override
+            public @NotNull BlockEntityWithoutLevelRenderer getCustomRenderer() {
+                return ragdollWandRenderer;
+            }
+        }, InitItems.RAGDOLL_WAND_ITEM.get());
+    }
+
+    @SubscribeEvent
+    public static void onRenderHand(RenderHandEvent event) {
+        var player = Minecraft.getInstance().player;
+        if (player == null || ragdollWandRenderer == null) return;
+        var wand = InitItems.RAGDOLL_WAND_ITEM.get();
+        if (player.isUsingItem() && player.getUseItem().is(wand)) {
+            // 蓄力时双手都由我们自己画，只在拿着魔杖的那只手上渲染一次
+            event.setCanceled(true);
+            if (player.getUsedItemHand() != event.getHand()) return;
+            var stack = player.getUseItem();
+            RagdollWandHandRenderer.render(ragdollWandRenderer, event, stack, player.getMainArm(), true,
+                    RagdollWandItemRenderer.getCharge(stack, event.getPartialTick()));
+            return;
+        }
+        // 空闲时原版不会为非空手画手臂，这里只接管拿着魔杖的那只手
+        InteractionHand hand = player.getMainHandItem().is(wand) ? InteractionHand.MAIN_HAND
+                : player.getOffhandItem().is(wand) ? InteractionHand.OFF_HAND : null;
+        if (hand == null || event.getHand() != hand) return;
+        event.setCanceled(true);
+        HumanoidArm arm = hand == InteractionHand.MAIN_HAND ? player.getMainArm() : player.getMainArm().getOpposite();
+        RagdollWandHandRenderer.render(ragdollWandRenderer, event, player.getItemInHand(hand), arm, false, 0.0F);
     }
 
     @SubscribeEvent
@@ -84,6 +121,7 @@ public class ClientEventHandler {
     @SubscribeEvent
     public static void onClientTick(ClientTickEvent.Pre event) {
         var mc = Minecraft.getInstance();
+        RagdollWandTargetGlow.tick();
         if (AIM_CANNON.consumeClick() && !MobCannonAimManager.isAiming()) {
             MobCannonAimManager.tryStart(mc);
         }

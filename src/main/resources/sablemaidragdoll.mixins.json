@@ -17,6 +17,7 @@
     "tlm.IMaidEdibleBlockMixin"
   ],
   "client": [
+    "EntitySharedFlagAccessor",
     "tlm.BedrockModelAccessor",
     "tlm.CustomPackLoaderMixin",
     "tlm.MaidModelGuiMixin",

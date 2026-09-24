@@ -22,6 +22,16 @@
   "item.sablemaidragdoll.player_cheat_death.connect": "Bound to %s model",
   "item.sablemaidragdoll.player_cheat_death.clear": "Model cleared",
 
+  "item.sablemaidragdoll.ragdoll_wand": "Maidify Crystal",
+  "item.sablemaidragdoll.ragdoll_wand.fox": "Foxify Crystal",
+  "item.sablemaidragdoll.ragdoll_wand.desc": "Turn enemies into maids? That feels a bit hard to bring myself to do...",
+  "item.sablemaidragdoll.ragdoll_wand.fox.desc": "Go 'i' your enemies, just like i-Fox!",
+  "item.sablemaidragdoll.ragdoll_wand.tip": "Right-click your maid to bind her model",
+  "item.sablemaidragdoll.ragdoll_wand.tip1": "Hold right-click to turn the creature in your sight into a ragdoll",
+  "item.sablemaidragdoll.ragdoll_wand.tip2": "Sneak + use to clear the bound model",
+  "item.sablemaidragdoll.ragdoll_wand.connect": "Bound to %s model",
+  "item.sablemaidragdoll.ragdoll_wand.clear": "Model cleared",
+
   "sound.sablemaidragdoll.pipe": "Clang!",
   "sound.sablemaidragdoll.hungry": "Ughh~",
   "sound.sablemaidragdoll.drop": "Yeet~",

@@ -28,6 +28,14 @@ public class PlayerCheatDeathItemRenderer extends BlockEntityWithoutLevelRendere
 
     @Override
     public void renderByItem(ItemStack stack, ItemDisplayContext context, PoseStack poseStack, MultiBufferSource bufferSource, int light, int overlay) {
+        renderDoll(stack, poseStack, bufferSource, light, overlay);
+    }
+
+    /**
+     * 渲染玩偶本体：绑定了模型就渲染对应女仆实体，没有绑定就渲染默认玩偶模型。
+     * 供其它渲染器复用（例如布娃娃魔杖把水晶中间的方块换成玩偶）。
+     */
+    public void renderDoll(ItemStack stack, PoseStack poseStack, MultiBufferSource bufferSource, int light, int overlay) {
         var level = Minecraft.getInstance().level;
         if(level == null)return;
         var data = stack.get(InitDataComponents.MAID_DOLL_DATA);

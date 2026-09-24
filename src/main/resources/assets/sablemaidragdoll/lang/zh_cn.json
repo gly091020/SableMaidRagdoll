@@ -23,6 +23,16 @@
   "item.sablemaidragdoll.player_cheat_death.connect": "已绑定至 %s 模型",
   "item.sablemaidragdoll.player_cheat_death.clear": "已清除模型",
 
+  "item.sablemaidragdoll.ragdoll_wand": "化仆水晶",
+  "item.sablemaidragdoll.ragdoll_wand.fox": "化狐水晶",
+  "item.sablemaidragdoll.ragdoll_wand.desc": "把敌人变成女仆？不太好下手吧……",
+  "item.sablemaidragdoll.ragdoll_wand.fox.desc": "就像i狐一样去i敌人！",
+  "item.sablemaidragdoll.ragdoll_wand.tip": "右键自己的女仆绑定模型",
+  "item.sablemaidragdoll.ragdoll_wand.tip1": "长按右键把准星指向的生物变成布娃娃",
+  "item.sablemaidragdoll.ragdoll_wand.tip2": "潜行使用清除已绑定模型",
+  "item.sablemaidragdoll.ragdoll_wand.connect": "已绑定至 %s 模型",
+  "item.sablemaidragdoll.ragdoll_wand.clear": "已清除模型",
+
   "sound.sablemaidragdoll.pipe": "咣当",
   "sound.sablemaidragdoll.hungry": "呃啊~",
   "sound.sablemaidragdoll.drop": "you~",

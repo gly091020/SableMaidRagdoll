@@ -16,7 +16,7 @@ public class LMInteractionHandlerMixin {
     @Inject(method = "handle", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/player/Player;getItemInHand(Lnet/minecraft/world/InteractionHand;)Lnet/minecraft/world/item/ItemStack;"), cancellable = true)
     private static void onCheatDeathItemUse(LittleMaidEntity maid, Player player, InteractionHand hand, CallbackInfoReturnable<InteractionResult> cir){
         ItemStack stack = player.getItemInHand(hand);
-        if(stack.is(InitItems.PLAYER_CHEAT_DEATH_ITEM)) {
+        if(stack.is(InitItems.PLAYER_CHEAT_DEATH_ITEM) || stack.is(InitItems.RAGDOLL_WAND_ITEM)) {
             stack.interactLivingEntity(player, maid, hand);
             cir.setReturnValue(InteractionResult.SUCCESS);
         }
