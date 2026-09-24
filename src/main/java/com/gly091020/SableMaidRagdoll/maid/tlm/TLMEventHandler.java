@@ -28,21 +28,6 @@ import static com.gly091020.SableRagdollLib.api.ScheduleManager.scheduleDelayed;
 
 public class TLMEventHandler {
     @SubscribeEvent
-    public static void onMaidFairyDie(LivingDeathEvent event){
-        if(!SableMaidRagdoll.CONFIG.ragdollOnDeath)return;
-        if(event.isCanceled())return;
-        if(!(event.getEntity().level() instanceof ServerLevel level))return;
-        if(!(event.getEntity() instanceof EntityFairy fairy))return;
-        if(event.getSource().getEntity() == null)return;
-
-        createFairyRagdoll(level, fairy, JOMLConversion.toJOML(fairy.getDeltaMovement().scale(3)));
-        scheduleDelayed(level, 4, () -> fairy.setInvisible(true));
-        if(SableMaidRagdoll.CONFIG.sounds.hungry)
-            fairy.level().playSound(null, BlockPos.containing(fairy.position()), InitSounds.HUNGRY.get(), SoundSource.PLAYERS, 1,
-                    1f + level.random.nextFloat());
-    }
-
-    @SubscribeEvent
     public static void onMaidFairyHurt(LivingDamageEvent.Post event){
         if(!SableMaidRagdoll.CONFIG.ragdollOnOwnerAttack)return;
         if(!(event.getEntity() instanceof EntityFairy fairy))return;

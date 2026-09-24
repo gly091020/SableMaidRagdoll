@@ -6,9 +6,12 @@ import com.gly091020.SableMaidRagdoll.maid.api.MaidRagdollTypesManager;
 import com.gly091020.SableRagdollLib.api.ScheduleManager;
 import com.gly091020.SableRagdollLib.entity.PartSeat;
 import net.minecraft.ChatFormatting;
+import net.minecraft.core.BlockPos;
 import net.minecraft.core.component.DataComponentType;
 import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
@@ -25,6 +28,8 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Rarity;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.UseAnim;
+import net.minecraft.world.item.enchantment.Enchantment;
+import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.AABB;
@@ -41,16 +46,26 @@ import java.util.Optional;
 public class RagdollWandItem extends Item {
     /** 蓄力所需 tick 数。 */
     private static final int CHARGE_TICKS = 40;
+    /** 每级效率减少的蓄力 tick 数。 */
+    private static final int CHARGE_TICKS_PER_EFFICIENCY = 10;
+    /** 效率达到该等级后不再蓄力，直接施法。 */
+    private static final int INSTANT_CAST_EFFICIENCY = 5;
     /** 瞄准射线长度，与正常交互距离无关。 */
-    private static final double RANGE = 32.0D;
+    private static final double RANGE = 64.0D;
     /** 命中判定放大值，方便瞄准小型生物。 */
     private static final double HITBOX_INFLATE = 0.3D;
     /** 使用后的冷却。 */
-    private static final int COOLDOWN = 40;
+    private static final int COOLDOWN = 20;
+    /** 每级效率减少的冷却百分比。 */
+    private static final float COOLDOWN_REDUCTION_PER_EFFICIENCY = 0.2F;
+    /** 风爆把布娃娃击飞的力度（格/tick）。 */
+    private static final double WIND_BURST_POWER = 6.0D;
+    /** 风爆每级额外增加的力度。 */
+    private static final double WIND_BURST_POWER_PER_LEVEL = 2.0D;
     /** 蓄力时每两 tick 在目标周围生成的粒子数。 */
     private static final int CHARGE_PARTICLES = 2;
     /** 施法完成瞬间生成的粒子数。 */
-    private static final int CAST_PARTICLES = 300;
+    private static final int CAST_PARTICLES = 100;
     /** 粒子球半径。 */
     private static final double PARTICLE_RADIUS = 3D;
     /** 粒子飞向目标的速度（格/tick）。 */
@@ -64,6 +79,16 @@ public class RagdollWandItem extends Item {
 
     public RagdollWandItem() {
         super(new Properties().stacksTo(1).rarity(Rarity.EPIC));
+    }
+
+    @Override
+    public boolean isEnchantable(ItemStack stack) {
+        return stack.getCount() == 1;
+    }
+
+    @Override
+    public int getEnchantmentValue(ItemStack stack) {
+        return 15;
     }
 
     @Override
@@ -88,12 +113,27 @@ public class RagdollWandItem extends Item {
             }
             return InteractionResultHolder.success(stack);
         }
-        if (stack.get(InitDataComponents.MAID_DOLL_DATA.get()) == null) {
+        // 服务端也挡一次，免得客户端没收到冷却包时还能用
+        if (player.getCooldowns().isOnCooldown(stack.getItem())) {
+            return InteractionResultHolder.fail(stack);
+        }
+        var data = stack.get(InitDataComponents.MAID_DOLL_DATA.get());
+        if (data == null) {
             return InteractionResultHolder.fail(stack);
         }
         // 准星上没有有效目标就直接失败，不进入蓄力
-        if (findTarget(player) == null) {
+        var target = findTarget(player);
+        if (target == null) {
             return InteractionResultHolder.fail(stack);
+        }
+        // 效率 V：不蓄力，直接施法
+        if (getChargeTicks(stack, level) <= 0) {
+            if (level.isClientSide) {
+                spawnConvergingParticles(level, target, CAST_PARTICLES, PARTICLE_SPEED * 5D);
+            } else if (player instanceof ServerPlayer serverPlayer && cast(serverPlayer, target, stack, data)) {
+                addCooldown(stack, serverPlayer, getCooldownTicks(stack, level));
+            }
+            return InteractionResultHolder.success(stack);
         }
         player.startUsingItem(hand);
         return InteractionResultHolder.consume(stack);
@@ -101,7 +141,35 @@ public class RagdollWandItem extends Item {
 
     @Override
     public int getUseDuration(ItemStack stack, LivingEntity entity) {
-        return CHARGE_TICKS;
+        return Math.max(1, getChargeTicks(stack, entity.level()));
+    }
+
+    /**
+     * 实际蓄力时间：每级效率减少 {@link #CHARGE_TICKS_PER_EFFICIENCY} tick，
+     * 达到 {@link #INSTANT_CAST_EFFICIENCY} 级时返回 0 表示直接施法。
+     */
+    public static int getChargeTicks(ItemStack stack, Level level) {
+        int efficiency = getEfficiencyLevel(stack, level);
+        if (efficiency >= INSTANT_CAST_EFFICIENCY) return 0;
+        return Math.max(1, CHARGE_TICKS - CHARGE_TICKS_PER_EFFICIENCY * efficiency);
+    }
+
+    /** 实际冷却：按效率每级减少 {@link #COOLDOWN_REDUCTION_PER_EFFICIENCY} 的比例。 */
+    public static int getCooldownTicks(ItemStack stack, Level level) {
+        int efficiency = getEfficiencyLevel(stack, level);
+        float multiplier = Math.max(0.1F, 1.0F - COOLDOWN_REDUCTION_PER_EFFICIENCY * efficiency);
+        return Math.max(0, Math.round(COOLDOWN * multiplier));
+    }
+
+    private static int getEfficiencyLevel(ItemStack stack, Level level) {
+        return getEnchantLevel(stack, level, Enchantments.EFFICIENCY);
+    }
+
+    private static int getEnchantLevel(ItemStack stack, Level level, ResourceKey<Enchantment> enchantment) {
+        return level.registryAccess().lookupOrThrow(Registries.ENCHANTMENT)
+                .get(enchantment)
+                .map(stack::getEnchantmentLevel)
+                .orElse(0);
     }
 
     @Override
@@ -118,9 +186,10 @@ public class RagdollWandItem extends Item {
             player.stopUsingItem();
             return;
         }
+        int elapsed = Math.max(1, getChargeTicks(stack, level)) - remaining;
         if (!level.isClientSide) {
             // 蓄力期间播放信标保持激活的环境音
-            if ((CHARGE_TICKS - remaining) % CHARGE_SOUND_INTERVAL == 0)
+            if (elapsed % CHARGE_SOUND_INTERVAL == 0)
                 level.playSound(null, target.blockPosition(), SoundEvents.BEACON_AMBIENT, SoundSource.BLOCKS, 1.0F, 1.0F);
             return;
         }
@@ -129,7 +198,7 @@ public class RagdollWandItem extends Item {
             spawnConvergingParticles(level, target, CAST_PARTICLES, PARTICLE_SPEED * 5D);
             return;
         }
-        if ((CHARGE_TICKS - remaining) % 2 != 0) return;
+        if (elapsed % 2 != 0) return;
         spawnConvergingParticles(level, target, CHARGE_PARTICLES, PARTICLE_SPEED);
     }
 
@@ -162,19 +231,19 @@ public class RagdollWandItem extends Item {
             player.level().playSound(null, player.blockPosition(), SoundEvents.AMETHYST_BLOCK_CHIME, SoundSource.PLAYERS, 0.6F, 0.5F);
             return stack;
         }
-        if (!cast(player, target, data)) {
+        if (!cast(player, target, stack, data)) {
             return stack;
         }
-        addCooldown(stack, player, COOLDOWN);
+        addCooldown(stack, player, getCooldownTicks(stack, level));
         return stack;
     }
 
     private static void addCooldown(ItemStack stack, Player player, int ticks) {
-        if (player.isCreative()) return;
+        if(ticks <= 0)return;
         player.getCooldowns().addCooldown(stack.getItem(), ticks);
     }
 
-    private static boolean cast(ServerPlayer player, LivingEntity target, MaidDollData data) {
+    private static boolean cast(ServerPlayer player, LivingEntity target, ItemStack stack, MaidDollData data) {
         ServerLevel level = player.serverLevel();
         var motion = target.getDeltaMovement().scale(2);
         var ragdoll = MaidRagdollTypesManager.createRagdollFromDoll(level, target,
@@ -182,10 +251,24 @@ public class RagdollWandItem extends Item {
         if (ragdoll == null) return false;
         ragdoll.getExtraData().putString("PCDI_soundID", data.soundID());
         ragdoll.getExtraData().putString("PCDI_typeID", data.ragdollType());
+        // 风爆附魔：在目标位置放一次风暴，并把布娃娃击飞
+        int windBurst = getEnchantLevel(stack, level, Enchantments.WIND_BURST);
+        if (windBurst > 0) spawnWindBurst(level, target.position().add(0, 0.3D, 0));
         // 与 PlayerCheatDeathItem 一致，等刚体创建完成后在把生物挂上去
-        ScheduleManager.scheduleDelayed(level, 2, () -> ragdoll.addEntity(target));
+        double windPower = WIND_BURST_POWER + WIND_BURST_POWER_PER_LEVEL * Math.max(0, windBurst - 1);
+        ScheduleManager.scheduleDelayed(level, 2, () -> {
+            ragdoll.addEntity(target);
+            if (windBurst > 0) ragdoll.addLinearImpulse(new Vec3(0, windPower, 0), false);
+        });
         level.playSound(null, target.blockPosition(), SoundEvents.GLASS_BREAK, SoundSource.BLOCKS, 1, 0.5F);
         return true;
+    }
+
+    /** 风爆的粒子与音效，参数和原版风爆附魔一致。 */
+    private static void spawnWindBurst(ServerLevel level, Vec3 pos) {
+        level.sendParticles(ParticleTypes.GUST_EMITTER_SMALL, pos.x, pos.y, pos.z, 1, 0, 0, 0, 0);
+        level.sendParticles(ParticleTypes.GUST_EMITTER_LARGE, pos.x, pos.y, pos.z, 1, 0, 0, 0, 0);
+        level.playSound(null, BlockPos.containing(pos), SoundEvents.WIND_CHARGE_BURST.value(), SoundSource.PLAYERS, 1.0F, 1.0F);
     }
 
     /** 沿玩家视线寻找可施法的生物，客户端也会用到（目标高亮）。 */

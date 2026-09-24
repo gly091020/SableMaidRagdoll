@@ -2,6 +2,8 @@ package com.gly091020.SableMaidRagdoll.maid.lmrb;
 
 import com.gly091020.SableMaidRagdoll.block.maid_doll.MaidDollData;
 import com.gly091020.SableMaidRagdoll.block.mob_cannon.MobCannonBlockEntity;
+import com.gly091020.SableMaidRagdoll.init.InitDataComponents;
+import com.gly091020.SableMaidRagdoll.init.InitItems;
 import com.gly091020.SableMaidRagdoll.maid.api.IMaidRagdoll;
 import com.gly091020.SableMaidRagdoll.maid.api.MaidSoundType;
 import com.gly091020.SableMaidRagdoll.maid.lmrb.block.LittleMaidPartBlockEntity;
@@ -40,6 +42,7 @@ import net.neoforged.neoforge.network.PacketDistributor;
 import net.neoforged.neoforge.network.registration.PayloadRegistrar;
 import net.sistr.littlemaidmodelloader.entity.compound.IHasMultiModel;
 import net.sistr.littlemaidmodelloader.resource.holder.TextureHolder;
+import net.sistr.littlemaidmodelloader.resource.manager.LMConfigManager;
 import net.sistr.littlemaidmodelloader.resource.manager.LMTextureManager;
 import net.sistr.littlemaidmodelloader.resource.util.LMSounds;
 import net.sistr.littlemaidmodelloader.resource.util.TextureColors;
@@ -285,6 +288,27 @@ public class LMRBMaidRagdoll implements IMaidRagdoll {
 
     @Override
     public void generateCreateTabDoll(CreativeModeTab.Output output) {
+        if(FMLEnvironment.dist.isClient())generateCreateTab(output);
+    }
+
+    @OnlyIn(Dist.CLIENT)
+    private static void generateCreateTab(CreativeModeTab.Output output){
+        for (TextureHolder holder: LMTextureManager.INSTANCE.getAllTextures()){
+            if (DefFileLoader.getDefFile(ResourceLocation.fromNamespaceAndPath(ID, holder.getModelName().toLowerCase())) == null)
+                continue;
+
+            for(TextureColors colors: TextureColors.values()) {
+                if(holder.getTexture(colors, true, false).isEmpty())continue;
+                var stack = new ItemStack(InitItems.PLAYER_CHEAT_DEATH_ITEM);
+                var modelString = holder.getModelName().toLowerCase(Locale.ROOT)
+                        + "|" + holder.getTextureName().toLowerCase(Locale.ROOT)
+                        + "|" + colors.getIndex()
+                        + "|" + 1;
+                stack.set(InitDataComponents.MAID_DOLL_DATA,
+                        new MaidDollData(ID, modelString, LMConfigManager.EMPTY_CONFIG.getName().toLowerCase()));
+                output.accept(stack);
+            }
+        }
     }
 
     @Override

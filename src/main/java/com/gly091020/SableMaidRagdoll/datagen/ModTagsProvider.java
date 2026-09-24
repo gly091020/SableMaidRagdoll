@@ -13,6 +13,7 @@ import net.minecraft.data.tags.DamageTypeTagsProvider;
 import net.minecraft.data.tags.ItemTagsProvider;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.BlockTags;
+import net.minecraft.tags.ItemTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.damagesource.DamageTypes;
 import net.minecraft.world.item.Items;
@@ -47,6 +48,13 @@ public class ModTagsProvider {
 
         @Override
         protected void addTags(HolderLookup.Provider provider) {
+            // 让化仆水晶能吃到效率附魔
+            tag(ItemTags.MINING_ENCHANTABLE)
+                    .add(com.gly091020.SableMaidRagdoll.init.InitItems.RAGDOLL_WAND_ITEM.get());
+            // 以及风爆附魔（原版风爆只对锤子开放）
+            tag(ItemTags.MACE_ENCHANTABLE)
+                    .add(com.gly091020.SableMaidRagdoll.init.InitItems.RAGDOLL_WAND_ITEM.get());
+
             tag(InitTags.MAID_TO_RAGDOLL_TAG)
                     .add(Items.MACE)
                     .addTag(TagKey.create(Registries.ITEM, ResourceLocation.withDefaultNamespace("beds")))
