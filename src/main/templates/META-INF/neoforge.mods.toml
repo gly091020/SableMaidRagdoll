@@ -81,13 +81,13 @@ side = "BOTH"
 [[dependencies."${mod_id}"]]
 modId = "sableragdolllib"
 type = "required"
-versionRange = "[0.12-alpha,)"
+versionRange = "[1.2-alpha,)"
 ordering = "AFTER"
 side = "BOTH"
 
 [[dependencies."${mod_id}"]]
 modId = "callresponse"
 type = "optional"
-versionRange = "[2.0.2,)"
+versionRange = "[2.1.1,)"
 ordering = "AFTER"
 side = "BOTH"
