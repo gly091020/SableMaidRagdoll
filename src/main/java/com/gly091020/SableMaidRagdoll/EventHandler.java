@@ -2,6 +2,7 @@ package com.gly091020.SableMaidRagdoll;
 
 import com.gly091020.SableMaidRagdoll.command.MaidRagdollCommand;
 import com.gly091020.SableMaidRagdoll.compat.CompatMods;
+import com.gly091020.SableMaidRagdoll.compat.maid_spell.MaidSpellUtil;
 import com.gly091020.SableMaidRagdoll.compat.tlm.WineFoxHurtDancingManager;
 import com.gly091020.SableMaidRagdoll.init.InitCustomStats;
 import com.gly091020.SableMaidRagdoll.init.InitSounds;
@@ -15,6 +16,7 @@ import com.gly091020.SableRagdollLib.api.Ragdoll;
 import com.gly091020.SableRagdollLib.api.RagdollManager;
 import com.gly091020.SableRagdollLib.api.ScheduleManager;
 import com.gly091020.SableRagdollLib.api.event.EntityHurtBySubLevelEvent;
+import com.gly091020.SableRagdollLib.api.event.RagdollCollisionEvent;
 import com.gly091020.SableRagdollLib.api.event.RagdollPartCollisionEvent;
 import com.gly091020.SableRagdollLib.block.AbstractPartBlockEntity;
 import com.gly091020.SableRagdollLib.entity.PartSeat;
@@ -165,14 +167,16 @@ public class EventHandler {
         if(!(SableMaidRagdoll.CONFIG.maidKnockback))return;
         var r = RagdollManager.get(event.getSubLevel());
         if(r == null || !(r.getEntity() instanceof LivingEntity maid) || !(MaidRagdollTypesManager.isSupport(maid)))return;
-        float damage = (float) (event.getMagnitude() * 24 - 4);
-        if(damage <= 0)return;
         var rag = RagdollManager.get(event.getSubLevel());
         if(rag != null && event.getTarget().is(rag.getEntity())){
             event.setDamage(0);
             return;
         }
-        event.getTarget().hurt(maid.level().damageSources().mobAttack(maid), damage);
+        if(!maid.doHurtTarget(event.getTarget())){
+            float damage = (float) (event.getMagnitude() * 24 - 4);
+            if(damage > 0)
+                event.getTarget().hurt(maid.level().damageSources().mobAttack(maid), damage);
+        }
         event.setDamage(0);
     }
 
@@ -185,6 +189,47 @@ public class EventHandler {
         if(event.getSelfBE().getEntity() == null)return;
         onCollision(event.getSelfBE().getEntity(), pos2, event.getSelfBE());
         MaidRagdollTypesManager.onPartCollision(event.getSelfBE().getEntity(), pos2, event.getSelfBE());
+    }
+
+    @SubscribeEvent
+    public static void handleSpecialDamage(RagdollCollisionEvent.Pre event){
+        if(event.getSelf().getExtraData().contains("StarlightDaggerModeUUID")){
+            var ragdoll = event.getSelf();
+            if(ragdoll == null)return;
+            var self = ragdoll.getEntity();
+            if(self == null)return;
+
+            if(event.getTarget() != null && event.getTarget().getEntity() == self)return;
+
+            var level = (ServerLevel) self.level();
+            var attacker = level.getEntity(event.getSelf().getExtraData().getUUID("StarlightDaggerModeUUID"));
+            if(attacker instanceof LivingEntity livingEntity && ragdoll.getEntity() != null){
+                var targetEntity = ragdoll.getEntity();
+                if(!targetEntity.isAlive()){
+                    event.setCanceled(true);
+                    return;
+                }
+                if(event.getImpactVelocity() * event.getImpactVelocity() < 64){
+                    event.setCanceled(true);
+                    return;
+                }
+                targetEntity.invulnerableTime = 0;
+                DamageSource damageSource;
+                if(livingEntity instanceof Player player){
+                    damageSource = level.damageSources().playerAttack(player);
+                }else damageSource = level.damageSources().mobAttack(livingEntity);
+                var damage = (float) (event.getImpactVelocity() / 10);
+                targetEntity.hurt(damageSource, damage);
+                if(!targetEntity.isAlive()){
+                    targetEntity.stopRiding();
+                }
+                event.setCanceled(true);
+
+                if(CompatMods.WINFOX_LITTLE_MAID_SPELL.isLoaded() && MaidSpellUtil.isStellarWitch(targetEntity)){
+                    targetEntity.getPersistentData().putFloat("RagdollDamage", targetEntity.getPersistentData().getFloat("RagdollDamage") + damage);
+                }
+            }
+        }
     }
 
     private static void onCollision(Entity entity, BlockPos pos2, AbstractPartBlockEntity blockEntity){

@@ -1,5 +1,6 @@
 package com.gly091020.SableMaidRagdoll.datagen;
 
+import com.github.yimeng261.maidspell.compat.irons_spellbooks.registry.IronsSpellbooksCompatItems;
 import com.gly091020.SableMaidRagdoll.SableMaidRagdoll;
 import com.gly091020.SableMaidRagdoll.advancements.MaidRagdollEventTrigger;
 import com.gly091020.SableMaidRagdoll.init.InitCustomStats;
@@ -7,6 +8,7 @@ import com.gly091020.SableMaidRagdoll.util.MaidCreativeTab;
 import com.gly091020.SableMaidRagdoll.util.MaidRagdollAdvancementEvents;
 import net.minecraft.advancements.Advancement;
 import net.minecraft.advancements.AdvancementHolder;
+import net.minecraft.advancements.AdvancementRewards;
 import net.minecraft.advancements.AdvancementType;
 import net.minecraft.advancements.critereon.*;
 import net.minecraft.core.Holder;
@@ -21,6 +23,7 @@ import net.minecraft.stats.Stats;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.ItemLike;
+import net.minecraft.world.level.block.Blocks;
 import net.neoforged.neoforge.common.data.AdvancementProvider;
 import net.neoforged.neoforge.common.data.ExistingFileHelper;
 
@@ -76,6 +79,24 @@ public class ModAdvancementProvider extends AdvancementProvider {
                     InitCustomStats.MAID_KNOCKED_AWAY.get(), 100);
             statMilestone(saver, existingFileHelper, maidDoll, "to_maid_100", com.gly091020.SableMaidRagdoll.init.InitItems.PLAYER_CHEAT_DEATH_ITEM.get(),
                     InitCustomStats.TO_MAID.get(), 100);
+
+            // 父进度是前置模组的，不在本次 datagen 记录里，用原版 save 重载跳过父进度校验
+            Advancement.Builder.advancement()
+                    .parent(new AdvancementHolder(
+                            ResourceLocation.parse("touhou_little_maid_spell:star_journey/stellar_endshore"), null))
+                    .display(
+                            IronsSpellbooksCompatItems.MAGICAL_WINEFOX_BOSS_SPAWN_EGG.get(),
+                            Component.translatable("advancements.sablemaidragdoll.cursh_wine_fox_boss.title"),
+                            Component.translatable("advancements.sablemaidragdoll.cursh_wine_fox_boss.description"),
+                            null,
+                            AdvancementType.CHALLENGE,
+                            true,
+                            true,
+                            true
+                    )
+                    .addCriterion("hit", MaidRagdollEventTrigger.create(MaidRagdollAdvancementEvents.CRUSH_WINE_FOX_BOSS.getName()))
+                    .rewards(AdvancementRewards.Builder.loot(Blocks.NETHERITE_BLOCK.getLootTable()))
+                    .save(saver, "touhou_little_maid_spell:star_journey/cursh_wine_fox_boss");
         }
 
         private static AdvancementHolder itemObtained(Consumer<AdvancementHolder> saver, ExistingFileHelper helper, AdvancementHolder parent, String id, ItemLike item) {

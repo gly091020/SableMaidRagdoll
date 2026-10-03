@@ -18,6 +18,9 @@ public class InitDataComponents {
     public static final DeferredHolder<DataComponentType<?>, DataComponentType<Boolean>> CONTROL_MODE = DATA_COMPONENTS.register("control_mode", r ->
             DataComponentType.<Boolean>builder().persistent(Codec.BOOL).networkSynchronized(ByteBufCodecs.BOOL).build());
 
+    public static final DeferredHolder<DataComponentType<?>, DataComponentType<Boolean>> ENHANCE_WITH_STARLIGHT_DAGGER = DATA_COMPONENTS.register("enhance_with_starlight_dagger", r ->
+            DataComponentType.<Boolean>builder().persistent(Codec.BOOL).networkSynchronized(ByteBufCodecs.BOOL).build());
+
     public static void init(IEventBus bus){
         DATA_COMPONENTS.register(bus);
     }

@@ -9,6 +9,7 @@
     "love_loathe.CallResponseHurtMixin",
     "love_loathe.EmotionManagerMixin",
     "love_loathe.StandUpActionMixin",
+    "maid_spell.MagicalWinefoxBossEntityMixin",
     "maid_spell.MaidSpellAllyEventsMixin",
     "tlm.BroomEntityMixin",
     "tlm.BroomMixin",

@@ -1,13 +1,15 @@
 package com.gly091020.SableMaidRagdoll.item;
 
+import com.github.tartaricacid.touhoulittlemaid.entity.passive.DefaultMaidSoundPack;
 import com.gly091020.SableMaidRagdoll.block.maid_doll.MaidDollData;
+import com.gly091020.SableMaidRagdoll.compat.CompatMods;
+import com.gly091020.SableMaidRagdoll.compat.maid_spell.MaidSpellUtil;
 import com.gly091020.SableMaidRagdoll.init.InitDataComponents;
 import com.gly091020.SableMaidRagdoll.maid.api.MaidRagdollTypesManager;
 import com.gly091020.SableRagdollLib.api.ScheduleManager;
 import com.gly091020.SableRagdollLib.entity.PartSeat;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.component.DataComponentType;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
@@ -20,14 +22,13 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.SlotAccess;
 import net.minecraft.world.entity.TamableAnimal;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.ClickAction;
+import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.inventory.tooltip.TooltipComponent;
-import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Rarity;
-import net.minecraft.world.item.TooltipFlag;
-import net.minecraft.world.item.UseAnim;
+import net.minecraft.world.item.*;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.level.ClipContext;
@@ -39,6 +40,8 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 import java.util.Optional;
+
+import static com.gly091020.SableMaidRagdoll.init.InitDataComponents.ENHANCE_WITH_STARLIGHT_DAGGER;
 
 /**
  * 布娃娃魔杖：绑定模型的方式与 {@link PlayerCheatDeathItem} 相同，长按使用把准星指向的生物变成布娃娃。
@@ -117,15 +120,27 @@ public class RagdollWandItem extends Item {
         if (player.getCooldowns().isOnCooldown(stack.getItem())) {
             return InteractionResultHolder.fail(stack);
         }
-        var data = stack.get(InitDataComponents.MAID_DOLL_DATA.get());
-        if (data == null) {
-            return InteractionResultHolder.fail(stack);
-        }
+
         // 准星上没有有效目标就直接失败，不进入蓄力
         var target = findTarget(player);
         if (target == null) {
             return InteractionResultHolder.fail(stack);
         }
+
+        // 特判
+        var isStellarWitch = CompatMods.WINFOX_LITTLE_MAID_SPELL.isLoaded() &&
+                MaidSpellUtil.isStellarWitch(target);
+
+        var data = stack.get(InitDataComponents.MAID_DOLL_DATA.get());
+        if (data == null && !isStellarWitch) {
+            return InteractionResultHolder.fail(stack);
+        }
+
+        if(isStellarWitch && !stack.getOrDefault(ENHANCE_WITH_STARLIGHT_DAGGER, false)){
+            MaidSpellUtil.stellarWitchSpeak(player, MaidSpellUtil.getRandomCrystalSpeak());
+            return InteractionResultHolder.fail(stack);
+        }
+
         // 效率 V：不蓄力，直接施法
         if (getChargeTicks(stack, level) <= 0) {
             if (level.isClientSide) {
@@ -223,14 +238,19 @@ public class RagdollWandItem extends Item {
     @Override
     public ItemStack finishUsingItem(ItemStack stack, Level level, LivingEntity living) {
         if (level.isClientSide || !(living instanceof ServerPlayer player)) return stack;
-        var data = stack.get(InitDataComponents.MAID_DOLL_DATA.get());
-        if (data == null) return stack;
-
         var target = findTarget(player);
         if (target == null) {
             player.level().playSound(null, player.blockPosition(), SoundEvents.AMETHYST_BLOCK_CHIME, SoundSource.PLAYERS, 0.6F, 0.5F);
             return stack;
         }
+
+        // 特判
+        var isStellarWitch = CompatMods.WINFOX_LITTLE_MAID_SPELL.isLoaded() &&
+                MaidSpellUtil.isStellarWitch(target);
+
+        var data = stack.get(InitDataComponents.MAID_DOLL_DATA.get());
+        if (data == null && !isStellarWitch) return stack;
+
         if (!cast(player, target, stack, data)) {
             return stack;
         }
@@ -244,6 +264,11 @@ public class RagdollWandItem extends Item {
     }
 
     private static boolean cast(ServerPlayer player, LivingEntity target, ItemStack stack, MaidDollData data) {
+        if(CompatMods.WINFOX_LITTLE_MAID_SPELL.isLoaded() &&
+                MaidSpellUtil.isStellarWitch(target) && stack.getOrDefault(ENHANCE_WITH_STARLIGHT_DAGGER, false)){
+            data = new MaidDollData("tlm", "touhou_little_maid_spell:stellar_witch", DefaultMaidSoundPack.getInitSoundPackId());
+        }
+
         ServerLevel level = player.serverLevel();
         var motion = target.getDeltaMovement().scale(2);
         var ragdoll = MaidRagdollTypesManager.createRagdollFromDoll(level, target,
@@ -251,6 +276,8 @@ public class RagdollWandItem extends Item {
         if (ragdoll == null) return false;
         ragdoll.getExtraData().putString("PCDI_soundID", data.soundID());
         ragdoll.getExtraData().putString("PCDI_typeID", data.ragdollType());
+        if(stack.getOrDefault(ENHANCE_WITH_STARLIGHT_DAGGER, false))
+            ragdoll.getExtraData().putUUID("StarlightDaggerModeUUID", player.getUUID());
         // 风爆附魔：在目标位置放一次风暴，并把布娃娃击飞
         int windBurst = getEnchantLevel(stack, level, Enchantments.WIND_BURST);
         if (windBurst > 0) spawnWindBurst(level, target.position().add(0, 0.3D, 0));
@@ -308,6 +335,9 @@ public class RagdollWandItem extends Item {
         tooltip.add(Component.translatable("item.sablemaidragdoll.ragdoll_wand.tip").withStyle(ChatFormatting.GRAY));
         tooltip.add(Component.translatable("item.sablemaidragdoll.ragdoll_wand.tip1").withStyle(ChatFormatting.GRAY));
         tooltip.add(Component.translatable("item.sablemaidragdoll.ragdoll_wand.tip2").withStyle(ChatFormatting.GRAY));
+
+        if(stack.getOrDefault(ENHANCE_WITH_STARLIGHT_DAGGER, false))
+            tooltip.add(Component.translatable("item.sablemaidragdoll.ragdoll_wand.tip.powerful").withStyle(ChatFormatting.LIGHT_PURPLE));
     }
 
     @Override
@@ -328,5 +358,17 @@ public class RagdollWandItem extends Item {
         var data = stack.get(InitDataComponents.MAID_DOLL_DATA);
         if(data == null)return Optional.empty();
         return Optional.ofNullable(MaidRagdollTypesManager.getTooltipImage(data));
+    }
+
+    @Override
+    public boolean overrideOtherStackedOnMe(ItemStack stack, ItemStack other, Slot slot, ClickAction clickAction, Player player, SlotAccess slotAccess) {
+        if(stack.getOrDefault(ENHANCE_WITH_STARLIGHT_DAGGER, false))return false;
+        if(MaidSpellUtil.isStarlightDagger(other)){
+            stack.set(ENHANCE_WITH_STARLIGHT_DAGGER, true);
+            spawnConvergingParticles(player.level(), player, CAST_PARTICLES, PARTICLE_SPEED * 5D);
+            player.playSound(SoundEvents.TOTEM_USE, 1, 0.5F);
+            return true;
+        }
+        return false;
     }
 }

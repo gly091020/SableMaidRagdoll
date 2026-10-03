@@ -87,6 +87,8 @@
   "advancements.sablemaidragdoll.mob_cannon.description": "Not just for love fox to use",
   "advancements.sablemaidragdoll.double_cannon.title": "!? Double Cannon, Double Trouble?!",
   "advancements.sablemaidragdoll.double_cannon.description": "Oh no, oh no",
+  "advancements.sablemaidragdoll.cursh_wine_fox_boss.title": "i狐's Territory",
+  "advancements.sablemaidragdoll.cursh_wine_fox_boss.description": "You're saying you crushed the Stellar Witch Winefox to death???",
 
   "item.sablemaidragdoll.sonic_wave": "Ultrasonic Wave Generator",
   "item.sablemaidragdoll.sonic_wave.tip": "Especially lethal to gly...",
@@ -119,5 +121,23 @@
   "screen.sablemaidragdoll.mob_cannon": "Mob Cannon",
 
   "item.sablemaidragdoll.ragdollanle_wine_fox_spawn_egg": "Ragdollable Wine Fox Spawn Egg",
-  "text.autoconfig.sablemaidragdoll.option.items.mobCannon": "Mob Cannon"
+  "text.autoconfig.sablemaidragdoll.option.items.mobCannon": "Mob Cannon",
+
+  "dialogue.touhou_little_maid_spell.winefox.crystal_no_ragdoll_1": "You think that busted crystal of yours can turn me into a ragdoll?",
+  "dialogue.touhou_little_maid_spell.winefox.crystal_no_ragdoll_2": "That crystal of yours could really use an upgrade...",
+  "dialogue.touhou_little_maid_spell.winefox.crystal_no_ragdoll_3": "If the Maidify Crystal actually worked, this would be far too easy.",
+  "dialogue.touhou_little_maid_spell.winefox.item_no_ragdoll_1": "At least give me, a boss, a little face here...",
+  "dialogue.touhou_little_maid_spell.winefox.item_no_ragdoll_2": "Stop messing around.",
+  "dialogue.touhou_little_maid_spell.winefox.item_no_ragdoll_3": "It's useless.",
+  "dialogue.touhou_little_maid_spell.winefox.victory_ragdoll_1": "I got crushed to death, waaah~",
+  "dialogue.touhou_little_maid_spell.winefox.victory_ragdoll_2": "It hurts so much~(　T□T)σ",
+  "dialogue.touhou_little_maid_spell.winefox.victory_ragdoll_3": "Who fights a boss like that, waaah~",
+  "dialogue.touhou_little_maid_spell.winefox.victory_ragdoll_4": "To think the Stellar Witch would be crushed to death — how humiliating, waaah~",
+  "dialogue.touhou_little_maid_spell.winefox.victory_ragdoll_5": "Excuse me, do you know the donkey of the fish and the fish of the donkey? Waaah~",
+  "dialogue.touhou_little_maid_spell.winefox.victory_ragdoll_6": "I want to call the police...",
+  "dialogue.touhou_little_maid_spell.winefox.victory_ragdoll_7": "i狐TV is here, waaah~",
+  "dialogue.touhou_little_maid_spell.winefox.victory_ragdoll_8": "So hungry——————",
+  "dialogue.touhou_little_maid_spell.winefox.victory_ragdoll_9": "This isn't funny...",
+  "dialogue.touhou_little_maid_spell.winefox.victory_ragdoll_10": "I really wish my name didn't have the word \"Wine Fox\" in it, waaah~",
+  "item.sablemaidragdoll.ragdoll_wand.tip.powerful": "Enhanced with the Starglint Dagger — can deal true damage"
 }

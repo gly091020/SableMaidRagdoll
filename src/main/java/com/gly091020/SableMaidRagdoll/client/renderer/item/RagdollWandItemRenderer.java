@@ -1,5 +1,6 @@
 package com.gly091020.SableMaidRagdoll.client.renderer.item;
 
+import com.gly091020.SableMaidRagdoll.init.InitDataComponents;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Axis;
@@ -83,6 +84,10 @@ public class RagdollWandItemRenderer extends BlockEntityWithoutLevelRenderer {
     public void renderCrystal(ItemStack stack, PoseStack poseStack, MultiBufferSource bufferSource, int light, int overlay, float time, float charge, boolean bob) {
         ensureCrystalModel();
         float spin = getSpin(time, charge);
+
+        if(stack.getOrDefault(InitDataComponents.ENHANCE_WITH_STARLIGHT_DAGGER, false))
+            spin *= 2;
+
         int renderLight = charge > 0.0F ? LightTexture.FULL_BRIGHT : light;
         VertexConsumer consumer = bufferSource.getBuffer(CRYSTAL_RENDER_TYPE);
         poseStack.pushPose();

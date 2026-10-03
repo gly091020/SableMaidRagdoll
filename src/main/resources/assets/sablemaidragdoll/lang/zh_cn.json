@@ -30,6 +30,7 @@
   "item.sablemaidragdoll.ragdoll_wand.tip": "右键自己的女仆绑定模型",
   "item.sablemaidragdoll.ragdoll_wand.tip1": "长按右键把准星指向的生物变成布娃娃",
   "item.sablemaidragdoll.ragdoll_wand.tip2": "潜行使用清除已绑定模型",
+  "item.sablemaidragdoll.ragdoll_wand.tip.powerful": "已被星芒短剑加强，可造成真伤",
   "item.sablemaidragdoll.ragdoll_wand.connect": "已绑定至 %s 模型",
   "item.sablemaidragdoll.ragdoll_wand.clear": "已清除模型",
 
@@ -119,5 +120,24 @@
   "advancements.sablemaidragdoll.mob_cannon.title": "！？大炮？！",
   "advancements.sablemaidragdoll.mob_cannon.description": "不只能i狐用",
   "advancements.sablemaidragdoll.double_cannon.title": "！？大火包火大？！",
-  "advancements.sablemaidragdoll.double_cannon.description": "坏了坏了"
+  "advancements.sablemaidragdoll.double_cannon.description": "坏了坏了",
+
+  "dialogue.touhou_little_maid_spell.winefox.crystal_no_ragdoll_1": "你以为就凭你的破水晶能把我变成布娃娃？",
+  "dialogue.touhou_little_maid_spell.winefox.crystal_no_ragdoll_2": "你这水晶我看得来点升级……",
+  "dialogue.touhou_little_maid_spell.winefox.crystal_no_ragdoll_3": "如果化仆水晶真的有用那就太简单了。",
+  "dialogue.touhou_little_maid_spell.winefox.item_no_ragdoll_1": "好歹给我这个Boss一点面子吧……",
+  "dialogue.touhou_little_maid_spell.winefox.item_no_ragdoll_2": "别瞎玩了。",
+  "dialogue.touhou_little_maid_spell.winefox.item_no_ragdoll_3": "没用的。",
+  "dialogue.touhou_little_maid_spell.winefox.victory_ragdoll_1": "被砸死了呜呜呜~",
+  "dialogue.touhou_little_maid_spell.winefox.victory_ragdoll_2": "好疼~(　T□T)σ",
+  "dialogue.touhou_little_maid_spell.winefox.victory_ragdoll_3": "有这样打Boss的吗呜呜呜~",
+  "dialogue.touhou_little_maid_spell.winefox.victory_ragdoll_4": "身为星之魔女居然被砸死，这太耻辱了呜呜呜~",
+  "dialogue.touhou_little_maid_spell.winefox.victory_ragdoll_5": "请问你和鱼的驴与驴的鱼认识吗？呜呜呜~",
+  "dialogue.touhou_little_maid_spell.winefox.victory_ragdoll_6": "我想报警……",
+  "dialogue.touhou_little_maid_spell.winefox.victory_ragdoll_7": "i狐TV来了呜呜呜~",
+  "dialogue.touhou_little_maid_spell.winefox.victory_ragdoll_8": "饿啊——————",
+  "dialogue.touhou_little_maid_spell.winefox.victory_ragdoll_9": "这并不好笑……",
+  "dialogue.touhou_little_maid_spell.winefox.victory_ragdoll_10": "真希望我的名字里没有“酒狐”这两个字呜呜呜~",
+  "advancements.sablemaidragdoll.cursh_wine_fox_boss.title": "i狐这一块",
+  "advancements.sablemaidragdoll.cursh_wine_fox_boss.description": "你是说你把星之魔女酒狐砸死了？？？"
 }
