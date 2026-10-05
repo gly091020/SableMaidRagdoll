@@ -363,7 +363,7 @@ public class RagdollWandItem extends Item {
     @Override
     public boolean overrideOtherStackedOnMe(ItemStack stack, ItemStack other, Slot slot, ClickAction clickAction, Player player, SlotAccess slotAccess) {
         if(stack.getOrDefault(ENHANCE_WITH_STARLIGHT_DAGGER, false))return false;
-        if(MaidSpellUtil.isStarlightDagger(other)){
+        if(CompatMods.WINFOX_LITTLE_MAID_SPELL.isLoaded() && MaidSpellUtil.isStarlightDagger(other)){
             stack.set(ENHANCE_WITH_STARLIGHT_DAGGER, true);
             spawnConvergingParticles(player.level(), player, CAST_PARTICLES, PARTICLE_SPEED * 5D);
             player.playSound(SoundEvents.TOTEM_USE, 1, 0.5F);
