@@ -95,7 +95,9 @@ public class ModAdvancementProvider extends AdvancementProvider {
                             true
                     )
                     .addCriterion("hit", MaidRagdollEventTrigger.create(MaidRagdollAdvancementEvents.CRUSH_WINE_FOX_BOSS.getName()))
-                    .rewards(AdvancementRewards.Builder.loot(Blocks.NETHERITE_BLOCK.getLootTable()))
+                    .rewards(AdvancementRewards.Builder.loot(
+                            ResourceKey.create(Registries.LOOT_TABLE, ResourceLocation.fromNamespaceAndPath(SableMaidRagdoll.MODID,
+                            "cursh_wine_fox_boss_rewards"))))
                     .save(saver, "touhou_little_maid_spell:star_journey/cursh_wine_fox_boss");
         }
 
