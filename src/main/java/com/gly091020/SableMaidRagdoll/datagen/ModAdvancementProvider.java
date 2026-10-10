@@ -92,7 +92,7 @@ public class ModAdvancementProvider extends AdvancementProvider {
                             AdvancementType.CHALLENGE,
                             true,
                             true,
-                            true
+                            false
                     )
                     .addCriterion("hit", MaidRagdollEventTrigger.create(MaidRagdollAdvancementEvents.CRUSH_WINE_FOX_BOSS.getName()))
                     .rewards(AdvancementRewards.Builder.loot(

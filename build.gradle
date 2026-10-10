@@ -163,7 +163,7 @@ dependencies {
     compileOnly("maven.modrinth:8BmcQJ2H:Grwn5rUB")
 
     // 亿宴酊蒸
-    implementation(files("libs/feastwineallgone-0.0.1-1.21.1beta.jar"))
+    compileOnly(files("libs/feastwineallgone-0.0.1-1.21.1beta.jar"))
 
     // 前置
     implementation("dev.ryanhcode.sable:sable-neoforge-${project.minecraft_version}:${project.sable_version}")
