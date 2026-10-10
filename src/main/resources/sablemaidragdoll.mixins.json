@@ -5,6 +5,7 @@
   "plugin": "com.gly091020.SableMaidRagdoll.MaidRagdollMixinConfigPlugin",
   "compatibilityLevel": "JAVA_21",
   "mixins": [
+    "feast_wine_gone.DrunkSleepManagerMixin",
     "lmrb.LMInteractionHandlerMixin",
     "love_loathe.CallResponseHurtMixin",
     "love_loathe.EmotionManagerMixin",

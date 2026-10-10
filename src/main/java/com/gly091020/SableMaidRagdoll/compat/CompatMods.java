@@ -9,7 +9,8 @@ public enum CompatMods {
     LITTLE_MAID_REBIRTH("littlemaidrebirth"),
     WINFOX_LITTLE_MAID("touhou_little_maid"),
     WINFOX_LITTLE_MAID_SPELL("touhou_little_maid_spell"),
-    REVIVE_MAID("revivemaid");
+    REVIVE_MAID("revivemaid"),
+    FEAST_WINE_GONE("feastwineallgone");
 
     final String modID;
     final boolean isLoaded;
