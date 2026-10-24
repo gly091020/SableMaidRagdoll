@@ -32,7 +32,7 @@ public class SableMaidRagdollClient {
         mc.registerExtensionPoint(IConfigScreenFactory.class, (m, p) -> AutoConfig.getConfigScreen(SableMaidRagdollConfig.class, p).get());
         AutoConfig.getGuiRegistry(SableMaidRagdollConfig.class).registerAnnotationProvider(new ButtonGuiProvider(), Button.class);
 
-        if(CompatMods.WINFOX_LITTLE_MAID_SPELL.isLoaded())
+        if(CompatMods.WINFOX_LITTLE_MAID_SPELL.isLoaded() && CompatMods.IRON_SPELLBOOKS.isLoaded())
             NeoForge.EVENT_BUS.register(MaidSpellEventHandler.class);
     }
 }

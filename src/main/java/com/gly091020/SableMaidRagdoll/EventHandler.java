@@ -193,7 +193,7 @@ public class EventHandler {
 
     @SubscribeEvent
     public static void handleSpecialDamage(RagdollCollisionEvent.Pre event){
-        if(event.getSelf().getExtraData().contains("StarlightDaggerModeUUID")){
+        if(event.getSelf() != null && event.getSelf().getExtraData().contains("StarlightDaggerModeUUID")){
             var ragdoll = event.getSelf();
             if(ragdoll == null)return;
             var self = ragdoll.getEntity();

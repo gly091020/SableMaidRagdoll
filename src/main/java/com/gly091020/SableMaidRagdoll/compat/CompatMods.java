@@ -10,7 +10,8 @@ public enum CompatMods {
     WINFOX_LITTLE_MAID("touhou_little_maid"),
     WINFOX_LITTLE_MAID_SPELL("touhou_little_maid_spell"),
     REVIVE_MAID("revivemaid"),
-    FEAST_WINE_GONE("feastwineallgone");
+    FEAST_WINE_GONE("feastwineallgone"),
+    IRON_SPELLBOOKS("irons_spellbooks");
 
     final String modID;
     final boolean isLoaded;
