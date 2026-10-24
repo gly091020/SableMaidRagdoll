@@ -35,7 +35,7 @@ public abstract class MagicalWinefoxBossEntityMixin {
     @Shadow
     private @Nullable UUID challengerId;
 
-    @Inject(method = "hurt", at = @At(value = "INVOKE", target = "Lcom/github/yimeng261/maidspell/compat/irons_spellbooks/entity/winefox/MagicalWinefoxBossEntity;mobAttacker(Lnet/minecraft/world/damagesource/DamageSource;)Lnet/minecraft/world/entity/LivingEntity;"))
+    @Inject(method = "hurt", at = @At(value = "HEAD"))
     public void saySomething(DamageSource source, float amount, CallbackInfoReturnable<Boolean> cir){
         // 想拿着铲子就打败魔女吗？
         if(isSeated() && SableMaidRagdoll.CONFIG.ragdollOnOwnerAttack &&
