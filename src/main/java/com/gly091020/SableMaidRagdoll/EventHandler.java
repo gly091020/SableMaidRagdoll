@@ -219,13 +219,13 @@ public class EventHandler {
                     damageSource = level.damageSources().playerAttack(player);
                 }else damageSource = level.damageSources().mobAttack(livingEntity);
                 var damage = (float) (event.getImpactVelocity() / 10);
-                targetEntity.hurt(damageSource, damage);
+                var success = targetEntity.hurt(damageSource, damage);
                 if(!targetEntity.isAlive()){
                     targetEntity.stopRiding();
                 }
                 event.setCanceled(true);
 
-                if(CompatMods.WINFOX_LITTLE_MAID_SPELL.isLoaded() && MaidSpellUtil.isStellarWitch(targetEntity)){
+                if(CompatMods.WINFOX_LITTLE_MAID_SPELL.isLoaded() && MaidSpellUtil.isStellarWitch(targetEntity) && success){
                     targetEntity.getPersistentData().putFloat("RagdollDamage", targetEntity.getPersistentData().getFloat("RagdollDamage") + damage);
                 }
             }
