@@ -6,6 +6,7 @@ import com.gly091020.SableMaidRagdoll.maid.api.MaidSoundType;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
 import dev.ryanhcode.sable.companion.SableCompanion;
+import dev.ryanhcode.sable.companion.math.JOMLConversion;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
@@ -16,10 +17,13 @@ import net.minecraft.core.Position;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.block.HorizontalDirectionalBlock;
 
 public class MaidDollRenderer implements BlockEntityRenderer<MaidDollBlockEntity> {
+    private static final long HURT_FLASH_DURATION_MILLIS = 10 * 50L;
     private final BlockEntityRendererProvider.Context context;
+
     public MaidDollRenderer(BlockEntityRendererProvider.Context context) {
         this.context = context;
     }
@@ -32,6 +36,19 @@ public class MaidDollRenderer implements BlockEntityRenderer<MaidDollBlockEntity
 
         Entity maid = MaidRagdollTypesManager.getRenderEntity(maidDollBlockEntity.getLevel(), maidDollBlockEntity.getMaidDollData());
         if(maid == null)return;
+        if (maid instanceof LivingEntity livingEntity) {
+            long hurtAge = System.currentTimeMillis() - maidDollBlockEntity.lastHurt;
+            boolean hurt = maidDollBlockEntity.lastHurt > 0 && hurtAge < HURT_FLASH_DURATION_MILLIS;
+            livingEntity.hurtTime = hurt ? 10 : 0;
+            if (maidDollBlockEntity.triggerHurt) {
+                maidDollBlockEntity.triggerHurt = false;
+                var pos = SableCompanion.INSTANCE.projectOutOfSubLevel(level, (Position) maidDollBlockEntity.getBlockPos().getCenter());
+                MaidRagdollTypesManager.playSound(maidDollBlockEntity.getRagdollTypeID(), level, pos, maidDollBlockEntity.getSoundID(), MaidSoundType.HURT, 0.5f);
+            }
+            if (!hurt) {
+                maidDollBlockEntity.lastHurt = 0;
+            }
+        }
 
         poseStack.pushPose();
         poseStack.scale(0.5f, 0.5f, 0.5f);

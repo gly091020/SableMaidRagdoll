@@ -69,6 +69,13 @@ public class MaidDollBlockEntity extends BlockEntity {
             if (s)
                 triggerPat = true;
         }
+        if(tag.contains("lastHurt", Tag.TAG_LONG))
+            lastHurt = tag.getLong("lastHurt");
+        if(tag.contains("triggerHurt", Tag.TAG_BYTE)) {
+            var s = tag.getBoolean("triggerHurt");
+            if (s)
+                triggerHurt = true;
+        }
     }
 
     @Override
@@ -81,6 +88,11 @@ public class MaidDollBlockEntity extends BlockEntity {
         var tag = saveWithoutMetadata(p_323910_);
         tag.putLong("lastPat", lastPat);
         tag.putBoolean("triggerPat", triggerPat);
+        tag.putLong("lastHurt", lastHurt);
+        tag.putBoolean("triggerHurt", triggerHurt);
+
+        triggerPat = false;
+        triggerHurt = false;
         return tag;
     }
 
@@ -91,10 +103,20 @@ public class MaidDollBlockEntity extends BlockEntity {
 
     public long lastPat = 0;
     public boolean triggerPat;
+    public long lastHurt = 0;
+    public boolean triggerHurt;
 
     public void triggerPat(){
         triggerPat = true;
         lastPat = System.currentTimeMillis();
+        if (level != null && !level.isClientSide) {
+            level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState(), 3);
+        }
+    }
+
+    public void triggerHurt(){
+        triggerHurt = true;
+        lastHurt = System.currentTimeMillis();
         if (level != null && !level.isClientSide) {
             level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState(), 3);
         }

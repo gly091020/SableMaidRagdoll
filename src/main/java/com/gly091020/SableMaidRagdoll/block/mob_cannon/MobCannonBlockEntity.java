@@ -3,10 +3,13 @@ package com.gly091020.SableMaidRagdoll.block.mob_cannon;
 import com.gly091020.SableMaidRagdoll.SableMaidRagdoll;
 import com.gly091020.SableMaidRagdoll.compat.CompatMods;
 import com.gly091020.SableMaidRagdoll.compat.player_ragdoll.PlayerRagdollUtil;
+import com.gly091020.SableMaidRagdoll.init.InitDataComponents;
 import com.gly091020.SableMaidRagdoll.init.InitSounds;
 import com.gly091020.SableMaidRagdoll.item.spawn_egg.SMRDeferredSpawnEggItem;
 import com.gly091020.SableMaidRagdoll.maid.api.MaidRagdollTypesManager;
 import com.gly091020.SableMaidRagdoll.menu.MobCannonMenu;
+import com.gly091020.SableRagdollLib.api.Ragdoll;
+import com.gly091020.SableRagdollLib.entity.PartSeat;
 import dev.ryanhcode.sable.companion.SableCompanion;
 import dev.ryanhcode.sable.companion.math.JOMLConversion;
 import dev.ryanhcode.sable.sublevel.SubLevel;
@@ -210,7 +213,7 @@ public class MobCannonBlockEntity extends BlockEntity implements IItemHandlerMod
         var bool = i >= 0 && i < stacks.size() && !itemStack.isEmpty();
         boolean specialItem = true;
         if(i == 0)
-            specialItem = itemStack.getItem() instanceof SpawnEggItem ||
+            specialItem = itemStack.getItem() instanceof SpawnEggItem || itemStack.is(PLAYER_CHEAT_DEATH_ITEM) ||
                     MaidRagdollTypesManager.hasEntity(itemStack);
         if(i == 1)
             specialItem = itemStack.is(Items.BOW) ||
@@ -241,7 +244,7 @@ public class MobCannonBlockEntity extends BlockEntity implements IItemHandlerMod
     }
 
     public boolean isPlayerMode(){
-        return getStackInSlot(1).is(MOB_CANNON_ITEM) && getStackInSlot(0).isEmpty();
+        return getStackInSlot(1).is(MOB_CANNON_ITEM) && (getStackInSlot(0).isEmpty() || getStackInSlot(0).is(PLAYER_CHEAT_DEATH_ITEM));
     }
 
     public static void tick(Level level, BlockPos pos, BlockState state, MobCannonBlockEntity blockEntity){
@@ -334,7 +337,13 @@ public class MobCannonBlockEntity extends BlockEntity implements IItemHandlerMod
     }
 
     public void toRagdoll(Entity entity, Vec3 force){
-        var rag = MaidRagdollTypesManager.createRagdoll(entity, force.scale(10), new Vec3(-10, 0, 0), true);
+        if(entity.getVehicle() instanceof PartSeat)return;
+        Ragdoll rag;
+        if(getStackInSlot(0).has(InitDataComponents.MAID_DOLL_DATA)) {
+            rag = MaidRagdollTypesManager.createRagdollFromDoll(entity, entity.position().add(0, 0.5, 0), new Vec3(0, -entity.getYHeadRot(), 0), force.scale(10), new Vec3(-10, 0, 0), true, getStackInSlot(0).get(InitDataComponents.MAID_DOLL_DATA));
+        }else {
+            rag = MaidRagdollTypesManager.createRagdoll(entity, force.scale(10), new Vec3(-10, 0, 0), true);
+        }
         if(isExplosion() && rag != null)
             rag.getExtraData().putBoolean("explosion", true);
         if(rag != null)return;

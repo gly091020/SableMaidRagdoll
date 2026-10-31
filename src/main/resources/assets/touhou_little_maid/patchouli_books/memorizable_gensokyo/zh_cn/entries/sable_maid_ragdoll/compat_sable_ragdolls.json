@@ -1,0 +1,12 @@
+{
+  "sortnum": 10,
+  "name": "Sable: Ragdolls 联动",
+  "icon": "sablemaidragdoll:mod_icon",
+  "category": "touhou_little_maid:sable_maid_ragdoll",
+  "pages": [
+    {
+      "type": "patchouli:text",
+      "text": "安装 Sable: Ragdolls 后，可以使用其切换控制按键操控玩家布娃娃。$(br2)本模组与它的物品标签联动：使用可让女仆布娃娃化的特殊物品攻击受支持生物时，会改由 Sable: Ragdolls 将目标击飞并变成布娃娃。"
+    }
+  ]
+}

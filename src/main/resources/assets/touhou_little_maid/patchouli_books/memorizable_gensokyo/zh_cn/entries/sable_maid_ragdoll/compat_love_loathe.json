@@ -1,0 +1,16 @@
+{
+  "sortnum": 12,
+  "name": "爱憎分明联动",
+  "icon": "sablemaidragdoll:mod_icon",
+  "category": "touhou_little_maid:sable_maid_ragdoll",
+  "pages": [
+    {
+      "type": "patchouli:text",
+      "text": "安装爱憎分明后，会为女仆增加一个可以躺倒翻滚或重新站起的 AI 工具；开启“更多 AI 功能”时可用。$(br2)还可以使用“#全体 装死”，让玩家的所有女仆一起倒下装死。"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "爱憎分明的鞍发射也接入了布娃娃：被发射的女仆会以布娃娃形式飞出。开启“发射布娃娃”以及对应音效后，发射还会带有特殊声音。"
+    }
+  ]
+}

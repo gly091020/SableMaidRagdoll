@@ -1,0 +1,33 @@
+{
+  "sortnum": 4,
+  "name": "化仆水晶",
+  "icon": "sablemaidragdoll:ragdoll_wand",
+  "category": "touhou_little_maid:sable_maid_ragdoll",
+  "pages": [
+    {
+      "type": "patchouli:spotlight",
+      "item": "sablemaidragdoll:ragdoll_wand",
+      "text": "化仆水晶可以把大多数活着的生物变成女仆模型的布娃娃。未绑定模型时，水晶中央显示一个使用当前玩家皮肤的小玩偶，此时无法进行转化。"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "手持水晶右键自己驯服、且支持布娃娃化的女仆即可绑定模型。成功后水晶中央会显示该女仆，并提示“已绑定至……模型”。潜行使用可以清除绑定。$(br2)绑定酒狐模型时，物品会自动改名为化狐水晶。"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "对准有效生物长按右键蓄力。无附魔需要 40 tick（2 秒），有效距离为 64 格，中间不能隔着方块。$(br2)目标死亡、离开视线或被方块挡住时，蓄力会中断。完成后目标成为所绑定模型的布娃娃；破坏任意部位即可解除转化。"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "效率会缩短蓄力和冷却：每级将蓄力缩短 10 tick，并让 20 tick 的冷却降低约 20%。效率 IV 时蓄力仅 1 tick，效率 V 时无需蓄力。$(br2)风爆会在转化瞬间将布娃娃向上击飞，I 级约为 6 格/tick，此后每级增加 2 格。"
+    },
+    {
+      "type": "altar_recipe",
+      "recipe_id": "sablemaidragdoll:ragdoll_wand1"
+    },
+    {
+      "type": "patchouli:crafting",
+      "recipe": "sablemaidragdoll:ragdoll_wand"
+    }
+  ]
+}

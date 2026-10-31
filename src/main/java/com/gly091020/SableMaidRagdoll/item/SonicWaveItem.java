@@ -6,7 +6,9 @@ import com.gly091020.SableMaidRagdoll.maid.api.MaidRagdollTypesManager;
 import com.gly091020.SableMaidRagdoll.util.AuthorUtil;
 import com.gly091020.SableRagdollLib.api.ScheduleManager;
 import com.gly091020.SableRagdollLib.entity.PartSeat;
+import dev.ryanhcode.sable.api.sublevel.ServerSubLevelContainer;
 import dev.ryanhcode.sable.companion.math.JOMLConversion;
+import dev.ryanhcode.sable.sublevel.ServerSubLevel;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.chat.Component;
@@ -24,6 +26,7 @@ import net.minecraft.world.item.Rarity;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
+import org.joml.Vector3d;
 
 import java.util.List;
 
@@ -31,6 +34,7 @@ public class SonicWaveItem extends Item {
     private static final double RANGE = 8.0;
     private static final double HALF_ANGLE_COS = 0.5;
     private static final double PUSH_STRENGTH = 3.0;
+    private static final double STRUCTURE_PUSH_STRENGTH = 30;
 
     public SonicWaveItem() {
         super(new Properties().stacksTo(1).rarity(Rarity.RARE));
@@ -49,6 +53,7 @@ public class SonicWaveItem extends Item {
         if(!(level instanceof ServerLevel serverLevel))return InteractionResultHolder.success(stack);
 
         var look = player.getLookAngle();
+        pushPhysicalStructures(serverLevel, player, look);
         pushEntities(serverLevel, player, look);
 
         if(SableMaidRagdoll.CONFIG.sounds.GCJCry)
@@ -69,6 +74,45 @@ public class SonicWaveItem extends Item {
         if(!player.isCreative())
             player.getCooldowns().addCooldown(stack.getItem(), 40);
         return InteractionResultHolder.success(stack);
+    }
+
+    private static void pushPhysicalStructures(ServerLevel level, Player player, Vec3 look){
+        var container = ServerSubLevelContainer.getContainer(level);
+        if(container == null)return;
+        var playerPos = player.position();
+        var playerVector = JOMLConversion.toJOML(playerPos);
+        for(var subLevel : container.getAllSubLevels()){
+            if(!(subLevel instanceof ServerSubLevel serverSubLevel) || serverSubLevel.isRemoved())continue;
+            var bounds = serverSubLevel.boundingBox();
+            var center = bounds.center();
+            var toCenter = new Vector3d(center).sub(playerVector);
+            double centerDistance = toCenter.length();
+            if(centerDistance < 0.01)continue;
+            var dir = toCenter.normalize();
+            if(look.dot(new Vec3(dir.x, dir.y, dir.z)) < HALF_ANGLE_COS)continue;
+
+            double nearestX = Math.max(bounds.minX(), Math.min(playerPos.x, bounds.maxX()));
+            double nearestY = Math.max(bounds.minY(), Math.min(playerPos.y, bounds.maxY()));
+            double nearestZ = Math.max(bounds.minZ(), Math.min(playerPos.z, bounds.maxZ()));
+            double dx = nearestX - playerPos.x;
+            double dy = nearestY - playerPos.y;
+            double dz = nearestZ - playerPos.z;
+            double distance = Math.sqrt(dx * dx + dy * dy + dz * dz);
+            if(distance > RANGE)continue;
+
+            var massData = serverSubLevel.getMassTracker();
+            if(massData == null || massData.isInvalid())continue;
+            double falloff = 1 - distance / RANGE;
+            double mass = massData.getMass();
+            var worldImpulse = new Vector3d(look.x, look.y, look.z)
+                    .mul(STRUCTURE_PUSH_STRENGTH * falloff * mass);
+            worldImpulse.y += (0.35 * falloff + 0.1) * mass;
+            var localImpulse = serverSubLevel.logicalPose().transformNormalInverse(worldImpulse);
+            try {
+                container.physicsSystem().getPhysicsHandle(serverSubLevel).applyLinearImpulse(localImpulse);
+            } catch (Exception ignored) {
+            }
+        }
     }
 
     private static void pushEntities(ServerLevel level, Player player, Vec3 look){

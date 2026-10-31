@@ -1,0 +1,33 @@
+{
+  "sortnum": 4,
+  "name": "Maidify Crystal",
+  "icon": "sablemaidragdoll:ragdoll_wand",
+  "category": "touhou_little_maid:sable_maid_ragdoll",
+  "pages": [
+    {
+      "type": "patchouli:spotlight",
+      "item": "sablemaidragdoll:ragdoll_wand",
+      "text": "The Maidify Crystal turns most living creatures into ragdolls using a bound maid model. While unbound, it shows a small doll using the current player's skin and cannot convert anything."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "Right-click one of your own tamed maids whose model supports ragdolls to bind her model. The crystal then displays that maid and reports which model is bound. Sneak + use to clear it.$(br2)Binding a Wine Fox model renames the item to Foxify Crystal."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "Hold right-click while aiming at a valid living creature. Without enchantments, charging takes 40 ticks (2 seconds), and the maximum range is 64 blocks with no blocks in between.$(br2)Charging stops if the target dies, leaves your view or becomes blocked. On success, the target becomes a ragdoll of the bound model. Destroying any ragdoll part restores it."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "Efficiency shortens both charging and cooldown: each level removes 10 ticks from charging and about 20% from the 20-tick cooldown. Efficiency IV charges in 1 tick; Efficiency V casts instantly.$(br2)Wind Burst launches the new ragdoll upward at about 6 blocks/tick at level I, plus 2 blocks/tick per additional level."
+    },
+    {
+      "type": "altar_recipe",
+      "recipe_id": "sablemaidragdoll:ragdoll_wand1"
+    },
+    {
+      "type": "patchouli:crafting",
+      "recipe": "sablemaidragdoll:ragdoll_wand"
+    }
+  ]
+}

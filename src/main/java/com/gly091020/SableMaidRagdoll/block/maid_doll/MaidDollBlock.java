@@ -101,6 +101,12 @@ public class MaidDollBlock extends HorizontalDirectionalBlock implements EntityB
     }
 
     @Override
+    protected void attack(BlockState state, Level level, BlockPos pos, Player player) {
+        if(level.getBlockEntity(pos) instanceof MaidDollBlockEntity blockEntity)
+            blockEntity.triggerHurt();
+    }
+
+    @Override
     public BlockSubLevelCollisionCallback sable$getCallback() {
         return MaidDollBlockSubLevelCollisionCallback.INSTANCE;
     }

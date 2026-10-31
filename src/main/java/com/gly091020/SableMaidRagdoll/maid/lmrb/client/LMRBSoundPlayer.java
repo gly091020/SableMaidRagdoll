@@ -23,8 +23,9 @@ public final class LMRBSoundPlayer {
     }
 
     public static void play(String soundPack, String soundName, Vec3 pos, float volume) {
-        ConfigHolder config = LMConfigManager.INSTANCE.getConfig(soundPack)
-                .orElseGet(LMConfigManager.INSTANCE::getAnyConfig);
+        var c = LMConfigManager.INSTANCE.getConfig(soundPack);
+        if(c.isEmpty())return;
+        ConfigHolder config = c.get();
         config.getSoundFileName(soundName.toLowerCase(Locale.ROOT)).ifPresent(soundFile ->
                 LMSoundManager.INSTANCE.getSound(soundFile).ifPresent(soundSet ->
                         Minecraft.getInstance().getSoundManager().play(new LMSoundInstance(

@@ -1,0 +1,24 @@
+{
+  "sortnum": 13,
+  "name": "MaidSpell Compatibility",
+  "icon": "sablemaidragdoll:mod_icon",
+  "category": "touhou_little_maid:sable_maid_ragdoll",
+  "pages": [
+    {
+      "type": "patchouli:text",
+      "text": "MaidSpell normally restricts friendly fire. This compatibility removes that restriction so allied maids can be affected. It is implemented with a Mixin and cannot be disabled in this mod's config."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "Click a Maidify Crystal with a Starlight Dagger in your inventory to enhance it once; the dagger is not consumed and the crystal gains a special tooltip.$(br2)Collision damage caused by ragdolls created with an enhanced crystal is treated as player damage."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "An ordinary Maidify Crystal cannot transform the Stellar Witch Wine Fox, and attacking her with maid-to-ragdoll items also fails, producing special dialogue.$(br2)After enhancement, the crystal can always target her, forces the Stellar Witch model and changes the boss bar style while battle mode is active."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "When the Stellar Witch is defeated, if she accumulated more than 300 damage (150 hearts) from ragdoll collisions during the fight, she is considered to have been crushed to death.$(br2)This unlocks the hidden advancement “i Fox's Territory”, awards a Dream Cat Crystal and plays unique defeat dialogue."
+    }
+  ]
+}

@@ -36,6 +36,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
+import net.neoforged.neoforge.common.util.FakePlayer;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
@@ -117,7 +118,7 @@ public class RagdollWandItem extends Item {
             return InteractionResultHolder.success(stack);
         }
         // 服务端也挡一次，免得客户端没收到冷却包时还能用
-        if (player.getCooldowns().isOnCooldown(stack.getItem())) {
+        if (player.getCooldowns().isOnCooldown(stack.getItem()) && !(player instanceof FakePlayer)) {
             return InteractionResultHolder.fail(stack);
         }
 
@@ -306,6 +307,10 @@ public class RagdollWandItem extends Item {
         var end = start.add(look.scale(RANGE));
 
         double maxDistance = RANGE;
+
+        if(player instanceof FakePlayer)
+            maxDistance = 10;
+
         var blockHit = level.clip(new ClipContext(start, end, ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, player));
         if (blockHit.getType() != HitResult.Type.MISS)
             maxDistance = start.distanceTo(blockHit.getLocation());
