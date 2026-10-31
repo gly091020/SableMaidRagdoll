@@ -31,18 +31,27 @@
   "mainBody": "body",
   "render": {
     "head": {
+      "transform": [
+        0.5,
+        -45.0,
+        0.5
+      ],
       "parts": [
         {
           "partName": "AllHead"
         }
       ],
-      "transform": [
-        0.5,
-        -45.0,
-        0.5
+      "blacklist": [
+        "witchcap3",
+        "ysmGlowmofazhen14"
       ]
     },
     "body": {
+      "transform": [
+        0.0,
+        -37.0,
+        0.0
+      ],
       "parts": [
         {
           "partName": "UpperBody",
@@ -63,18 +72,11 @@
           "partName": "MTail"
         }
       ],
-      "transform": [
-        0.0,
-        -37.0,
-        0.0
+      "blacklist": [
+        "mofazhang3"
       ]
     },
     "armLeft": {
-      "parts": [
-        {
-          "partName": "LeftArm"
-        }
-      ],
       "transform": [
         8.0,
         -32.5,
@@ -84,14 +86,14 @@
         0.0,
         0.0,
         18.0
+      ],
+      "parts": [
+        {
+          "partName": "LeftArm"
+        }
       ]
     },
     "armRight": {
-      "parts": [
-        {
-          "partName": "RightArm"
-        }
-      ],
       "transform": [
         -8.0,
         -32.5,
@@ -101,30 +103,39 @@
         0.0,
         0.0,
         -18.0
+      ],
+      "parts": [
+        {
+          "partName": "RightArm"
+        }
+      ],
+      "blacklist": [
+        "mofazhang",
+        "mofazhang2"
       ]
     },
     "legLeft": {
-      "parts": [
-        {
-          "partName": "LeftLeg"
-        }
-      ],
       "transform": [
         2.0,
         -24.0,
         0.0
+      ],
+      "parts": [
+        {
+          "partName": "LeftLeg"
+        }
       ]
     },
     "legRight": {
-      "parts": [
-        {
-          "partName": "RightLeg"
-        }
-      ],
       "transform": [
         -1.0,
         -24.0,
         0.0
+      ],
+      "parts": [
+        {
+          "partName": "RightLeg"
+        }
       ]
     }
   },

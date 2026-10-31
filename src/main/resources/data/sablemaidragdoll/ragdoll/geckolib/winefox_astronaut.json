@@ -31,18 +31,23 @@
   "mainBody": "body",
   "render": {
     "head": {
-      "parts": [
-        {
-          "partName": "AllHead"
-        }
-      ],
       "transform": [
         0.5,
         -45.0,
         0.5
+      ],
+      "parts": [
+        {
+          "partName": "AllHead"
+        }
       ]
     },
     "body": {
+      "transform": [
+        0.0,
+        -37.0,
+        0.0
+      ],
       "parts": [
         {
           "partName": "UpperBody",
@@ -62,19 +67,9 @@
         {
           "partName": "MTail"
         }
-      ],
-      "transform": [
-        0.0,
-        -37.0,
-        0.0
       ]
     },
     "armLeft": {
-      "parts": [
-        {
-          "partName": "LeftArm"
-        }
-      ],
       "transform": [
         8.0,
         -32.5,
@@ -84,14 +79,14 @@
         0.0,
         0.0,
         18.0
+      ],
+      "parts": [
+        {
+          "partName": "LeftArm"
+        }
       ]
     },
     "armRight": {
-      "parts": [
-        {
-          "partName": "RightArm"
-        }
-      ],
       "transform": [
         -8.0,
         -32.5,
@@ -101,30 +96,35 @@
         0.0,
         0.0,
         -18.0
+      ],
+      "parts": [
+        {
+          "partName": "RightArm"
+        }
       ]
     },
     "legLeft": {
-      "parts": [
-        {
-          "partName": "LeftLeg"
-        }
-      ],
       "transform": [
         2.0,
         -24.0,
         0.0
+      ],
+      "parts": [
+        {
+          "partName": "LeftLeg"
+        }
       ]
     },
     "legRight": {
-      "parts": [
-        {
-          "partName": "RightLeg"
-        }
-      ],
       "transform": [
         -1.0,
         -24.0,
         0.0
+      ],
+      "parts": [
+        {
+          "partName": "RightLeg"
+        }
       ]
     }
   },
