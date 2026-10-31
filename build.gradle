@@ -159,7 +159,7 @@ dependencies {
 
     // 万法皆通
     implementation("maven.modrinth:QHB4kBBS:${maid_spell_version}")
-    compileOnly("maven.modrinth:s4OWxYQQ:${iron_spell_version}")
+    implementation("maven.modrinth:s4OWxYQQ:${iron_spell_version}")
     compileOnly("maven.modrinth:8BmcQJ2H:Grwn5rUB")
 
     // 亿宴酊蒸

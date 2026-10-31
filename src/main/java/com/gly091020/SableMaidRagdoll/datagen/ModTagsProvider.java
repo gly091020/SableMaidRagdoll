@@ -90,10 +90,12 @@ public class ModTagsProvider {
                     .add(DamageTypes.THROWN)
                     .add(DamageTypes.UNATTRIBUTED_FIREBALL)
                     .add(DamageTypes.WITHER_SKULL)
+                    .addOptional(ResourceLocation.parse("create:run_over"))
                     .addOptional(ResourceLocation.parse("superbwarfare:vehicle_strike"));
 
             tag(InitTags.LAOWU_HURT_DANCE)
                     .add(DamageTypes.FLY_INTO_WALL)
+                    .addOptional(ResourceLocation.parse("create:run_over"))
                     .addOptional(ResourceLocation.parse("superbwarfare:vehicle_strike"));
         }
     }
