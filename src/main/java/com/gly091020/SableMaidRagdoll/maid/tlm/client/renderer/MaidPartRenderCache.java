@@ -67,6 +67,7 @@ public final class MaidPartRenderCache {
         var model = switch (modelType) {
             case BABY -> BedrockModelLoader.getModel(BedrockModelLoader.BABY_MAID_FAIRY);
             case NEW -> BedrockModelLoader.getModel(BedrockModelLoader.NEW_MAID_FAIRY);
+            case LEGACY -> BedrockModelLoader.getModel(BedrockModelLoader.MAID_FAIRY);
         };
         return new FairyEntry(model);
     }

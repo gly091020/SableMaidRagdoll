@@ -66,6 +66,6 @@ public class MaidFairyPartBlockEntity extends AbstractPartBlockEntity {
     }
 
     public enum ModelType{
-        NEW, BABY
+        NEW, BABY, LEGACY
     }
 }

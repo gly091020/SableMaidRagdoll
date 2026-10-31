@@ -1,6 +1,7 @@
 package com.gly091020.SableMaidRagdoll.maid.tlm;
 
 import com.github.tartaricacid.touhoulittlemaid.TouhouLittleMaid;
+import com.github.tartaricacid.touhoulittlemaid.config.subconfig.MiscConfig;
 import com.github.tartaricacid.touhoulittlemaid.entity.monster.EntityFairy;
 import com.github.tartaricacid.touhoulittlemaid.entity.monster.FairyType;
 import com.gly091020.SableMaidRagdoll.SableMaidRagdoll;
@@ -49,10 +50,20 @@ public class TLMEventHandler {
 
     public static final ResourceLocation BABY_FAIRY = ResourceLocation.fromNamespaceAndPath(TouhouLittleMaid.MOD_ID, "fairy/baby_fairy");
     public static final ResourceLocation NEW_FAIRY = ResourceLocation.fromNamespaceAndPath(TouhouLittleMaid.MOD_ID, "fairy/new_fairy");
+    public static final ResourceLocation LEGACY_FAIRY = ResourceLocation.fromNamespaceAndPath(TouhouLittleMaid.MOD_ID, "fairy/legacy_fairy");
     public static void createFairyRagdoll(ServerLevel level, EntityFairy fairy, Vector3d maidMotion){
         Vector3d forward = JOMLConversion.toJOML(fairy.getLookAngle());
         Vector3d axis = forward.cross(new Vector3d(0,1,0));
-        var id = fairy.isBaby() ? BABY_FAIRY : NEW_FAIRY;
+        var modelType = MiscConfig.USE_NEW_MAID_FAIRY_MODEL.get()
+                ? (fairy.isBaby()
+                        ? MaidFairyPartBlockEntity.ModelType.BABY
+                        : MaidFairyPartBlockEntity.ModelType.NEW)
+                : MaidFairyPartBlockEntity.ModelType.LEGACY;
+        var id = switch (modelType) {
+            case BABY -> BABY_FAIRY;
+            case NEW -> NEW_FAIRY;
+            case LEGACY -> LEGACY_FAIRY;
+        };
         var parts = RagdollHelper.createRagdoll(level, fairy.position().add(0, 0.5, 0), new Vec3(0, -fairy.getYHeadRot(), 0),
                 id);
         if(parts == null)return;
@@ -60,7 +71,7 @@ public class TLMEventHandler {
             if(subLevel.getPlot().getEmbeddedLevelAccessor().getBlockEntity(BlockPos.ZERO) instanceof MaidFairyPartBlockEntity blockEntity){
                 blockEntity.setFairyType(FairyType.values()[fairy.getFairyTypeOrdinal()]);
                 blockEntity.setRick(fairy.getName().getString().equals("rick"));
-                blockEntity.setModelType(fairy.isBaby() ? MaidFairyPartBlockEntity.ModelType.BABY : MaidFairyPartBlockEntity.ModelType.NEW);
+                blockEntity.setModelType(modelType);
             }
         });
         // 等待 2tick 是为了等待刚体创建在施加推力

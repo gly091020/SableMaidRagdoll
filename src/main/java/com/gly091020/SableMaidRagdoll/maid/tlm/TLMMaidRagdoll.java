@@ -8,6 +8,7 @@ import com.github.tartaricacid.touhoulittlemaid.entity.info.models.ServerMaidMod
 import com.github.tartaricacid.touhoulittlemaid.entity.item.EntityBox;
 import com.github.tartaricacid.touhoulittlemaid.entity.monster.EntityFairy;
 import com.github.tartaricacid.touhoulittlemaid.entity.monster.FairyType;
+import com.github.tartaricacid.touhoulittlemaid.config.subconfig.MiscConfig;
 import com.github.tartaricacid.touhoulittlemaid.entity.passive.DefaultMaidSoundPack;
 import com.github.tartaricacid.touhoulittlemaid.entity.passive.EntityMaid;
 import com.github.tartaricacid.touhoulittlemaid.init.InitDataComponent;
@@ -84,6 +85,7 @@ import java.util.Objects;
 import java.util.concurrent.ExecutionException;
 
 import static com.gly091020.SableMaidRagdoll.maid.tlm.TLMEventHandler.BABY_FAIRY;
+import static com.gly091020.SableMaidRagdoll.maid.tlm.TLMEventHandler.LEGACY_FAIRY;
 import static com.gly091020.SableMaidRagdoll.maid.tlm.TLMEventHandler.NEW_FAIRY;
 
 public class TLMMaidRagdoll implements IMaidRagdoll {
@@ -124,7 +126,10 @@ public class TLMMaidRagdoll implements IMaidRagdoll {
 
     @Override
     public ResourceLocation getRagdollId(Entity entity){
-        if(entity instanceof EntityFairy fairy)return fairy.isBaby() ? BABY_FAIRY : NEW_FAIRY;
+        if(entity instanceof EntityFairy fairy) {
+            if (!MiscConfig.USE_NEW_MAID_FAIRY_MODEL.get()) return LEGACY_FAIRY;
+            return fairy.isBaby() ? BABY_FAIRY : NEW_FAIRY;
+        }
         return entity instanceof EntityMaid maid ? ResourceLocation.fromNamespaceAndPath(SableMaidRagdoll.MODID, maid.getModelId().replace(":", "/")) : null;
     }
 
@@ -143,7 +148,11 @@ public class TLMMaidRagdoll implements IMaidRagdoll {
                 if(subLevel.getPlot().getEmbeddedLevelAccessor().getBlockEntity(BlockPos.ZERO) instanceof MaidFairyPartBlockEntity blockEntity){
                     blockEntity.setFairyType(FairyType.values()[fairy.getFairyTypeOrdinal()]);
                     blockEntity.setRick(fairy.getName().getString().equals("rick"));
-                    blockEntity.setModelType(fairy.isBaby() ? MaidFairyPartBlockEntity.ModelType.BABY : MaidFairyPartBlockEntity.ModelType.NEW);
+                    blockEntity.setModelType(MiscConfig.USE_NEW_MAID_FAIRY_MODEL.get()
+                            ? (fairy.isBaby()
+                                    ? MaidFairyPartBlockEntity.ModelType.BABY
+                                    : MaidFairyPartBlockEntity.ModelType.NEW)
+                            : MaidFairyPartBlockEntity.ModelType.LEGACY);
                 }
             });
         }

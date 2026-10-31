@@ -14,11 +14,13 @@ import net.minecraft.resources.ResourceLocation;
 public class MaidFairyPartRenderer extends AbstractPartBlockRenderer<MaidFairyPartBlockEntity> {
     private static final ResourceLocation[] newTextures = new ResourceLocation[19];
     private static final ResourceLocation[] babyTextures = new ResourceLocation[19];
+    private static final ResourceLocation[] legacyTextures = new ResourceLocation[19];
 
     static {
         for (int i = 0; i < 18; i++) {
             newTextures[i] = ResourceLocation.fromNamespaceAndPath(TouhouLittleMaid.MOD_ID, String.format("textures/bedrock/entity/new_maid_fairy/maid_fairy_%d.png", i));
             babyTextures[i] = ResourceLocation.fromNamespaceAndPath(TouhouLittleMaid.MOD_ID, String.format("textures/bedrock/entity/baby_maid_fairy/maid_fairy_%d.png", i));
+            legacyTextures[i] = ResourceLocation.fromNamespaceAndPath(TouhouLittleMaid.MOD_ID, String.format("textures/bedrock/entity/maid_fairy/maid_fairy_%d.png", i));
         }
         newTextures[18] = ResourceLocation.fromNamespaceAndPath(TouhouLittleMaid.MOD_ID, "textures/bedrock/entity/new_maid_fairy/maid_fairy_rick.png");
         babyTextures[18] = ResourceLocation.fromNamespaceAndPath(TouhouLittleMaid.MOD_ID, "textures/bedrock/entity/baby_maid_fairy/maid_fairy_rick.png");
@@ -47,13 +49,15 @@ public class MaidFairyPartRenderer extends AbstractPartBlockRenderer<MaidFairyPa
     }
 
     public static ResourceLocation getTexture(FairyType fairyType, MaidFairyPartBlockEntity.ModelType modelType, boolean isRick){
-        if(modelType == MaidFairyPartBlockEntity.ModelType.BABY){
-            if(isRick)return babyTextures[18];
-            else return babyTextures[fairyType.ordinal()];
-        }else{
-            if(isRick)return newTextures[18];
-            else return newTextures[fairyType.ordinal()];
+        if (modelType == MaidFairyPartBlockEntity.ModelType.LEGACY) {
+            return legacyTextures[fairyType.ordinal()];
         }
+        var textures = switch (modelType) {
+            case BABY -> babyTextures;
+            case NEW -> newTextures;
+            case LEGACY -> legacyTextures;
+        };
+        return isRick ? textures[18] : textures[fairyType.ordinal()];
     }
 
     @Override
