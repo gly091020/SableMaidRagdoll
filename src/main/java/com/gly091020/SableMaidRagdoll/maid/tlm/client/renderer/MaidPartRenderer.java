@@ -34,6 +34,7 @@ import org.joml.Matrix4f;
 import org.joml.Vector3d;
 
 import java.util.Random;
+import java.util.Set;
 
 public class MaidPartRenderer extends AbstractPartBlockRenderer<MaidPartBlockEntity> {
     private final ItemInHandRenderer itemInHandRenderer;
@@ -62,23 +63,26 @@ public class MaidPartRenderer extends AbstractPartBlockRenderer<MaidPartBlockEnt
         var scale = cache.scale();
         poseStack.scale(scale, scale, scale);
 
-        for (var renderPart : cache.parts(data.partName(), data.renderData().parts())) {
+        var renderParts = cache.parts(data.partName(), data.renderData());
+        for (var renderPart : renderParts) {
             if (renderPart.flatChild()) {
-                TLMMaidModelHelper.renderBedrockPartsWithFlat(renderPart.part(), poseStack, vc, light, overlay);
+                TLMMaidModelHelper.renderBedrockPartsWithFlat(renderPart.part(), poseStack, vc, light, overlay, renderPart.blacklist());
             } else {
-                TLMMaidModelHelper.renderBedrockPart(renderPart.part(), poseStack, vc, light, overlay);
+                TLMMaidModelHelper.renderBedrockPart(renderPart.part(), poseStack, vc, light, overlay, renderPart.blacklist());
             }
         }
-        renderHand(blockEntity, cache, poseStack, multiBufferSource, light);
+        var blacklist = renderParts.isEmpty() ? Set.<BedrockPart>of() : renderParts.get(0).blacklist();
+        renderHand(blockEntity, cache, poseStack, multiBufferSource, light, blacklist);
 
         poseStack.popPose();
     }
 
-    private void renderHand(MaidPartBlockEntity blockEntity, MaidPartRenderCache.Entry cache, PoseStack poseStack, MultiBufferSource multiBufferSource, int light) {
+    private void renderHand(MaidPartBlockEntity blockEntity, MaidPartRenderCache.Entry cache, PoseStack poseStack, MultiBufferSource multiBufferSource, int light, Set<BedrockPart> blacklist) {
         var entity = blockEntity.getEntity();
         if (!(entity instanceof LivingEntity maid)) return;
         var handRender = cache.handRender(blockEntity.getPartData().partName());
         if (handRender == null) return;
+        if (isBlacklisted(handRender.hand(), blacklist) || isBlacklisted(handRender.parent(), blacklist)) return;
         var stack = maid.getItemInHand(handRender.interactionHand());
         if (stack.isEmpty()) return;
         var model = cache.model();
@@ -105,6 +109,13 @@ public class MaidPartRenderer extends AbstractPartBlockRenderer<MaidPartBlockEnt
                 handRender.leftHand(), poseStack, multiBufferSource, light
         );
         poseStack.popPose();
+    }
+
+    private static boolean isBlacklisted(BedrockPart part, Set<BedrockPart> blacklist) {
+        for (var current = part; current != null; current = current.parent) {
+            if (blacklist.contains(current)) return true;
+        }
+        return false;
     }
 
     private static void transformToSelf(BedrockPart self, BedrockPart part, PoseStack poseStack) {

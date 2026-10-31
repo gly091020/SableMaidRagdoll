@@ -30,9 +30,12 @@ import net.sistr.littlemaidrebirth.LMRBMod;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.IdentityHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * LMML 女仆布娃娃部位渲染器。
@@ -88,17 +91,22 @@ public class LittleMaidPartRenderer extends AbstractPartBlockRenderer<LittleMaid
                 .render(ModelRenderer::setParam);
 
         var init = resolveInitExpressions(blockEntity, entry);
+        Set<ModelRenderer> blacklist = Collections.newSetFromMap(new IdentityHashMap<ModelRenderer, Boolean>());
+        for (String name : data.renderData().blacklist()) {
+            var node = entry.node(name);
+            if (node != null) blacklist.add(node);
+        }
         ModelRenderer anchor = null;
         for (var part : data.renderData().parts()) {
             var node = entry.node(part.partName());
-            if (node == null)
+            if (node == null || blacklist.contains(node))
                 continue;
             if (anchor == null)
                 anchor = node;
-            renderNode(node, anchor, part.flatChild(), poseStack, init);
+            renderNode(node, anchor, part.flatChild(), poseStack, init, blacklist);
         }
         if (anchor != null)
-            renderHeldItems(blockEntity, entry.model(), anchor, poseStack, bufferSource, light);
+            renderHeldItems(blockEntity, entry.model(), anchor, poseStack, bufferSource, light, blacklist);
     }
 
     /**
@@ -106,7 +114,8 @@ public class LittleMaidPartRenderer extends AbstractPartBlockRenderer<LittleMaid
      * {@code MultiModelHeldItemLayer} 的朝向约定渲染，布娃娃的手臂部位会带上女仆手里的东西。
      */
     private static void renderHeldItems(LittleMaidPartBlockEntity blockEntity, ModelMultiBase model, ModelRenderer anchor,
-                                        PoseStack poseStack, MultiBufferSource bufferSource, int light) {
+                                        PoseStack poseStack, MultiBufferSource bufferSource, int light,
+                                        Set<ModelRenderer> blacklist) {
         // 玩家骑在布娃娃上时不把玩家的手持物画到女仆手上
         if (!(blockEntity.getEntity() instanceof LivingEntity maid) || maid instanceof Player)
             return;
@@ -116,7 +125,7 @@ public class LittleMaidPartRenderer extends AbstractPartBlockRenderer<LittleMaid
         boolean mainRight = maid.getMainArm() == HumanoidArm.RIGHT;
         for (int i = 0; i < 2; i++) {
             ModelRenderer hand = arms[i];
-            if (hand == null || !isHandAnchor(anchor, hand))
+            if (hand == null || isBlacklisted(hand, blacklist) || !isHandAnchor(anchor, hand))
                 continue;
             boolean left = i == 1;
             ItemStack stack = left
@@ -132,6 +141,13 @@ public class LittleMaidPartRenderer extends AbstractPartBlockRenderer<LittleMaid
         for (var current = hand; current != null; current = current.pearent) {
             if (current == anchor)
                 return true;
+        }
+        return false;
+    }
+
+    private static boolean isBlacklisted(ModelRenderer node, Set<ModelRenderer> blacklist) {
+        for (var current = node; current != null; current = current.pearent) {
+            if (blacklist.contains(current)) return true;
         }
         return false;
     }
@@ -176,7 +192,7 @@ public class LittleMaidPartRenderer extends AbstractPartBlockRenderer<LittleMaid
     }
 
     private static void renderNode(ModelRenderer node, ModelRenderer anchor, boolean flatChild, PoseStack poseStack,
-                                   Map<ModelRenderer, RagdollExpressions.Expression> init) {
+                                   Map<ModelRenderer, RagdollExpressions.Expression> init, Set<ModelRenderer> blacklist) {
         var states = new ArrayList<NodeState>();
         prepare(node, init, states);
 
@@ -188,14 +204,43 @@ public class LittleMaidPartRenderer extends AbstractPartBlockRenderer<LittleMaid
         poseStack.pushPose();
         poseStack.translate((self[0] - base[0]) / 16.0F, (self[1] - base[1]) / 16.0F, (self[2] - base[2]) / 16.0F);
         var children = node.childModels;
+        Map<ModelRenderer, List<ModelRenderer>> restore = null;
         if (flatChild)
             node.childModels = null;
+        else
+            restore = filterChildren(node, blacklist);
         node.render(SCALE, true);
         if (flatChild)
             node.childModels = children;
+        else
+            restoreChildren(restore);
         poseStack.popPose();
 
         states.forEach(NodeState::restore);
+    }
+
+    private static Map<ModelRenderer, List<ModelRenderer>> filterChildren(ModelRenderer root, Set<ModelRenderer> blacklist) {
+        Map<ModelRenderer, List<ModelRenderer>> restore = new IdentityHashMap<>();
+        filterChildren(root, blacklist, restore);
+        return restore;
+    }
+
+    private static void filterChildren(ModelRenderer node, Set<ModelRenderer> blacklist,
+                                       Map<ModelRenderer, List<ModelRenderer>> restore) {
+        if (node.childModels == null) return;
+        restore.put(node, node.childModels);
+        var filtered = new ArrayList<ModelRenderer>();
+        for (var child : node.childModels) {
+            if (blacklist.contains(child)) continue;
+            filtered.add(child);
+            filterChildren(child, blacklist, restore);
+        }
+        node.childModels = filtered;
+    }
+
+    private static void restoreChildren(Map<ModelRenderer, List<ModelRenderer>> restore) {
+        if (restore == null) return;
+        restore.forEach((node, children) -> node.childModels = children);
     }
 
     /** 渲染前把部件树归位到静止姿势，避免复用女仆渲染残留的动画状态。 */

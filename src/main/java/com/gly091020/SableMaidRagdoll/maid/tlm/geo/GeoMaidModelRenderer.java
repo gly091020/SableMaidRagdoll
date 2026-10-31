@@ -24,6 +24,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 public class GeoMaidModelRenderer {
     private static final Map<ResourceLocation, GeoModel> MODELS = new HashMap<>();
@@ -62,12 +63,16 @@ public class GeoMaidModelRenderer {
         );
 
         if (geoModel == null) return false;
+        Set<String> blacklist = renderData.blacklistSet();
 
         var handCache = HAND_CACHE.computeIfAbsent(path, GeoMaidModelRenderer::buildHandCache);
         GeoHandRender handRender = null;
         for (var part : renderData.parts()) {
-            handRender = handCache.get(part.partName());
-            if (handRender != null) break;
+            if (blacklist.contains(part.partName())) continue;
+            var candidate = handCache.get(part.partName());
+            if (candidate == null || candidate.boneNames().stream().anyMatch(blacklist::contains)) continue;
+            handRender = candidate;
+            break;
         }
 
         GeoMaidRenderer renderer = RENDERERS.computeIfAbsent(
@@ -108,11 +113,12 @@ public class GeoMaidModelRenderer {
                 light,
                 overlay,
                 1, 1, 1, 1,
-                renderData.parts()
+                renderData.parts(),
+                blacklist
         );
 
         if (handRender != null) {
-            renderGeoHand(blockEntity, animated, handRender, poseStack, bufferSource, light, itemInHandRenderer);
+            renderGeoHand(blockEntity, animated, handRender, poseStack, bufferSource, light, itemInHandRenderer, blacklist);
         }
 
         return true;
@@ -168,11 +174,12 @@ public class GeoMaidModelRenderer {
 
     private static void renderGeoHand(MaidPartBlockEntity blockEntity, AnimatedGeoModel animated, GeoHandRender handRender,
                                       PoseStack poseStack, MultiBufferSource bufferSource, int light,
-                                      ItemInHandRenderer itemInHandRenderer) {
+                                      ItemInHandRenderer itemInHandRenderer, Set<String> blacklist) {
         var entity = blockEntity.getEntity();
         if (!(entity instanceof LivingEntity maid)) return;
         var stack = maid.getItemInHand(handRender.interactionHand());
         if (stack.isEmpty()) return;
+        if (handRender.boneNames().stream().anyMatch(blacklist::contains)) return;
 
         poseStack.pushPose();
         boolean scaleZero = false;

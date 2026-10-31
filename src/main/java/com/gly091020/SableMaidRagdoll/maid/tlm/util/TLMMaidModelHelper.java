@@ -19,7 +19,9 @@ import org.joml.Matrix3f;
 import org.joml.Vector3f;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.regex.Pattern;
 
 public class TLMMaidModelHelper {
@@ -78,8 +80,17 @@ public class TLMMaidModelHelper {
     }
 
     public static void renderBedrockParts(BedrockModel<?> model, ResourceLocation texture, List<RagdollRenderData.EveryPart> parts, PoseStack poseStack, MultiBufferSource bufferSource, int light, int overlay){
+        renderBedrockParts(model, texture, parts, poseStack, bufferSource, light, overlay, Set.of());
+    }
+
+    public static void renderBedrockParts(BedrockModel<?> model, ResourceLocation texture, List<RagdollRenderData.EveryPart> parts, PoseStack poseStack, MultiBufferSource bufferSource, int light, int overlay, Set<String> blacklist){
         var partList = new ArrayList<Pair<BedrockPart, Boolean>>();
         var map = model.getModelMap();
+        var blacklistedParts = new HashSet<BedrockPart>();
+        for (String name : blacklist) {
+            var part = map.get(name);
+            if (part != null) blacklistedParts.add(part);
+        }
         for (RagdollRenderData.EveryPart everyPart: parts){
             var p = map.get(everyPart.partName());
             if(p != null)partList.add(new Pair<>(p, everyPart.flatChild()));
@@ -88,9 +99,9 @@ public class TLMMaidModelHelper {
         var vc = bufferSource.getBuffer(RenderType.entityCutoutNoCull(texture));
         for (Pair<BedrockPart, Boolean> pair: partList){
             if(pair.getSecond())
-                renderBedrockPartsWithFlat(pair.getFirst(), poseStack, vc, light, overlay);
+                renderBedrockPartsWithFlat(pair.getFirst(), poseStack, vc, light, overlay, blacklistedParts);
             else{
-                renderBedrockPart(pair.getFirst(), poseStack, vc, light, overlay);
+                renderBedrockPart(pair.getFirst(), poseStack, vc, light, overlay, blacklistedParts);
             }
         }
     }
@@ -103,6 +114,11 @@ public class TLMMaidModelHelper {
 
     // 抄代码啊啊啊啊啊啊啊
     public static void renderBedrockPartsWithFlat(BedrockPart bedrockPart, PoseStack poseStack, VertexConsumer vertexConsumer, int light, int overlay){
+        renderBedrockPartsWithFlat(bedrockPart, poseStack, vertexConsumer, light, overlay, Set.of());
+    }
+
+    public static void renderBedrockPartsWithFlat(BedrockPart bedrockPart, PoseStack poseStack, VertexConsumer vertexConsumer, int light, int overlay, Set<BedrockPart> blacklist){
+        if (blacklist.contains(bedrockPart)) return;
         if (bedrockPart.visible) {
             boolean xNearZero = -1E-5F < bedrockPart.xScale && bedrockPart.xScale < 1E-5F;
             boolean yNearZero = -1E-5F < bedrockPart.yScale && bedrockPart.yScale < 1E-5F;
@@ -121,6 +137,11 @@ public class TLMMaidModelHelper {
     }
 
     public static void renderBedrockPart(BedrockPart bedrockPart, PoseStack poseStack, VertexConsumer vertexConsumer, int light, int overlay){
+        renderBedrockPart(bedrockPart, poseStack, vertexConsumer, light, overlay, Set.of());
+    }
+
+    public static void renderBedrockPart(BedrockPart bedrockPart, PoseStack poseStack, VertexConsumer vertexConsumer, int light, int overlay, Set<BedrockPart> blacklist){
+        if (blacklist.contains(bedrockPart)) return;
         if (bedrockPart.visible) {
             boolean xNearZero = -1E-5F < bedrockPart.xScale && bedrockPart.xScale < 1E-5F;
             boolean yNearZero = -1E-5F < bedrockPart.yScale && bedrockPart.yScale < 1E-5F;
@@ -134,11 +155,32 @@ public class TLMMaidModelHelper {
                 transformParent(bedrockPart, poseStack);
                 compileBedrockPart(bedrockPart, poseStack.last(), vertexConsumer, light, overlay);
                 for (BedrockPart part : bedrockPart.children) {
-                    part.render(poseStack, vertexConsumer, light, overlay, 1, 1, 1, 1);
+                    renderBedrockChild(part, poseStack, vertexConsumer, light, overlay, blacklist);
                 }
                 poseStack.popPose();
             }
         }
+    }
+
+    private static void renderBedrockChild(BedrockPart part, PoseStack poseStack, VertexConsumer vertexConsumer, int light, int overlay, Set<BedrockPart> blacklist){
+        if (blacklist.contains(part) || !part.visible) return;
+
+        boolean xNearZero = -1E-5F < part.xScale && part.xScale < 1E-5F;
+        boolean yNearZero = -1E-5F < part.yScale && part.yScale < 1E-5F;
+        boolean zNearZero = -1E-5F < part.zScale && part.zScale < 1E-5F;
+        if ((xNearZero && yNearZero) || (xNearZero && zNearZero) || (yNearZero && zNearZero)) {
+            return;
+        }
+        if (part.cubes.isEmpty() && part.children.isEmpty()) return;
+
+        poseStack.pushPose();
+        part.translateAndRotateAndScale(poseStack);
+        int cubePackedLight = part.illuminated ? LightTexture.pack(15, 15) : light;
+        compileBedrockPart(part, poseStack.last(), vertexConsumer, light, overlay);
+        for (BedrockPart child : part.children) {
+            renderBedrockChild(child, poseStack, vertexConsumer, cubePackedLight, overlay, blacklist);
+        }
+        poseStack.popPose();
     }
 
     private static final Vector3f[] NORMALS = new Vector3f[6];

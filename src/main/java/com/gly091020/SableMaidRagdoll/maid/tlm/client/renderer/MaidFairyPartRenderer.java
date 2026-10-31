@@ -35,11 +35,11 @@ public class MaidFairyPartRenderer extends AbstractPartBlockRenderer<MaidFairyPa
         poseStack.pushPose();
 
         var data = blockEntity.getPartData();
-        for (var part: cache.parts(data.defFile(), data.partName(), data.renderData().parts())){
+        for (var part: cache.parts(data.defFile(), data.partName(), data.renderData())){
             if (part.flatChild()) {
-                TLMMaidModelHelper.renderBedrockPartsWithFlat(part.part(), poseStack, vc, light, overlay);
+                TLMMaidModelHelper.renderBedrockPartsWithFlat(part.part(), poseStack, vc, light, overlay, part.blacklist());
             } else {
-                TLMMaidModelHelper.renderBedrockPart(part.part(), poseStack, vc, light, overlay);
+                TLMMaidModelHelper.renderBedrockPart(part.part(), poseStack, vc, light, overlay, part.blacklist());
             }
         }
 

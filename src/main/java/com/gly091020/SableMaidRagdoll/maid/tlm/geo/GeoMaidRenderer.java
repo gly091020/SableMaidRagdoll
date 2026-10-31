@@ -18,6 +18,7 @@ import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
+import java.util.Set;
 
 public record GeoMaidRenderer(MultiBufferSource multiBufferSource, ResourceLocation resourceLocation) implements IGeoRenderer<Void> {
     @Override
@@ -41,6 +42,11 @@ public record GeoMaidRenderer(MultiBufferSource multiBufferSource, ResourceLocat
     }
 
     public void render(AnimatedGeoModel model, Void animatable, float partialTick, RenderType type, PoseStack poseStack, @Nullable MultiBufferSource bufferSource, @Nullable VertexConsumer buffer, int packedLight, int packedOverlay, float red, float green, float blue, float alpha, List<RagdollRenderData.EveryPart> renderParts) {
+        render(model, animatable, partialTick, type, poseStack, bufferSource, buffer, packedLight, packedOverlay,
+                red, green, blue, alpha, renderParts, Set.of());
+    }
+
+    public void render(AnimatedGeoModel model, Void animatable, float partialTick, RenderType type, PoseStack poseStack, @Nullable MultiBufferSource bufferSource, @Nullable VertexConsumer buffer, int packedLight, int packedOverlay, float red, float green, float blue, float alpha, List<RagdollRenderData.EveryPart> renderParts, Set<String> blacklist) {
         setCurrentRTB(bufferSource);
         renderEarly(animatable, poseStack, partialTick, bufferSource, buffer, packedLight,
                 packedOverlay, red, green, blue, alpha);
@@ -51,17 +57,43 @@ public record GeoMaidRenderer(MultiBufferSource multiBufferSource, ResourceLocat
                 packedOverlay, red, green, blue, alpha);
 
         for (RagdollRenderData.EveryPart renderPart: renderParts){
+            if (blacklist.contains(renderPart.partName())) continue;
             var p = model.bones().get(renderPart.partName());
             if(p == null)continue;
             if(renderPart.flatChild())
                 renderRecursivelyWithoutChild(p, poseStack, buffer, packedLight, packedOverlay, red, green, blue,
                         alpha);
             else
-                renderRecursively(p, poseStack, buffer, packedLight, packedOverlay, red, green, blue,
-                        alpha);
+                renderRecursivelyFiltered(p, poseStack, buffer, packedLight, packedOverlay, red, green, blue,
+                        alpha, blacklist);
         }
 
         setCurrentModelRenderCycle(EModelRenderCycle.REPEATED);
+    }
+
+    private void renderRecursivelyFiltered(AnimatedGeoBone bone, PoseStack poseStack, VertexConsumer buffer, int packedLight,
+                                           int packedOverlay, float red, float green, float blue, float alpha,
+                                           Set<String> blacklist) {
+        if (blacklist.contains(bone.getName())) return;
+
+        int cubePackedLight = bone.geoBone().glow() ? LightTexture.pack(15, 15) : packedLight;
+        if ((bone.getScaleX() == 0 ? 0 : 1) + (bone.getScaleY() == 0 ? 0 : 1) + (bone.getScaleZ() == 0 ? 0 : 1) < 2) {
+            return;
+        }
+        poseStack.pushPose();
+        RenderUtils.prepMatrixForBone(poseStack, bone);
+        if (!SodiumCompat.sodiumRenderCubesOfBone(bone, poseStack, buffer, cubePackedLight, packedOverlay, red, green, blue, alpha)
+                && !EmbeddiumCompat.embeddiumRenderCubesOfBone(bone, poseStack, buffer, cubePackedLight, packedOverlay, red, green, blue, alpha)
+        ) {
+            renderCubesOfBone(bone, poseStack, buffer, cubePackedLight, packedOverlay, red, green, blue, alpha);
+        }
+        if (!bone.childBonesAreHiddenToo()) {
+            for (AnimatedGeoBone child : bone.children()) {
+                renderRecursivelyFiltered(child, poseStack, buffer, packedLight, packedOverlay, red, green, blue,
+                        alpha, blacklist);
+            }
+        }
+        poseStack.popPose();
     }
 
     private void renderRecursivelyWithoutChild(AnimatedGeoBone bone, PoseStack poseStack, VertexConsumer buffer, int packedLight,

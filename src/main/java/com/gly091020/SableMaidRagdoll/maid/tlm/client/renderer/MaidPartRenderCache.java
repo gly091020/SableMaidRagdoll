@@ -16,11 +16,13 @@ import net.minecraft.world.entity.Mob;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.IdentityHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * 按 ragdoll 定义文件缓存渲染所需的模型、部件列表和初始化动作，
@@ -143,17 +145,28 @@ public final class MaidPartRenderCache {
         /**
          * 获取该部位需要渲染的模型部件列表，按 partName 缓存。
          */
-        public List<PartRender> parts(String partName, List<RagdollRenderData.EveryPart> renderParts) {
+        public List<PartRender> parts(String partName, RagdollRenderData.PartRenderData renderData) {
             return partsCache.computeIfAbsent(partName, p -> {
+                var blacklist = resolveBlacklist(renderData.blacklist());
                 var resolved = new ArrayList<PartRender>();
-                for (RagdollRenderData.EveryPart part : renderParts) {
+                for (RagdollRenderData.EveryPart part : renderData.parts()) {
                     var bedrockPart = model.getModelMap().get(part.partName());
                     if (bedrockPart != null) {
-                        resolved.add(new PartRender(bedrockPart, part.flatChild()));
+                        resolved.add(new PartRender(bedrockPart, part.flatChild(), blacklist));
                     }
                 }
                 return List.copyOf(resolved);
             });
+        }
+
+        private Set<BedrockPart> resolveBlacklist(List<String> names) {
+            if (model == null || names.isEmpty()) return Set.of();
+            var result = Collections.newSetFromMap(new IdentityHashMap<BedrockPart, Boolean>());
+            for (String name : names) {
+                var part = model.getModelMap().get(name);
+                if (part != null) result.add(part);
+            }
+            return result;
         }
 
         /**
@@ -266,14 +279,19 @@ public final class MaidPartRenderCache {
          * 获取该 ragdoll 定义文件中某部位需要渲染的模型部件列表，按 defFile + partName 缓存，
          * 避免不同定义文件共用同一部位名时解析结果串用。
          */
-        public List<PartRender> parts(ResourceLocation defFile, String partName, List<RagdollRenderData.EveryPart> renderParts) {
+        public List<PartRender> parts(ResourceLocation defFile, String partName, RagdollRenderData.PartRenderData renderData) {
             return partsCache.computeIfAbsent(defFile, f -> new HashMap<>())
                     .computeIfAbsent(partName, p -> {
                         var resolved = new ArrayList<PartRender>();
-                        for (RagdollRenderData.EveryPart part : renderParts) {
+                        var blacklist = Collections.newSetFromMap(new IdentityHashMap<BedrockPart, Boolean>());
+                        for (String name : renderData.blacklist()) {
+                            var blocked = partMap.get(name);
+                            if (blocked != null) blacklist.add(blocked);
+                        }
+                        for (RagdollRenderData.EveryPart part : renderData.parts()) {
                             var bedrockPart = partMap.get(part.partName());
                             if (bedrockPart != null) {
-                                resolved.add(new PartRender(bedrockPart, part.flatChild()));
+                                resolved.add(new PartRender(bedrockPart, part.flatChild(), blacklist));
                             }
                         }
                         return List.copyOf(resolved);
@@ -283,8 +301,9 @@ public final class MaidPartRenderCache {
 
     /**
      * 需要渲染的模型部件，flatChild 为 true 时只画部件本身，不递归子部件（与 geo 渲染一致）。
+     * blacklist 中的子部件及其子树不会渲染。
      */
-    public record PartRender(BedrockPart part, boolean flatChild) {
+    public record PartRender(BedrockPart part, boolean flatChild, Set<BedrockPart> blacklist) {
     }
 
     /**
