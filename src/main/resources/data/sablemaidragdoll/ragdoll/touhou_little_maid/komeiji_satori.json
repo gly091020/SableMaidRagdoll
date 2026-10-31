@@ -1,0 +1,295 @@
+{
+  "expressions": {
+    "init": {
+      "blink": {
+        "actionType": "show"
+      }
+    }
+  },
+  "mainBody": "body",
+  "render": {
+    "head": {
+      "parts": [
+        {
+          "partName": "head"
+        }
+      ],
+      "transform": [
+        0.0,
+        18.0,
+        0.0
+      ]
+    },
+    "body": {
+      "parts": [
+        {
+          "partName": "body"
+        },
+        {
+          "partName": "tail"
+        },
+        {
+          "partName": "wingLeft"
+        },
+        {
+          "partName": "wingRight"
+        }
+      ],
+      "transform": [
+        0.0,
+        8.75,
+        0.0
+      ]
+    },
+    "armLeft": {
+      "parts": [
+        {
+          "partName": "armLeft"
+        }
+      ],
+      "transform": [
+        -1.0,
+        7.800000190734863,
+        0.0
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        24.0
+      ]
+    },
+    "armRight": {
+      "parts": [
+        {
+          "partName": "armRight"
+        }
+      ],
+      "transform": [
+        1.0,
+        7.800000190734863,
+        0.0
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        -24.0
+      ]
+    },
+    "legLeft": {
+      "parts": [
+        {
+          "partName": "legLeft"
+        }
+      ],
+      "transform": [
+        -2.549999952316284,
+        0.5,
+        0.5
+      ]
+    },
+    "legRight": {
+      "parts": [
+        {
+          "partName": "legRight"
+        }
+      ],
+      "transform": [
+        1.5499999523162842,
+        0.5,
+        0.5
+      ]
+    }
+  },
+  "joints": [
+    {
+      "posA": [
+        0.0,
+        -4.0,
+        0.0
+      ],
+      "posB": [
+        0.0,
+        4.400000095367432,
+        -0.5
+      ],
+      "settings": {
+        "contacts": false,
+        "motor": {
+          "stiffness": 300,
+          "damping": 20
+        }
+      },
+      "A": "head",
+      "B": "body"
+    },
+    {
+      "posA": [
+        -2.0,
+        -5.5,
+        -0.5
+      ],
+      "posB": [
+        -0.5,
+        4.0,
+        -0.5
+      ],
+      "A": "body",
+      "B": "legLeft"
+    },
+    {
+      "posA": [
+        2.0,
+        -5.5,
+        -0.5
+      ],
+      "posB": [
+        -0.5,
+        4.0,
+        -0.5
+      ],
+      "A": "body",
+      "B": "legRight"
+    },
+    {
+      "posA": [
+        4.099999904632568,
+        3.5,
+        -0.5
+      ],
+      "posB": [
+        0.0,
+        3.5,
+        0.0
+      ],
+      "A": "body",
+      "B": "armLeft"
+    },
+    {
+      "posA": [
+        -4.099999904632568,
+        3.5,
+        -0.5
+      ],
+      "posB": [
+        0.0,
+        3.5,
+        0.0
+      ],
+      "A": "body",
+      "B": "armRight"
+    }
+  ],
+  "type": "sablemaidragdoll:maid",
+  "allParts": [
+    "head",
+    "body",
+    "armLeft",
+    "armRight",
+    "legLeft",
+    "legRight"
+  ],
+  "hitbox": {
+    "head": [
+      4,
+      4,
+      4,
+      12,
+      12,
+      12
+    ],
+    "body": [
+      5,
+      3,
+      5,
+      11,
+      12,
+      10
+    ],
+    "armLeft": [
+      7,
+      3,
+      7,
+      9,
+      12,
+      9
+    ],
+    "armRight": [
+      7,
+      3,
+      7,
+      9,
+      12,
+      9
+    ],
+    "legLeft": [
+      6,
+      3,
+      6,
+      9,
+      12,
+      9
+    ],
+    "legRight": [
+      6,
+      3,
+      6,
+      9,
+      12,
+      9
+    ]
+  },
+  "position": {
+    "head": {
+      "transform": [
+        0.0,
+        22.0,
+        0.5
+      ]
+    },
+    "body": {
+      "transform": [
+        0.0,
+        13.25,
+        0.0
+      ]
+    },
+    "armLeft": {
+      "transform": [
+        5.5,
+        14.0,
+        0.0
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        24.0
+      ]
+    },
+    "armRight": {
+      "transform": [
+        -5.5,
+        14.0,
+        0.0
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        -24.0
+      ]
+    },
+    "legLeft": {
+      "transform": [
+        -2.0,
+        4.5,
+        0.0
+      ]
+    },
+    "legRight": {
+      "transform": [
+        2.0,
+        4.5,
+        0.0
+      ]
+    }
+  }
+}
