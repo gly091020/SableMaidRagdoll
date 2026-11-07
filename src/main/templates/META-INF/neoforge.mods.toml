@@ -81,7 +81,7 @@ side = "BOTH"
 [[dependencies."${mod_id}"]]
 modId = "sableragdolllib"
 type = "required"
-versionRange = "[1.3-alpha,)"
+versionRange = "[1.4-alpha,)"
 ordering = "AFTER"
 side = "BOTH"
 
