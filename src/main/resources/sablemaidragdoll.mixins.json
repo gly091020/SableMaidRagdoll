@@ -13,6 +13,7 @@
     "love_loathe.WanderingMaidManagerMixin",
     "maid_spell.MagicalWinefoxBossEntityMixin",
     "maid_spell.MaidSpellAllyEventsMixin",
+    "more_animation.AnimationManagerMixin",
     "tlm.BroomEntityMixin",
     "tlm.BroomMixin",
     "tlm.EmojiReloadListenerMixin",

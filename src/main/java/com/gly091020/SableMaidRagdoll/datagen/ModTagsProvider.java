@@ -36,6 +36,7 @@ public class ModTagsProvider {
         protected void addTags(HolderLookup.Provider provider) {
             tag(TagKey.create(Registries.BLOCK, ResourceLocation.fromNamespaceAndPath("sableragdolllib", "ragdoll_part")))
                     .add(TLMInitBlocks.MAID_PART_BLOCK.get())
+                    .add(TLMInitBlocks.MAID_FAIRY_PART_BLOCK.get())
                     .add(LMRBInitBlocks.LITTLE_MAID_PART_BLOCK.get());
 
             tag(BlockTags.MINEABLE_WITH_AXE)

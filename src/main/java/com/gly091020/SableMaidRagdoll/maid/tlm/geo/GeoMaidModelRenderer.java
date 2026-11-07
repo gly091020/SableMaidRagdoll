@@ -1,11 +1,19 @@
 package com.gly091020.SableMaidRagdoll.maid.tlm.geo;
 
+import com.github.tartaricacid.touhoulittlemaid.client.entity.GeckoMaidEntity;
+import com.github.tartaricacid.touhoulittlemaid.client.resource.CustomPackLoader;
 import com.github.tartaricacid.touhoulittlemaid.client.resource.pojo.MaidModelInfo;
+import com.github.tartaricacid.touhoulittlemaid.entity.passive.EntityMaid;
+import com.github.tartaricacid.touhoulittlemaid.geckolib3.core.event.predicate.AnimationEvent;
+import com.github.tartaricacid.touhoulittlemaid.geckolib3.core.molang.context.AnimationContext;
 import com.github.tartaricacid.touhoulittlemaid.geckolib3.geo.animated.AnimatedGeoModel;
 import com.github.tartaricacid.touhoulittlemaid.geckolib3.geo.render.built.GeoBone;
 import com.github.tartaricacid.touhoulittlemaid.geckolib3.geo.render.built.GeoModel;
+import com.github.tartaricacid.touhoulittlemaid.geckolib3.model.provider.data.EntityModelData;
 import com.github.tartaricacid.touhoulittlemaid.geckolib3.resource.GeckoLibCache;
 import com.github.tartaricacid.touhoulittlemaid.geckolib3.util.RenderUtils;
+import com.gly091020.SableMaidRagdoll.compat.CompatMods;
+import com.gly091020.SableMaidRagdoll.compat.more_animation.MoreAnimationUtil;
 import com.gly091020.SableMaidRagdoll.maid.tlm.block.MaidPartBlockEntity;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
@@ -13,16 +21,19 @@ import net.minecraft.client.renderer.ItemInHandRenderer;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemDisplayContext;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.joml.Vector3d;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 
@@ -80,27 +91,36 @@ public class GeoMaidModelRenderer {
                 p -> new GeoMaidRenderer(bufferSource, maidModelInfo.getTexture())
         );
 
-        AnimatedGeoModel animated = new AnimatedGeoModel(geoModel);
-        blockEntity.getPartData().expressions().getExpression("init").ifPresent(expressionMap ->
-                expressionMap.forEach((partName, expression) -> {
-            var part = animated.bones().get(partName);
-            if(part == null)return;
-            switch (expression.actionType()){
-                case "hide": part.setHidden(true);
-                case "show": part.setHidden(false);
-            }
-            part.addPositionX((float) expression.transform().x);
-            part.addPositionY((float) expression.transform().y);
-            part.addPositionZ((float) expression.transform().z);
-            part.addRotation(new Vector3d(Math.toRadians(expression.rotation().x),
-                    Math.toRadians(expression.rotation().y),
-                    Math.toRadians(expression.rotation().z)));
-        }));
+        AnimatedGeoModel animated = getMaidAnimatedModel(blockEntity, path, geoModel, maidModelInfo, partialTick);
+        if (animated == null) {
+            animated = new AnimatedGeoModel(geoModel);
+            AnimatedGeoModel fallbackModel = animated;
+            blockEntity.getPartData().expressions().getExpression("init").ifPresent(expressionMap ->
+                    expressionMap.forEach((partName, expression) -> {
+                var part = fallbackModel.bones().get(partName);
+                if(part == null)return;
+                switch (expression.actionType()){
+                    case "hide": part.setHidden(true);
+                    case "show": part.setHidden(false);
+                }
+                part.addPositionX((float) expression.transform().x);
+                part.addPositionY((float) expression.transform().y);
+                part.addPositionZ((float) expression.transform().z);
+                part.addRotation(new Vector3d(Math.toRadians(expression.rotation().x),
+                        Math.toRadians(expression.rotation().y),
+                        Math.toRadians(expression.rotation().z)));
+            }));
+        }
 
         var renderType = RenderType.entityCutoutNoCull(maidModelInfo.getTexture());
         var vc = bufferSource.getBuffer(renderType);
         var scale = maidModelInfo.getRenderEntityScale();
         poseStack.scale(scale, scale, scale);
+        if (CompatMods.MORE_ANIMATION.isLoaded()
+                && isHeadPart(blockEntity)
+                && blockEntity.getEntity() instanceof EntityMaid maid) {
+            MoreAnimationUtil.captureTears(maid, animated, maidModelInfo.getTexture(), poseStack, bufferSource, light);
+        }
 
         renderer.render(
                 animated,
@@ -122,6 +142,85 @@ public class GeoMaidModelRenderer {
         }
 
         return true;
+    }
+
+    private static @Nullable AnimatedGeoModel getMaidAnimatedModel(MaidPartBlockEntity blockEntity,
+                                                                  ResourceLocation ragdollModelId,
+                                                                  GeoModel ragdollGeoModel,
+                                                                  MaidModelInfo ragdollModelInfo,
+                                                                  float partialTick) {
+        if (!CompatMods.MORE_ANIMATION.isLoaded()
+                || !isHeadPart(blockEntity)
+                || !(blockEntity.getEntity() instanceof EntityMaid maid)) {
+            return null;
+        }
+        ResourceLocation maidEntityModelId = ResourceLocation.tryParse(maid.getModelId());
+        MaidModelInfo maidModelInfo = CustomPackLoader.MAID_MODELS.getInfo(maid.getModelId()).orElse(null);
+        if (maidEntityModelId == null || !ragdollModelId.equals(maidEntityModelId)
+                || maidModelInfo == null || !maidModelInfo.isGeckoModel() || !ragdollModelInfo.isGeckoModel()) {
+            return null;
+        }
+        ResourceLocation maidModelId = maidModelInfo.getModelId();
+        if (!ragdollModelId.equals(maidModelId) || !ragdollModelId.equals(ragdollModelInfo.getModelId())) {
+            return null;
+        }
+
+        GeckoMaidEntity<?> animatable = maid.getData(GeckoMaidEntity.TYPE);
+        animatable.setMaidInfo(maidModelInfo);
+        if (!animatable.updateModel()) {
+            return null;
+        }
+        updateMaidAnimation(maid, animatable, partialTick);
+        AnimatedGeoModel animated = animatable.getCurrentModel();
+        return animated != null && animated.geoModel() == ragdollGeoModel ? animated : null;
+    }
+
+    private static boolean isHeadPart(MaidPartBlockEntity blockEntity) {
+        return blockEntity.getPartData().partName().toLowerCase(Locale.ROOT).contains("head");
+    }
+
+    private static void updateMaidAnimation(EntityMaid maid, GeckoMaidEntity<?> animatable, float partialTick) {
+        boolean sitting = maid.isPassenger() && maid.getVehicle() != null && maid.getVehicle().shouldRiderSit();
+        float bodyRot = Mth.rotLerp(partialTick, maid.yBodyRotO, maid.yBodyRot);
+        float headRot = Mth.rotLerp(partialTick, maid.yHeadRotO, maid.yHeadRot);
+        float netHeadYaw = headRot - bodyRot;
+        if (sitting && maid.getVehicle() instanceof LivingEntity vehicle) {
+            float vehicleBodyRot = Mth.rotLerp(partialTick, vehicle.yBodyRotO, vehicle.yBodyRot);
+            netHeadYaw = headRot - vehicleBodyRot;
+            float clampedHeadYaw = Mth.clamp(Mth.wrapDegrees(netHeadYaw), -85.0F, 85.0F);
+            bodyRot = headRot - clampedHeadYaw;
+            if (clampedHeadYaw * clampedHeadYaw > 2500.0F) {
+                bodyRot += clampedHeadYaw * 0.2F;
+            }
+            netHeadYaw = headRot - bodyRot;
+        }
+
+        float limbSwing = 0.0F;
+        float limbSwingAmount = 0.0F;
+        if (!sitting && maid.isAlive()) {
+            limbSwingAmount = maid.walkAnimation.speed(partialTick);
+            limbSwing = maid.walkAnimation.position(partialTick);
+            if (maid.isBaby()) {
+                limbSwing *= 3.0F;
+            }
+        }
+
+        EntityModelData modelData = new EntityModelData();
+        modelData.isSitting = sitting;
+        modelData.isChild = maid.isBaby();
+        modelData.headPitch = -Mth.lerp(partialTick, maid.xRotO, maid.getXRot());
+        modelData.netHeadYaw = -Mth.clamp(Mth.wrapDegrees(netHeadYaw), -85.0F, 85.0F);
+
+        AnimationEvent<GeckoMaidEntity<?>> event = new AnimationEvent<>(
+                animatable,
+                limbSwing,
+                limbSwingAmount,
+                partialTick,
+                limbSwingAmount <= -0.15F || limbSwingAmount <= 0.15F,
+                List.of(modelData)
+        );
+        AnimationContext<EntityMaid> context = new AnimationContext<>(maid, animatable, event, modelData);
+        animatable.setCustomAnimations(context, event);
     }
 
     private static Map<String, GeoHandRender> buildHandCache(ResourceLocation path) {

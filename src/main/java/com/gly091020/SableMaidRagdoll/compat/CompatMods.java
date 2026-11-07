@@ -11,7 +11,8 @@ public enum CompatMods {
     WINFOX_LITTLE_MAID_SPELL("touhou_little_maid_spell"),
     REVIVE_MAID("revivemaid"),
     FEAST_WINE_GONE("feastwineallgone"),
-    IRON_SPELLBOOKS("irons_spellbooks");
+    IRON_SPELLBOOKS("irons_spellbooks"),
+    MORE_ANIMATION("moreanimation");
 
     final String modID;
     final boolean isLoaded;

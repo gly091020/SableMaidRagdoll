@@ -177,7 +177,9 @@ dependencies {
     // lib
     implementation "com.gly091020:sableragdolllib"
     // 爱憎分明
-    compileOnly "com.github.JumDa5he:callresponse"
+    compileOnly "curse.maven:touhou-little-maid-love-loathe-1631516:$love_loathe_version"
+    // 更多动画
+    compileOnly "curse.maven:winefoxmoreanimation-1652251:$more_animation_version"
     // 夺舍
     implementation(files("libs/revivemaid-1.21.1-neoforge-1.2.0.jar"))
     // 帕秋莉手册
