@@ -2,6 +2,8 @@ package com.gly091020.SableMaidRagdoll.maid.tlm.block;
 
 import com.github.tartaricacid.touhoulittlemaid.entity.ai.edible.CakeEdible;
 import com.github.tartaricacid.touhoulittlemaid.entity.passive.EntityMaid;
+import com.gly091020.SableMaidRagdoll.compat.CompatMods;
+import com.gly091020.SableMaidRagdoll.compat.love_loathe.LoveAndLoatheUtil;
 import com.gly091020.SableMaidRagdoll.init.InitBlocks;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.Entity;
@@ -25,8 +27,11 @@ public class TNTCakeEdible extends CakeEdible {
     @Override
     public boolean consume(EntityMaid maid, BlockPos pos, BlockState state) {
         var r = super.consume(maid, pos, state);
-        if(r)
+        if (r){
+            if(CompatMods.LOVE_LOATHE.isLoaded())
+                LoveAndLoatheUtil.removeWanderTag(maid);
             maid.level().explode(null, null, TNTExplosionDamageCalculator.INSTANCE, maid.position(), 3, false, Level.ExplosionInteraction.BLOCK);
+        }
         return r;
     }
 

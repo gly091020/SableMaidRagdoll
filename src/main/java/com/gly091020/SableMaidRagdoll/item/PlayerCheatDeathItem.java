@@ -90,7 +90,7 @@ public class PlayerCheatDeathItem extends BlockItem {
         var data = stack.get(InitDataComponents.MAID_DOLL_DATA.get());
         if(data == null)return InteractionResultHolder.pass(stack);
         if(level.isClientSide)return InteractionResultHolder.success(stack);
-        if(!toBeRagdoll((ServerPlayer) player, data, stack.getOrDefault(InitDataComponents.CONTROL_MODE, false)))return InteractionResultHolder.pass(stack);
+        if(!toRagdoll((ServerPlayer) player, data, stack.getOrDefault(InitDataComponents.CONTROL_MODE, false)))return InteractionResultHolder.pass(stack);
         addCooldown(stack, player);
         return InteractionResultHolder.success(stack);
     }
@@ -109,7 +109,7 @@ public class PlayerCheatDeathItem extends BlockItem {
         var data = stack.get(InitDataComponents.MAID_DOLL_DATA.get());
         if(data == null)return InteractionResult.PASS;
         if(useOnContext.getLevel().isClientSide)return InteractionResult.SUCCESS;
-        if(!toBeRagdoll((ServerPlayer) useOnContext.getPlayer(), data, stack.getOrDefault(InitDataComponents.CONTROL_MODE, false)))return InteractionResult.PASS;
+        if(!toRagdoll((ServerPlayer) useOnContext.getPlayer(), data, stack.getOrDefault(InitDataComponents.CONTROL_MODE, false)))return InteractionResult.PASS;
         addCooldown(useOnContext.getItemInHand(), useOnContext.getPlayer());
         return InteractionResult.SUCCESS;
     }
@@ -122,7 +122,7 @@ public class PlayerCheatDeathItem extends BlockItem {
         player.getCooldowns().addCooldown(stack.getItem(), 20);
     }
 
-    private boolean toBeRagdoll(ServerPlayer player, MaidDollData data, boolean control){
+    private boolean toRagdoll(ServerPlayer player, MaidDollData data, boolean control){
         var rag = MaidRagdollTypesManager.createRagdollFromDoll(player, player.position().add(0, 0.5, 0), new Vec3(0, -player.getYHeadRot(), 0), Vec3.ZERO, Vec3.ZERO, false, data);
         if(rag == null)return false;
         var motion = JOMLConversion.toJOML(player.getDeltaMovement()).mul(10);

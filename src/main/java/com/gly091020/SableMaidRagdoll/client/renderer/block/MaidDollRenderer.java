@@ -1,6 +1,7 @@
 package com.gly091020.SableMaidRagdoll.client.renderer.block;
 
 import com.gly091020.SableMaidRagdoll.block.maid_doll.MaidDollBlockEntity;
+import com.gly091020.SableMaidRagdoll.init.InitSounds;
 import com.gly091020.SableMaidRagdoll.maid.api.MaidRagdollTypesManager;
 import com.gly091020.SableMaidRagdoll.maid.api.MaidSoundType;
 import com.mojang.blaze3d.vertex.PoseStack;
@@ -64,7 +65,7 @@ public class MaidDollRenderer implements BlockEntityRenderer<MaidDollBlockEntity
             var pos = SableCompanion.INSTANCE.projectOutOfSubLevel(level, (Position) maidDollBlockEntity.getBlockPos().getCenter());
             MaidRagdollTypesManager.playSound(maidDollBlockEntity.getRagdollTypeID(), level, pos, maidDollBlockEntity.getSoundID(), MaidSoundType.IDLE, 0.5f);
             Minecraft.getInstance().getSoundManager().play(new SimpleSoundInstance(
-                    SoundEvents.WOOL_PLACE, SoundSource.BLOCKS, 1, 1, level.random, maidDollBlockEntity.getBlockPos()
+                    InitSounds.PAT.get(), SoundSource.BLOCKS, 1, 1, level.random, maidDollBlockEntity.getBlockPos()
             ));
         }
 

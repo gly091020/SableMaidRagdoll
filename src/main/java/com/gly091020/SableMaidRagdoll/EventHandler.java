@@ -120,6 +120,8 @@ public class EventHandler {
             WineFoxHurtDancingManager.startDancing(rag);
         if(ownerAttack && SableMaidRagdoll.CONFIG.sounds.watermelonHurt)
             event.getEntity().level().playSound(null, BlockPos.containing(event.getEntity().position()), InitSounds.WATERMELON_HURT.get(), SoundSource.PLAYERS, 1, 1);
+        else if (SableMaidRagdoll.CONFIG.sounds.hungry)
+            event.getEntity().level().playSound(null, BlockPos.containing(event.getEntity().position()), InitSounds.HUNGRY.get(), SoundSource.PLAYERS, 1, 1);
         else if(SableMaidRagdoll.CONFIG.sounds.metalPipe)
             event.getEntity().level().playSound(null, BlockPos.containing(event.getEntity().position()), InitSounds.PIPE.get(), SoundSource.PLAYERS, 1, 1);
         event.setCanceled(true);
@@ -240,12 +242,11 @@ public class EventHandler {
                 rag.getExtraData().contains("explosion", Tag.TAG_BYTE) &&
                 rag.getExtraData().getBoolean("explosion")) {
             final int level = 5;
-            ScheduleManager.scheduleDelayed((ServerLevel) entity.level(), 0, () ->
-                    blockEntity.getLevel().explode(entity, null, MaidExplosionDamageCalculator.INSTANCE,
-                            entity.position().add(0, 1, 0), level, false, Level.ExplosionInteraction.MOB));
-            // rag.remove();
-            // todo:不稳定的 java.lang.RuntimeException: Body has been removed
-            // fuck Sable
+            ScheduleManager.scheduleDelayed((ServerLevel) entity.level(), 0, () -> {
+                blockEntity.getLevel().explode(entity, null, MaidExplosionDamageCalculator.INSTANCE,
+                        entity.position().add(0, 1, 0), level, false, Level.ExplosionInteraction.MOB);
+                rag.remove();
+            });
             rag.getExtraData().remove("explosion");
 
             if(SableMaidRagdoll.CONFIG.sounds.metalPipe)

@@ -37,5 +37,7 @@ public class ModSoundDefinitionsProvider extends SoundDefinitionsProvider {
                 .with(sound(ResourceLocation.fromNamespaceAndPath(SableMaidRagdoll.MODID, "chicken"))));
         add(InitSounds.CANNON_LAUNCH.get(), definition()
                 .with(sound(ResourceLocation.fromNamespaceAndPath(SableMaidRagdoll.MODID, "cannon_launch"))));
+        add(InitSounds.PAT.get(), definition()
+                .with(sound(ResourceLocation.fromNamespaceAndPath(SableMaidRagdoll.MODID, "pat"))));
     }
 }

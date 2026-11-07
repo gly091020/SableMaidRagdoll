@@ -30,6 +30,8 @@ public class InitSounds {
             SoundEvent.createVariableRangeEvent(ResourceLocation.fromNamespaceAndPath(SableMaidRagdoll.MODID, "chicken")));
     public static final DeferredHolder<SoundEvent, SoundEvent> CANNON_LAUNCH = SOUNDS.register("cannon_launch", () ->
             SoundEvent.createVariableRangeEvent(ResourceLocation.fromNamespaceAndPath(SableMaidRagdoll.MODID, "cannon_launch")));
+    public static final DeferredHolder<SoundEvent, SoundEvent> PAT = SOUNDS.register("pat", () ->
+            SoundEvent.createVariableRangeEvent(ResourceLocation.fromNamespaceAndPath(SableMaidRagdoll.MODID, "pat")));
 
     public static void init(IEventBus bus){
         SOUNDS.register(bus);

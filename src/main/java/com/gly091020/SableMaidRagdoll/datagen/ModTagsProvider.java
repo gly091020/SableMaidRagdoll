@@ -4,6 +4,7 @@ import com.github.tartaricacid.touhoulittlemaid.init.InitItems;
 import com.gly091020.SableMaidRagdoll.SableMaidRagdoll;
 import com.gly091020.SableMaidRagdoll.init.InitBlocks;
 import com.gly091020.SableMaidRagdoll.init.InitTags;
+import com.gly091020.SableMaidRagdoll.maid.lmrb.init.LMRBInitBlocks;
 import com.gly091020.SableMaidRagdoll.maid.tlm.init.TLMInitBlocks;
 import dev.leo.sableplayerragdoll.SablePlayerRagdoll;
 import net.minecraft.core.HolderLookup;
@@ -34,7 +35,8 @@ public class ModTagsProvider {
         @Override
         protected void addTags(HolderLookup.Provider provider) {
             tag(TagKey.create(Registries.BLOCK, ResourceLocation.fromNamespaceAndPath("sableragdolllib", "ragdoll_part")))
-                    .add(TLMInitBlocks.MAID_PART_BLOCK.get());
+                    .add(TLMInitBlocks.MAID_PART_BLOCK.get())
+                    .add(LMRBInitBlocks.LITTLE_MAID_PART_BLOCK.get());
 
             tag(BlockTags.MINEABLE_WITH_AXE)
                     .add(InitBlocks.MOB_CANNON_BLOCK.get());
