@@ -1,8 +1,11 @@
 package com.gly091020.SableMaidRagdoll.item.spawn_egg;
 
+import com.gly091020.SableMaidRagdoll.client.api.ITooltipAbleItem;
+import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.dispenser.DispenseItemBehavior;
+import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.stats.Stats;
 import net.minecraft.world.InteractionHand;
@@ -27,10 +30,11 @@ import net.minecraft.world.phys.HitResult;
 import net.neoforged.neoforge.common.DeferredSpawnEggItem;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.List;
 import java.util.Objects;
 import java.util.function.Supplier;
 
-public abstract class SMRDeferredSpawnEggItem extends DeferredSpawnEggItem {
+public abstract class SMRDeferredSpawnEggItem extends DeferredSpawnEggItem implements ITooltipAbleItem {
     public SMRDeferredSpawnEggItem(Supplier<? extends EntityType<? extends Mob>> type, int backgroundColor, int highlightColor) {
         super(type, backgroundColor, highlightColor, new Properties());
     }
@@ -115,4 +119,14 @@ public abstract class SMRDeferredSpawnEggItem extends DeferredSpawnEggItem {
     }
 
     public abstract void afterSpawn(@Nullable Entity owner, Entity entity);
+
+    @Override
+    public void appendBackgroundText(List<Component> tooltips) {
+        tooltips.add(Component.translatable("item.sablemaidragdoll.spawn_egg.tooltip.bg").withStyle(ChatFormatting.GRAY));
+    }
+
+    @Override
+    public void appendHelpText(List<Component> tooltips) {
+        tooltips.add(Component.translatable("item.sablemaidragdoll.spawn_egg.tooltip.help").withStyle(ChatFormatting.WHITE));
+    }
 }

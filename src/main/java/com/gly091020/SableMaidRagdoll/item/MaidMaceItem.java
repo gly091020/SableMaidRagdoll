@@ -1,10 +1,10 @@
 package com.gly091020.SableMaidRagdoll.item;
 
 import com.gly091020.SableMaidRagdoll.SableMaidRagdoll;
+import com.gly091020.SableMaidRagdoll.client.api.ITooltipAbleItem;
 import com.gly091020.SableMaidRagdoll.init.InitSounds;
 import com.gly091020.SableMaidRagdoll.maid.api.MaidRagdollTypesManager;
 import com.gly091020.SableRagdollLib.entity.PartSeat;
-import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.sounds.SoundSource;
@@ -16,12 +16,11 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Rarity;
-import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.phys.Vec3;
 
 import java.util.List;
 
-public class MaidMaceItem extends Item {
+public class MaidMaceItem extends Item implements ITooltipAbleItem {
     public MaidMaceItem() {
         super(new Properties().stacksTo(1).rarity(Rarity.RARE));
     }
@@ -41,15 +40,18 @@ public class MaidMaceItem extends Item {
         return InteractionResult.SUCCESS;
     }
 
-    @Override
-    public void appendHoverText(ItemStack p_41421_, TooltipContext p_339594_, List<Component> p_41423_, TooltipFlag p_41424_) {
-        super.appendHoverText(p_41421_, p_339594_, p_41423_, p_41424_);
-        p_41423_.add(Component.translatable("item.sablemaidragdoll.maid_mace.tip1").withStyle(ChatFormatting.GRAY));
-        p_41423_.add(Component.translatable("item.sablemaidragdoll.maid_mace.tip2").withStyle(ChatFormatting.GRAY));
-    }
-
     private void addCooldown(ItemStack stack, Player player){
         if(player.isCreative())return;
         player.getCooldowns().addCooldown(stack.getItem(), 100);
+    }
+
+    @Override
+    public void appendHelpText(List<Component> tooltips) {
+        generateComponentList(tooltips, this, 1, true);
+    }
+
+    @Override
+    public void appendBackgroundText(List<Component> tooltips) {
+        generateComponentList(tooltips, this, 1, false);
     }
 }

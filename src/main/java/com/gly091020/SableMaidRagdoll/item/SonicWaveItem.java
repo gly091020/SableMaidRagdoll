@@ -1,6 +1,7 @@
 package com.gly091020.SableMaidRagdoll.item;
 
 import com.gly091020.SableMaidRagdoll.SableMaidRagdoll;
+import com.gly091020.SableMaidRagdoll.client.api.ITooltipAbleItem;
 import com.gly091020.SableMaidRagdoll.init.InitSounds;
 import com.gly091020.SableMaidRagdoll.maid.api.MaidRagdollTypesManager;
 import com.gly091020.SableMaidRagdoll.util.AuthorUtil;
@@ -30,7 +31,7 @@ import org.joml.Vector3d;
 
 import java.util.List;
 
-public class SonicWaveItem extends Item {
+public class SonicWaveItem extends Item implements ITooltipAbleItem {
     private static final double RANGE = 8.0;
     private static final double HALF_ANGLE_COS = 0.5;
     private static final double PUSH_STRENGTH = 3.0;
@@ -38,12 +39,6 @@ public class SonicWaveItem extends Item {
 
     public SonicWaveItem() {
         super(new Properties().stacksTo(1).rarity(Rarity.RARE));
-    }
-
-    @Override
-    public void appendHoverText(ItemStack p_41421_, TooltipContext p_339594_, List<Component> p_41423_, TooltipFlag p_41424_) {
-        super.appendHoverText(p_41421_, p_339594_, p_41423_, p_41424_);
-        p_41423_.add(Component.translatable("item.sablemaidragdoll.sonic_wave.tip").withStyle(ChatFormatting.GRAY));
     }
 
     @Override
@@ -141,5 +136,15 @@ public class SonicWaveItem extends Item {
                 dir.scale(8).add(0, 2, 0), new Vec3(0, 5, 0), true);
         if(ragdoll == null)return false;
         return true;
+    }
+
+    @Override
+    public void appendHelpText(List<Component> tooltips) {
+        generateComponentList(tooltips, this, 1, true);
+    }
+
+    @Override
+    public void appendBackgroundText(List<Component> tooltips) {
+        generateComponentList(tooltips, this, 2, false);
     }
 }

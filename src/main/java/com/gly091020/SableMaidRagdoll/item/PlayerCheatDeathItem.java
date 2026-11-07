@@ -3,6 +3,7 @@ package com.gly091020.SableMaidRagdoll.item;
 import com.gly091020.SableMaidRagdoll.SableMaidRagdoll;
 import com.gly091020.SableMaidRagdoll.block.maid_doll.MaidDollBlockEntity;
 import com.gly091020.SableMaidRagdoll.block.maid_doll.MaidDollData;
+import com.gly091020.SableMaidRagdoll.client.api.ITooltipAbleItem;
 import com.gly091020.SableMaidRagdoll.init.*;
 import com.gly091020.SableMaidRagdoll.maid.api.MaidRagdollTypesManager;
 import com.gly091020.SableMaidRagdoll.util.MaidRagdollAdvancementEvents;
@@ -43,7 +44,7 @@ import org.joml.Vector3d;
 import java.util.List;
 import java.util.Optional;
 
-public class PlayerCheatDeathItem extends BlockItem {
+public class PlayerCheatDeathItem extends BlockItem implements ITooltipAbleItem {
     public PlayerCheatDeathItem() {
         super(InitBlocks.MAID_DOLL_BLOCK.get(), new Properties().stacksTo(1).rarity(Rarity.RARE));
     }
@@ -162,9 +163,6 @@ public class PlayerCheatDeathItem extends BlockItem {
         p_41423_.add(p_41421_.getOrDefault(InitDataComponents.CONTROL_MODE, false) ?
                 Component.translatable("item.sablemaidragdoll.player_cheat_death.open").withStyle(ChatFormatting.GREEN):
                 Component.translatable("item.sablemaidragdoll.player_cheat_death.close").withStyle(ChatFormatting.RED));
-        p_41423_.add(Component.translatable("item.sablemaidragdoll.player_cheat_death.tip").withStyle(ChatFormatting.GRAY));
-        p_41423_.add(Component.translatable("item.sablemaidragdoll.player_cheat_death.tip1").withStyle(ChatFormatting.GRAY));
-        p_41423_.add(Component.translatable("item.sablemaidragdoll.player_cheat_death.tip2").withStyle(ChatFormatting.GRAY));
     }
 
     @Override
@@ -181,5 +179,15 @@ public class PlayerCheatDeathItem extends BlockItem {
             blockEntity.setData(stack.getOrDefault(InitDataComponents.MAID_DOLL_DATA, MaidDollData.EMPTY));
         }
         return r;
+    }
+
+    @Override
+    public void appendHelpText(List<Component> tooltips) {
+        generateComponentList(tooltips, this, 3, true);
+    }
+
+    @Override
+    public void appendBackgroundText(List<Component> tooltips) {
+        generateComponentList(tooltips, this, 2, false);
     }
 }

@@ -2,6 +2,7 @@ package com.gly091020.SableMaidRagdoll.item;
 
 import com.github.tartaricacid.touhoulittlemaid.entity.passive.DefaultMaidSoundPack;
 import com.gly091020.SableMaidRagdoll.block.maid_doll.MaidDollData;
+import com.gly091020.SableMaidRagdoll.client.api.ITooltipAbleItem;
 import com.gly091020.SableMaidRagdoll.compat.CompatMods;
 import com.gly091020.SableMaidRagdoll.compat.maid_spell.MaidSpellUtil;
 import com.gly091020.SableMaidRagdoll.init.InitDataComponents;
@@ -47,7 +48,7 @@ import static com.gly091020.SableMaidRagdoll.init.InitDataComponents.ENHANCE_WIT
 /**
  * 布娃娃魔杖：绑定模型的方式与 {@link PlayerCheatDeathItem} 相同，长按使用把准星指向的生物变成布娃娃。
  */
-public class RagdollWandItem extends Item {
+public class RagdollWandItem extends Item implements ITooltipAbleItem {
     /** 蓄力所需 tick 数。 */
     private static final int CHARGE_TICKS = 40;
     /** 每级效率减少的蓄力 tick 数。 */
@@ -337,10 +338,6 @@ public class RagdollWandItem extends Item {
         super.appendHoverText(stack, context, tooltip, flag);
         tooltip.add(Component.translatable(isWineFox(stack) ? "item.sablemaidragdoll.ragdoll_wand.fox.desc" :
                 "item.sablemaidragdoll.ragdoll_wand.desc").withStyle(ChatFormatting.AQUA));
-        tooltip.add(Component.translatable("item.sablemaidragdoll.ragdoll_wand.tip").withStyle(ChatFormatting.GRAY));
-        tooltip.add(Component.translatable("item.sablemaidragdoll.ragdoll_wand.tip1").withStyle(ChatFormatting.GRAY));
-        tooltip.add(Component.translatable("item.sablemaidragdoll.ragdoll_wand.tip2").withStyle(ChatFormatting.GRAY));
-
         if(stack.getOrDefault(ENHANCE_WITH_STARLIGHT_DAGGER, false))
             tooltip.add(Component.translatable("item.sablemaidragdoll.ragdoll_wand.tip.powerful").withStyle(ChatFormatting.LIGHT_PURPLE));
     }
@@ -375,5 +372,15 @@ public class RagdollWandItem extends Item {
             return true;
         }
         return false;
+    }
+
+    @Override
+    public void appendHelpText(List<Component> tooltips) {
+        generateComponentList(tooltips, this, 3, true);
+    }
+
+    @Override
+    public void appendBackgroundText(List<Component> tooltips) {
+
     }
 }
