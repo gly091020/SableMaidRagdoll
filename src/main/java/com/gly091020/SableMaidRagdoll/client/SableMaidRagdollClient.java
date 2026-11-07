@@ -27,6 +27,11 @@ public class SableMaidRagdollClient {
             GLFW.GLFW_KEY_G,
             "key.category.sablemaidragdoll"
     );
+    public static final KeyMapping MAKE_SOUND = new KeyMapping(
+            "key.sablemaidragdoll.make_sound",
+            GLFW.GLFW_KEY_GRAVE_ACCENT,
+            "key.category.sablemaidragdoll"
+    );
 
     public SableMaidRagdollClient(ModContainer mc){
         mc.registerExtensionPoint(IConfigScreenFactory.class, (m, p) -> AutoConfig.getConfigScreen(SableMaidRagdollConfig.class, p).get());

@@ -6,7 +6,7 @@ import net.neoforged.neoforge.network.event.RegisterPayloadHandlersEvent;
 
 public class PacketRegistry {
     public static void onRegisterPayloadHandlers(RegisterPayloadHandlersEvent event) {
-        var registrar = event.registrar(SableMaidRagdoll.MODID).versioned("2");
+        var registrar = event.registrar(SableMaidRagdoll.MODID).versioned("3");
         registrar.playToServer(
                 ServerboundEmojiSelectPacket.TYPE,
                 ServerboundEmojiSelectPacket.STREAM_CODEC,
@@ -17,6 +17,12 @@ public class PacketRegistry {
                 ServerboundMobCannonAimPacket.TYPE,
                 ServerboundMobCannonAimPacket.STREAM_CODEC,
                 ServerboundMobCannonAimPacket::handle
+        );
+
+        registrar.playToServer(
+                ServerboundPlayMaidSoundPacket.TYPE,
+                ServerboundPlayMaidSoundPacket.STREAM_CODEC,
+                ServerboundPlayMaidSoundPacket::handle
         );
 
         MaidRagdollTypesManager.registryNetwork(registrar);

@@ -7,6 +7,9 @@ import com.gly091020.SableMaidRagdoll.maid.tlm.client.renderer.MaidPartRenderer;
 import com.gly091020.SableMaidRagdoll.maid.tlm.client.screen.EmojiSelectScreen;
 import com.gly091020.SableMaidRagdoll.maid.tlm.geo.GeoMaidModelRenderer;
 import com.gly091020.SableMaidRagdoll.maid.tlm.init.TLMInitBlockEntities;
+import com.gly091020.SableMaidRagdoll.network.ServerboundPlayMaidSoundPacket;
+import com.gly091020.SableRagdollLib.entity.PartSeat;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderers;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
@@ -14,7 +17,9 @@ import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
 import net.neoforged.neoforge.client.event.ClientTickEvent;
 import net.neoforged.neoforge.event.AddReloadListenerEvent;
+import net.neoforged.neoforge.network.PacketDistributor;
 
+import static com.gly091020.SableMaidRagdoll.client.SableMaidRagdollClient.MAKE_SOUND;
 import static com.gly091020.SableMaidRagdoll.client.SableMaidRagdollClient.OPEN_EMOJI;
 
 @OnlyIn(Dist.CLIENT)
@@ -42,6 +47,10 @@ public class TLMClientEventHandler {
             if (!MobCannonAimManager.isAiming()) {
                 EmojiSelectScreen.tryOpen();
             }
+        }
+        while (MAKE_SOUND.consumeClick()){
+            if(Minecraft.getInstance().player != null && Minecraft.getInstance().player.getVehicle() instanceof PartSeat)
+                PacketDistributor.sendToServer(new ServerboundPlayMaidSoundPacket());
         }
     }
 }
