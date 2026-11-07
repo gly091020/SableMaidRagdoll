@@ -1,6 +1,7 @@
 package com.gly091020.SableMaidRagdoll.init;
 
 import com.gly091020.SableMaidRagdoll.SableMaidRagdoll;
+import com.gly091020.SableMaidRagdoll.block.giant_slime.GiantSlimeBlock;
 import com.gly091020.SableMaidRagdoll.block.maid_doll.MaidDollBlock;
 import com.gly091020.SableMaidRagdoll.block.mob_cannon.MobCannonBlock;
 import com.gly091020.SableMaidRagdoll.block.tnt_cake.TNTCakeBlock;
@@ -17,6 +18,8 @@ public class InitBlocks {
     public static final DeferredHolder<Block, TNTCakeBlock> TNT_CAKE_BLOCK = BLOCKS.register("tnt_cake", r -> new TNTCakeBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.CAKE)));
     public static final DeferredHolder<Block, MaidDollBlock> MAID_DOLL_BLOCK = BLOCKS.register("maid_doll", () -> new MaidDollBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.WHITE_WOOL).isValidSpawn(Blocks::never)));
     public static final DeferredHolder<Block, MobCannonBlock> MOB_CANNON_BLOCK = BLOCKS.register("mob_cannon", () -> new MobCannonBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.DISPENSER)));
+    public static final DeferredHolder<Block, GiantSlimeBlock> GIANT_SLIME_BLOCK = BLOCKS.register("giant_slime_block",
+            () -> new GiantSlimeBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.SLIME_BLOCK).noLootTable()));
 
     public static void init(IEventBus bus){
         BLOCKS.register(bus);

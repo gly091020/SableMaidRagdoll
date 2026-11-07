@@ -36,6 +36,7 @@ public class MaidCreativeTab {
             output.accept(InitItems.TNT_CAKE_ITEM.get());
         if(SableMaidRagdoll.CONFIG.items.mobCannon)
             output.accept(InitItems.MOB_CANNON_ITEM.get());
+        output.accept(InitItems.GIANT_SLIME_BLOCK_ITEM.get());
         MaidRagdollTypesManager.appendCreateTabItem(output);
         output.accept(InitItems.COPY_RAGDOLL_ID_ITEM.get());
     }

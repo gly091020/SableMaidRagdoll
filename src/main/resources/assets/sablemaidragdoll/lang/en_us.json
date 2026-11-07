@@ -139,5 +139,8 @@
   "dialogue.touhou_little_maid_spell.winefox.victory_ragdoll_8": "So hungry——————",
   "dialogue.touhou_little_maid_spell.winefox.victory_ragdoll_9": "This isn't funny...",
   "dialogue.touhou_little_maid_spell.winefox.victory_ragdoll_10": "I really wish my name didn't have the word \"Wine Fox\" in it, waaah~",
-  "item.sablemaidragdoll.ragdoll_wand.tip.powerful": "Enhanced with the Starglint Dagger — can deal true damage"
+  "item.sablemaidragdoll.ragdoll_wand.tip.powerful": "Enhanced with the Starglint Dagger — can deal true damage",
+
+  "block.sablemaidragdoll.giant_slime_block": "Giant Slime Block",
+  "text.sablemaidragdoll.shift_to_extend": "Press §a[Shift]§r to view usage instructions"
 }

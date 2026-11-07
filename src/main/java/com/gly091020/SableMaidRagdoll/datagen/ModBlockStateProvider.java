@@ -27,6 +27,7 @@ public class ModBlockStateProvider extends BlockStateProvider {
                 models().getBuilder("little_maid_part").texture("particle", modLoc("block/maid_part")));
         horizontalBlock(InitBlocks.MAID_DOLL_BLOCK.get(),
                 models().getBuilder("maid_doll").texture("particle", mcLoc("block/white_wool")));
+        simpleBlock(InitBlocks.GIANT_SLIME_BLOCK.get(), models().getExistingFile(mcLoc("block/slime_block")));
         tntCakeBlock();
     }
 

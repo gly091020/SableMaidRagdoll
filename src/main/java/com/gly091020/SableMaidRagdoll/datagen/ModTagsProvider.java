@@ -40,6 +40,9 @@ public class ModTagsProvider {
 
             tag(BlockTags.MINEABLE_WITH_AXE)
                     .add(InitBlocks.MOB_CANNON_BLOCK.get());
+
+            tag(TagKey.create(Registries.BLOCK, ResourceLocation.fromNamespaceAndPath("sable", "bouncy")))
+                    .add(InitBlocks.GIANT_SLIME_BLOCK.get());
         }
     }
 

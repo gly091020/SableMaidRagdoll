@@ -1,6 +1,7 @@
 package com.gly091020.SableMaidRagdoll.init;
 
 import com.gly091020.SableMaidRagdoll.SableMaidRagdoll;
+import com.gly091020.SableMaidRagdoll.block.giant_slime.GiantSlimeBlockEntity;
 import com.gly091020.SableMaidRagdoll.block.maid_doll.MaidDollBlockEntity;
 import com.gly091020.SableMaidRagdoll.block.mob_cannon.MobCannonBlockEntity;
 import net.minecraft.core.registries.Registries;
@@ -15,6 +16,9 @@ public class InitBlockEntities {
             BlockEntityType.Builder.of(MaidDollBlockEntity::new, InitBlocks.MAID_DOLL_BLOCK.get()).build(null));
     public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<MobCannonBlockEntity>> MOB_CANNON_BLOCK_ENTITY = BLOCK_ENTITIES.register("mob_cannon", () ->
             BlockEntityType.Builder.of(MobCannonBlockEntity::new, InitBlocks.MOB_CANNON_BLOCK.get()).build(null));
+    public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<GiantSlimeBlockEntity>> GIANT_SLIME_BLOCK_ENTITY =
+            BLOCK_ENTITIES.register("giant_slime_block", () ->
+                    BlockEntityType.Builder.of(GiantSlimeBlockEntity::new, InitBlocks.GIANT_SLIME_BLOCK.get()).build(null));
 
     public static void init(IEventBus bus){
         BLOCK_ENTITIES.register(bus);

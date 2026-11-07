@@ -1,11 +1,13 @@
 package com.gly091020.SableMaidRagdoll.client;
 
 import com.gly091020.SableMaidRagdoll.SableMaidRagdoll;
+import com.gly091020.SableMaidRagdoll.client.api.ITooltipAbleItem;
 import com.gly091020.SableMaidRagdoll.client.model.MaidDollDefaultModel;
+import com.gly091020.SableMaidRagdoll.client.renderer.RagdollWandHandRenderer;
+import com.gly091020.SableMaidRagdoll.client.renderer.block.GiantSlimeBlockRenderer;
 import com.gly091020.SableMaidRagdoll.client.renderer.block.MaidDollRenderer;
 import com.gly091020.SableMaidRagdoll.client.renderer.block.MobCannonItemRenderer;
 import com.gly091020.SableMaidRagdoll.client.renderer.block.MobCannonRenderer;
-import com.gly091020.SableMaidRagdoll.client.renderer.RagdollWandHandRenderer;
 import com.gly091020.SableMaidRagdoll.client.renderer.item.PlayerCheatDeathItemRenderer;
 import com.gly091020.SableMaidRagdoll.client.renderer.item.RagdollWandItemRenderer;
 import com.gly091020.SableMaidRagdoll.client.screen.MobCannonScreen;
@@ -13,8 +15,10 @@ import com.gly091020.SableMaidRagdoll.init.InitBlockEntities;
 import com.gly091020.SableMaidRagdoll.init.InitItems;
 import com.gly091020.SableMaidRagdoll.init.InitMenus;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.renderer.BlockEntityWithoutLevelRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderers;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.HumanoidArm;
 import net.neoforged.api.distmarker.Dist;
@@ -24,8 +28,10 @@ import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
 import net.neoforged.neoforge.client.event.*;
 import net.neoforged.neoforge.client.extensions.common.IClientItemExtensions;
 import net.neoforged.neoforge.client.extensions.common.RegisterClientExtensionsEvent;
-import net.neoforged.neoforge.event.AddReloadListenerEvent;
+import net.neoforged.neoforge.event.entity.player.ItemTooltipEvent;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.ArrayList;
 
 import static com.gly091020.SableMaidRagdoll.client.SableMaidRagdollClient.AIM_CANNON;
 import static com.gly091020.SableMaidRagdoll.client.SableMaidRagdollClient.OPEN_EMOJI;
@@ -43,6 +49,10 @@ public class ClientEventHandler {
         BlockEntityRenderers.register(
                 InitBlockEntities.MOB_CANNON_BLOCK_ENTITY.get(),
                 MobCannonRenderer::new
+        );
+        BlockEntityRenderers.register(
+                InitBlockEntities.GIANT_SLIME_BLOCK_ENTITY.get(),
+                GiantSlimeBlockRenderer::new
         );
     }
 
@@ -131,5 +141,17 @@ public class ClientEventHandler {
     @SubscribeEvent
     public static void onRenderGui(RenderGuiEvent.Post event) {
         MobCannonAimManager.render(event.getGuiGraphics());
+    }
+
+    @SubscribeEvent
+    public static void onTooltip(ItemTooltipEvent event){
+        if(!(event.getItemStack().getItem() instanceof ITooltipAbleItem iTooltipAbleItem))return;
+        var list = new ArrayList<Component>();
+        iTooltipAbleItem.appendBackgroundText(list);
+        if(Screen.hasShiftDown())
+            iTooltipAbleItem.appendHelpText(list);
+        else
+            list.add(Component.translatable("text.sablemaidragdoll.shift_to_extend"));
+        event.getToolTip().addAll(list);
     }
 }

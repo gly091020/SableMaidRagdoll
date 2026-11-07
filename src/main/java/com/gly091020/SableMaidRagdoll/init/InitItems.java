@@ -1,6 +1,7 @@
 package com.gly091020.SableMaidRagdoll.init;
 
 import com.gly091020.SableMaidRagdoll.SableMaidRagdoll;
+import com.gly091020.SableMaidRagdoll.block.giant_slime.GiantSlimeBlockItem;
 import com.gly091020.SableMaidRagdoll.item.*;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.world.item.BlockItem;
@@ -21,6 +22,8 @@ public class InitItems {
     public static final DeferredHolder<Item, RagdollWandItem> RAGDOLL_WAND_ITEM = ITEMS.register("ragdoll_wand", resourceLocation -> new RagdollWandItem());
     public static final DeferredHolder<Item, CheatDeathBaubleItem> CHEAT_DEATH_BAUBLE_ITEM = ITEMS.register("cheat_death_bauble", resourceLocation -> new CheatDeathBaubleItem());
     public static final DeferredHolder<Item, BlockItem> MOB_CANNON_ITEM = ITEMS.register("mob_cannon", resourceLocation -> new BlockItem(MOB_CANNON_BLOCK.get(), new Item.Properties()));
+    public static final DeferredHolder<Item, GiantSlimeBlockItem> GIANT_SLIME_BLOCK_ITEM = ITEMS.register("giant_slime_block",
+            resourceLocation -> new GiantSlimeBlockItem(InitBlocks.GIANT_SLIME_BLOCK.get(), new Item.Properties()));
     public static final DeferredHolder<Item, Item> MOD_ICON_ITEM = ITEMS.register("mod_icon", resourceLocation -> new Item(new Item.Properties()));
 
     public static void init(IEventBus bus){

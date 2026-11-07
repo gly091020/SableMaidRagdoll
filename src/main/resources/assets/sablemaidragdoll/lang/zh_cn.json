@@ -139,5 +139,8 @@
   "dialogue.touhou_little_maid_spell.winefox.victory_ragdoll_9": "这并不好笑……",
   "dialogue.touhou_little_maid_spell.winefox.victory_ragdoll_10": "真希望我的名字里没有“酒狐”这两个字呜呜呜~",
   "advancements.sablemaidragdoll.cursh_wine_fox_boss.title": "i狐这一块",
-  "advancements.sablemaidragdoll.cursh_wine_fox_boss.description": "你是说你把星之魔女酒狐砸死了？？？"
+  "advancements.sablemaidragdoll.cursh_wine_fox_boss.description": "你是说你把星之魔女酒狐砸死了？？？",
+  "block.sablemaidragdoll.giant_slime_block": "巨型粘液块",
+
+  "text.sablemaidragdoll.shift_to_extend": "按 §a[Shift]§r 查看使用方法"
 }
