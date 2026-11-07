@@ -4,6 +4,7 @@ import com.github.yimeng261.maidspell.compat.irons_spellbooks.registry.IronsSpel
 import com.gly091020.SableMaidRagdoll.SableMaidRagdoll;
 import com.gly091020.SableMaidRagdoll.advancements.MaidRagdollEventTrigger;
 import com.gly091020.SableMaidRagdoll.init.InitCustomStats;
+import com.gly091020.SableMaidRagdoll.init.InitItems;
 import com.gly091020.SableMaidRagdoll.util.MaidCreativeTab;
 import com.gly091020.SableMaidRagdoll.util.MaidRagdollAdvancementEvents;
 import net.minecraft.advancements.Advancement;
@@ -53,17 +54,18 @@ public class ModAdvancementProvider extends AdvancementProvider {
                     .addCriterion("enter_world", PlayerTrigger.TriggerInstance.tick())
                     .save(saver, ResourceLocation.fromNamespaceAndPath(SableMaidRagdoll.MODID, "root"), existingFileHelper);
 
-            var cheatDeath = itemObtained(saver, existingFileHelper, root, "cheat_death_bauble", com.gly091020.SableMaidRagdoll.init.InitItems.CHEAT_DEATH_BAUBLE_ITEM.get());
-            itemObtained(saver, existingFileHelper, cheatDeath, "maid_mace", com.gly091020.SableMaidRagdoll.init.InitItems.MAID_MACE_ITEM.get());
+            var cheatDeath = itemObtained(saver, existingFileHelper, root, "cheat_death_bauble", InitItems.CHEAT_DEATH_BAUBLE_ITEM.get());
+            itemObtained(saver, existingFileHelper, cheatDeath, "maid_mace", InitItems.MAID_MACE_ITEM.get());
             var maidDoll = itemObtained(saver, existingFileHelper, cheatDeath, "player_cheat_death", MaidCreativeTab.getDollDisplayStack(), AdvancementType.GOAL);
-            var mobCannon = itemObtained(saver, existingFileHelper, cheatDeath, "mob_cannon", com.gly091020.SableMaidRagdoll.init.InitItems.MOB_CANNON_ITEM.get());
+            var mobCannon = itemObtained(saver, existingFileHelper, cheatDeath, "mob_cannon", InitItems.MOB_CANNON_ITEM.get());
 
             maidEvent(saver, existingFileHelper, root, "hit_maid_ragdoll", MaidRagdollAdvancementEvents.HIT_MAID.getName(), Items.NETHERITE_SWORD);
             maidEvent(saver, existingFileHelper, maidDoll, "control_maid", MaidRagdollAdvancementEvents.CONTROL_MAID.getName(), Items.ARMOR_STAND);
+            itemObtained(saver, existingFileHelper, root, "big_slime_block", InitItems.GIANT_SLIME_BLOCK_ITEM.get());
             Advancement.Builder.advancement()
                     .parent(mobCannon)
                     .display(
-                            com.gly091020.SableMaidRagdoll.init.InitItems.MOB_CANNON_ITEM.get(),
+                            InitItems.MOB_CANNON_ITEM.get(),
                             Component.translatable("advancements.sablemaidragdoll.double_cannon.title"),
                             Component.translatable("advancements.sablemaidragdoll.double_cannon.description"),
                             null,
@@ -75,10 +77,12 @@ public class ModAdvancementProvider extends AdvancementProvider {
                     .addCriterion("double_cannon", MaidRagdollEventTrigger.create(MaidRagdollAdvancementEvents.DOUBLE_CANNON.getName()))
                     .save(saver, ResourceLocation.fromNamespaceAndPath(SableMaidRagdoll.MODID, "double_cannon"), existingFileHelper);
 
-            statMilestone(saver, existingFileHelper, root, "maid_knocked_away_100", com.gly091020.SableMaidRagdoll.init.InitItems.MAID_MACE_ITEM.get(),
+            statMilestone(saver, existingFileHelper, root, "maid_knocked_away_100", InitItems.MAID_MACE_ITEM.get(),
                     InitCustomStats.MAID_KNOCKED_AWAY.get(), 100);
-            statMilestone(saver, existingFileHelper, maidDoll, "to_maid_100", com.gly091020.SableMaidRagdoll.init.InitItems.PLAYER_CHEAT_DEATH_ITEM.get(),
+            statMilestone(saver, existingFileHelper, maidDoll, "to_maid_100", InitItems.PLAYER_CHEAT_DEATH_ITEM.get(),
                     InitCustomStats.TO_MAID.get(), 100);
+            statMilestone(saver, existingFileHelper, maidDoll, "pat_maid_1000", InitItems.PLAYER_CHEAT_DEATH_ITEM.get(),
+                    InitCustomStats.PAT_DOLL.get(), 1000);
 
             // 父进度是前置模组的，不在本次 datagen 记录里，用原版 save 重载跳过父进度校验
             Advancement.Builder.advancement()

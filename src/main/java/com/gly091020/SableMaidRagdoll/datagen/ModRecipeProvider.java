@@ -9,11 +9,9 @@ import net.minecraft.advancements.critereon.InventoryChangeTrigger;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.PackOutput;
-import net.minecraft.data.recipes.RecipeCategory;
-import net.minecraft.data.recipes.RecipeOutput;
-import net.minecraft.data.recipes.RecipeProvider;
-import net.minecraft.data.recipes.ShapelessRecipeBuilder;
+import net.minecraft.data.recipes.*;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
@@ -104,6 +102,14 @@ public class ModRecipeProvider extends RecipeProvider {
                 .requires(Items.NETHER_STAR)
                 .unlockedBy("get", InventoryChangeTrigger.TriggerInstance.hasItems(Items.NETHER_STAR))
                 .save(recipeOutput, modId("ragdoll_wand"));
+
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, InitItems.GIANT_SLIME_BLOCK_ITEM.get())
+                .pattern("## ")
+                .pattern("## ")
+                .pattern("   ")
+                .define('#', Items.SLIME_BLOCK)
+                .unlockedBy("get", InventoryChangeTrigger.TriggerInstance.hasItems(Items.SLIME_BLOCK))
+                .save(recipeOutput, modId("giant_slime_block"));
     }
 
     private static ResourceLocation modId(String path) {

@@ -1,0 +1,21 @@
+{
+  "sortnum": 14,
+  "name": "巨型粘液块",
+  "icon": "sablemaidragdoll:giant_slime_block",
+  "category": "touhou_little_maid:sable_maid_ragdoll",
+  "pages": [
+    {
+      "type": "patchouli:spotlight",
+      "item": "sablemaidragdoll:giant_slime_block",
+      "text": "放置后会展开为 3×3×3 的大型粘液块。放置点会向外偏移，并在附近寻找不会挤压玩家、且至少有一面获得支撑的位置。$(br2)它可以从地面、墙面或天花板向外延伸，不再强制要求地板。"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "任意一部分被破坏时，整个巨型粘液块会一起消失，并只返还一个物品。$(br2)作为物理结构碰撞到另一个 Sable 物理子级时，接触面夹角不超过 30° 会直接固定；角度较大时会先形成可断开的软关节，把两个面逐渐拉齐后再固定。"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "粘接只对另一具物理结构生效，不会粘住静态世界中的方块。$(br2)大型粘液块滚过其他物理结构时，就可以把它一起带走。"
+    }
+  ]
+}

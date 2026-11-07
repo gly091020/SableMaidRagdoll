@@ -159,5 +159,10 @@
   "item.sablemaidragdoll.giant_slime_block.tip.help": "Sticks to physical structures when it collides with them",
   "item.sablemaidragdoll.giant_slime_block.tip.bg": "A huge slime block. Maybe it can be used to collect ragdolls?",
   "item.sablemaidragdoll.spawn_egg.tooltip.help": "Right-click to spawn the corresponding maid; sneak to spawn a tamed maid",
-  "item.sablemaidragdoll.spawn_egg.tooltip.bg": "A spawn egg for a maid with a specific skin"
+  "item.sablemaidragdoll.spawn_egg.tooltip.bg": "A spawn egg for a maid with a specific skin",
+  "stat.sablemaidragdoll.pat_doll": "Maid Doll Head Pats",
+  "advancements.sablemaidragdoll.big_slime_block.title": "A Giant Slime Block!",
+  "advancements.sablemaidragdoll.big_slime_block.description": "Sticky-tastic Slime Block",
+  "advancements.sablemaidragdoll.pat_maid_1000.title": "My Head’s Going Bald...",
+  "advancements.sablemaidragdoll.pat_maid_1000.description": "It feels like it’s about to catch fire from friction..."
 }

@@ -1,11 +1,13 @@
 package com.gly091020.SableMaidRagdoll.block.maid_doll;
 
+import com.gly091020.SableMaidRagdoll.init.InitCustomStats;
 import com.gly091020.SableMaidRagdoll.init.InitDataComponents;
 import com.gly091020.SableMaidRagdoll.init.InitItems;
 import com.mojang.serialization.MapCodec;
 import dev.ryanhcode.sable.api.block.BlockWithSubLevelCollisionCallback;
 import dev.ryanhcode.sable.api.physics.callback.BlockSubLevelCollisionCallback;
 import net.minecraft.core.BlockPos;
+import net.minecraft.stats.Stats;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -82,6 +84,7 @@ public class MaidDollBlock extends HorizontalDirectionalBlock implements EntityB
     protected InteractionResult useWithoutItem(BlockState state, Level level, BlockPos pos, Player player, BlockHitResult hitResult) {
         if(level.isClientSide || !(level.getBlockEntity(pos) instanceof MaidDollBlockEntity blockEntity))return InteractionResult.SUCCESS_NO_ITEM_USED;
         blockEntity.triggerPat();
+        player.awardStat(Stats.CUSTOM.get(InitCustomStats.PAT_DOLL.get()));
         return InteractionResult.SUCCESS_NO_ITEM_USED;
     }
 

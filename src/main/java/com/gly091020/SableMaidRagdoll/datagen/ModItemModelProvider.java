@@ -49,41 +49,8 @@ public class ModItemModelProvider extends ItemModelProvider {
                 .parent(new ModelFile.UncheckedModelFile("item/generated"))
                 .texture("layer0", "minecraft:item/stick");
 
-        var giantSlime = getBuilder("giant_slime_block")
-                .texture("all", mcLoc("block/slime_block"))
-                .texture("particle", mcLoc("block/slime_block"));
-        float cellSize = 8.0F;
-        float gap = 0.2F;
-        for (int x = 0; x < 2; x++) {
-            for (int y = 0; y < 2; y++) {
-                for (int z = 0; z < 2; z++) {
-                    float minX = x * cellSize;
-                    float minY = y * cellSize;
-                    float minZ = z * cellSize;
-                    giantSlime.element()
-                            .from(minX + gap, minY + gap, minZ + gap)
-                            .to(minX + cellSize - gap, minY + cellSize - gap, minZ + cellSize - gap)
-                            .allFaces((direction, face) -> face.texture("#all"))
-                            .end();
-                }
-            }
-        }
-        giantSlime.transforms()
-                .transform(ItemDisplayContext.GUI)
-                .rotation(30, 225, 0).scale(0.7F, 0.7F, 0.7F).end()
-                .transform(ItemDisplayContext.GROUND)
-                .scale(0.6F, 0.6F, 0.6F).end()
-                .transform(ItemDisplayContext.FIXED)
-                .scale(0.7F, 0.7F, 0.7F).end()
-                .transform(ItemDisplayContext.THIRD_PERSON_RIGHT_HAND)
-                .scale(0.5F, 0.5F, 0.5F).end()
-                .transform(ItemDisplayContext.THIRD_PERSON_LEFT_HAND)
-                .scale(0.5F, 0.5F, 0.5F).end()
-                .transform(ItemDisplayContext.FIRST_PERSON_RIGHT_HAND)
-                .scale(0.5F, 0.5F, 0.5F).end()
-                .transform(ItemDisplayContext.FIRST_PERSON_LEFT_HAND)
-                .scale(0.5F, 0.5F, 0.5F).end()
-                .end();
+        getBuilder("giant_slime_block")
+                .parent(new ModelFile.UncheckedModelFile("minecraft:block/slime_block"));
 
         getBuilder("ragdoll_wand")
                 .parent(new ModelFile.UncheckedModelFile("builtin/entity"))

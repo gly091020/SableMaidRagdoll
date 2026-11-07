@@ -1,0 +1,21 @@
+{
+  "sortnum": 14,
+  "name": "Giant Slime Block",
+  "icon": "sablemaidragdoll:giant_slime_block",
+  "category": "touhou_little_maid:sable_maid_ragdoll",
+  "pages": [
+    {
+      "type": "patchouli:spotlight",
+      "item": "sablemaidragdoll:giant_slime_block",
+      "text": "When placed, this expands into a large 3×3×3 slime block. The placement point shifts outward and searches nearby for a position that does not trap the player and has support on at least one face.$(br2)It can extend from floors, walls or ceilings, and no longer requires a floor beneath it."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "Breaking any part removes the entire giant slime block and returns only one item.$(br2)When it collides with another Sable physical sub-level, contact faces within 30° are fixed immediately. Larger angles first create a breakable soft joint that gradually pulls the two faces into alignment before fixing them."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "Adhesion only works on another physical structure and never sticks to blocks in the static world.$(br2)Roll the giant slime block across another physical structure to pull it along."
+    }
+  ]
+}

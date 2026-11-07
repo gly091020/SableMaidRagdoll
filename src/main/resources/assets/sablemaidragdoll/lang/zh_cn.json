@@ -63,6 +63,7 @@
 
   "stat.sablemaidragdoll.maid_knocked_away": "击飞女仆次数",
   "stat.sablemaidragdoll.to_maid": "变成女仆次数",
+  "stat.sablemaidragdoll.pat_doll": "摸摸女仆玩偶次数",
 
   "advancements.sablemaidragdoll.root.title": "女仆布娃娃",
   "advancements.sablemaidragdoll.root.description": "管它实不实用，神金就对了",
@@ -159,5 +160,9 @@
   "item.sablemaidragdoll.giant_slime_block.tip.help": "与物理结构碰撞时可黏住物理结构",
   "item.sablemaidragdoll.giant_slime_block.tip.bg": "超级大的粘液块，貌似可以用来收集布娃娃？",
   "item.sablemaidragdoll.spawn_egg.tooltip.help": "右击生成对应女仆，潜行生成驯服后的女仆",
-  "item.sablemaidragdoll.spawn_egg.tooltip.bg": "生成特定女仆皮肤女仆的刷怪蛋"
+  "item.sablemaidragdoll.spawn_egg.tooltip.bg": "生成特定女仆皮肤女仆的刷怪蛋",
+  "advancements.sablemaidragdoll.big_slime_block.title": "超大的粘液块！",
+  "advancements.sablemaidragdoll.big_slime_block.description": "吸特乐粘液块",
+  "advancements.sablemaidragdoll.pat_maid_1000.title": "头要秃了……",
+  "advancements.sablemaidragdoll.pat_maid_1000.description": "感觉马上就摩擦起火了……"
 }
