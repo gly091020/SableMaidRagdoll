@@ -5,6 +5,7 @@ import com.github.tartaricacid.touhoulittlemaid.client.model.bedrock.BedrockMode
 import com.github.tartaricacid.touhoulittlemaid.client.model.bedrock.SimpleBedrockModel;
 import com.github.tartaricacid.touhoulittlemaid.client.resource.BedrockModelLoader;
 import com.github.tartaricacid.touhoulittlemaid.client.resource.CustomPackLoader;
+import com.github.tartaricacid.touhoulittlemaid.client.resource.models.PlayerMaidModels;
 import com.github.tartaricacid.touhoulittlemaid.client.resource.pojo.MaidModelInfo;
 import com.gly091020.SableMaidRagdoll.maid.tlm.block.MaidFairyPartBlockEntity;
 import com.gly091020.SableMaidRagdoll.maid.tlm.util.TLMMaidModelHelper;
@@ -30,6 +31,7 @@ import java.util.Set;
  */
 public final class MaidPartRenderCache {
     private static final Map<ResourceLocation, Entry> CACHE = new HashMap<>();
+    private static final Map<String, Entry> PLAYER_CACHE = new HashMap<>();
     /** 妖精布娃娃按模型类型（成年/幼年）缓存 */
     private static final Map<MaidFairyPartBlockEntity.ModelType, FairyEntry> FAIRY_CACHE =
             new EnumMap<>(MaidFairyPartBlockEntity.ModelType.class);
@@ -42,11 +44,24 @@ public final class MaidPartRenderCache {
      */
     public static void clear() {
         CACHE.clear();
+        PLAYER_CACHE.clear();
         FAIRY_CACHE.clear();
     }
 
     public static Entry get(ResourceLocation defFile) {
         return CACHE.computeIfAbsent(defFile, MaidPartRenderCache::load);
+    }
+
+    public static Entry player(String playerName) {
+        return PLAYER_CACHE.computeIfAbsent(playerName, name -> new Entry(
+                PlayerMaidModels.getPlayerMaidModel(name),
+                new MaidModelInfo() {
+                    @Override
+                    public ResourceLocation getTexture() {
+                        return PlayerMaidModels.getPlayerSkin(name);
+                    }
+                }
+        ));
     }
 
     /**

@@ -3,8 +3,6 @@ package com.gly091020.SableMaidRagdoll.block.giant_slime;
 import com.gly091020.SableMaidRagdoll.init.InitBlockEntities;
 import dev.ryanhcode.sable.Sable;
 import dev.ryanhcode.sable.api.physics.constraint.ConstraintJointAxis;
-import dev.ryanhcode.sable.api.physics.constraint.FixedConstraintConfiguration;
-import dev.ryanhcode.sable.api.physics.constraint.FixedConstraintHandle;
 import dev.ryanhcode.sable.api.physics.constraint.GenericConstraintConfiguration;
 import dev.ryanhcode.sable.api.physics.constraint.GenericConstraintHandle;
 import dev.ryanhcode.sable.api.physics.constraint.PhysicsConstraintHandle;
@@ -38,13 +36,19 @@ import java.util.concurrent.ConcurrentHashMap;
 public class GiantSlimeBlockEntity extends BlockEntity {
     private static final double ALIGNED_ANGLE = Math.toRadians(30.0);
     private static final double SOFT_BREAK_DISTANCE = 0.75;
-    private static final double FIXED_BREAK_DISTANCE = 1.5;
+    private static final double STRONG_BREAK_DISTANCE = 0.4;
     private static final double SOFT_LINEAR_STIFFNESS = 800;
     private static final double SOFT_LINEAR_DAMPING = 60;
     private static final double SOFT_LINEAR_MAX_FORCE = 800;
     private static final double SOFT_ANGULAR_STIFFNESS = 500;
     private static final double SOFT_ANGULAR_DAMPING = 50;
     private static final double SOFT_ANGULAR_MAX_TORQUE = 400;
+    private static final double STRONG_LINEAR_STIFFNESS = 4000;
+    private static final double STRONG_LINEAR_DAMPING = 220;
+    private static final double STRONG_LINEAR_MAX_FORCE = 3000;
+    private static final double STRONG_ANGULAR_STIFFNESS = 2800;
+    private static final double STRONG_ANGULAR_DAMPING = 180;
+    private static final double STRONG_ANGULAR_MAX_TORQUE = 2000;
 
     private @Nullable BlockPos masterPos;
     private final Map<UUID, PendingAdhesion> pending = new ConcurrentHashMap<>();
@@ -117,10 +121,10 @@ public class GiantSlimeBlockEntity extends BlockEntity {
                 iterator.remove();
                 continue;
             }
-            if (!adhesion.fixed()
+            if (!adhesion.strong()
                     && faceAngle(thisSubLevel, otherSubLevel,
                     adhesion.normalThis(), adhesion.normalOther()) <= ALIGNED_ANGLE) {
-                upgradeToFixed(container, thisSubLevel, otherSubLevel, adhesion);
+                upgradeToStrong(container, thisSubLevel, otherSubLevel, adhesion);
             }
         }
     }
@@ -129,11 +133,11 @@ public class GiantSlimeBlockEntity extends BlockEntity {
                               PendingAdhesion pendingAdhesion) {
         Adhesion existing = adhesions.get(pendingAdhesion.targetId());
         if (existing != null && existing.joint() != null && existing.joint().isValid()) {
-            if (!existing.fixed() && pendingAdhesion.aligned()) {
+            if (!existing.strong() && pendingAdhesion.aligned()) {
                 ServerSubLevel other = container.getSubLevel(pendingAdhesion.targetId()) instanceof ServerSubLevel sub
                         ? sub : null;
                 if (other != null && !other.isRemoved()) {
-                    upgradeToFixed(container, thisSubLevel, other, existing);
+                    upgradeToStrong(container, thisSubLevel, other, existing);
                 }
             }
             return;
@@ -158,44 +162,44 @@ public class GiantSlimeBlockEntity extends BlockEntity {
                 pendingAdhesion.normalOther()
         );
         PhysicsConstraintHandle joint = pendingAdhesion.aligned()
-                ? createFixedJoint(container, thisSubLevel, other, adhesion)
+                ? createStrongJoint(container, thisSubLevel, other, adhesion)
                 : createSoftJoint(container, thisSubLevel, other, adhesion);
         if (joint != null && joint.isValid()) {
             adhesions.put(pendingAdhesion.targetId(), adhesion.withJoint(joint));
         }
     }
 
-    private void upgradeToFixed(ServerSubLevelContainer container, ServerSubLevel thisSubLevel,
-                                ServerSubLevel otherSubLevel, Adhesion adhesion) {
-        PhysicsConstraintHandle fixed = createFixedJoint(container, thisSubLevel, otherSubLevel, adhesion);
-        if (fixed != null && fixed.isValid()) {
+    private void upgradeToStrong(ServerSubLevelContainer container, ServerSubLevel thisSubLevel,
+                                 ServerSubLevel otherSubLevel, Adhesion adhesion) {
+        PhysicsConstraintHandle strong = createStrongJoint(container, thisSubLevel, otherSubLevel, adhesion);
+        if (strong != null && strong.isValid()) {
             removeJoint(adhesion.joint());
-            adhesion.joint = fixed;
-            adhesion.fixed = true;
+            adhesion.joint = strong;
+            adhesion.strong = true;
         }
     }
 
-    private static @Nullable PhysicsConstraintHandle createFixedJoint(
+    private static @Nullable PhysicsConstraintHandle createStrongJoint(
             ServerSubLevelContainer container, ServerSubLevel thisSubLevel,
             ServerSubLevel otherSubLevel, Adhesion adhesion) {
-        if (!anchorsInPlots(thisSubLevel, otherSubLevel, adhesion)) {
-            return null;
-        }
-        Quaterniond orientation = fixedOrientation(thisSubLevel, otherSubLevel,
-                adhesion.normalThis(), adhesion.normalOther());
-        FixedConstraintHandle joint = container.physicsSystem().getPipeline().addConstraint(
-                thisSubLevel, otherSubLevel,
-                new FixedConstraintConfiguration(adhesion.anchorThis(), adhesion.anchorOther(), orientation));
-        if (joint == null || !joint.isValid()) {
-            return null;
-        }
-        playAttachFeedback(container.getLevel(), thisSubLevel, adhesion.anchorThis());
-        return joint;
+        return createMotorJoint(container, thisSubLevel, otherSubLevel, adhesion,
+                STRONG_LINEAR_STIFFNESS, STRONG_LINEAR_DAMPING, STRONG_LINEAR_MAX_FORCE,
+                STRONG_ANGULAR_STIFFNESS, STRONG_ANGULAR_DAMPING, STRONG_ANGULAR_MAX_TORQUE);
     }
 
     private static @Nullable PhysicsConstraintHandle createSoftJoint(
             ServerSubLevelContainer container, ServerSubLevel thisSubLevel,
             ServerSubLevel otherSubLevel, Adhesion adhesion) {
+        return createMotorJoint(container, thisSubLevel, otherSubLevel, adhesion,
+                SOFT_LINEAR_STIFFNESS, SOFT_LINEAR_DAMPING, SOFT_LINEAR_MAX_FORCE,
+                SOFT_ANGULAR_STIFFNESS, SOFT_ANGULAR_DAMPING, SOFT_ANGULAR_MAX_TORQUE);
+    }
+
+    private static @Nullable PhysicsConstraintHandle createMotorJoint(
+            ServerSubLevelContainer container, ServerSubLevel thisSubLevel,
+            ServerSubLevel otherSubLevel, Adhesion adhesion,
+            double linearStiffness, double linearDamping, double maxForce,
+            double angularStiffness, double angularDamping, double maxTorque) {
         if (!anchorsInPlots(thisSubLevel, otherSubLevel, adhesion)) {
             return null;
         }
@@ -212,18 +216,18 @@ public class GiantSlimeBlockEntity extends BlockEntity {
             return null;
         }
         double mass = Math.max(massOf(thisSubLevel), massOf(otherSubLevel));
-        joint.setMotor(ConstraintJointAxis.LINEAR_X, 0, SOFT_LINEAR_STIFFNESS * mass,
-                SOFT_LINEAR_DAMPING * mass, true, SOFT_LINEAR_MAX_FORCE * mass);
-        joint.setMotor(ConstraintJointAxis.LINEAR_Y, 0, SOFT_LINEAR_STIFFNESS * mass,
-                SOFT_LINEAR_DAMPING * mass, true, SOFT_LINEAR_MAX_FORCE * mass);
-        joint.setMotor(ConstraintJointAxis.LINEAR_Z, 0, SOFT_LINEAR_STIFFNESS * mass,
-                SOFT_LINEAR_DAMPING * mass, true, SOFT_LINEAR_MAX_FORCE * mass);
-        joint.setMotor(ConstraintJointAxis.ANGULAR_X, 0, SOFT_ANGULAR_STIFFNESS * mass,
-                SOFT_ANGULAR_DAMPING * mass, true, SOFT_ANGULAR_MAX_TORQUE * mass);
-        joint.setMotor(ConstraintJointAxis.ANGULAR_Y, 0, SOFT_ANGULAR_STIFFNESS * mass,
-                SOFT_ANGULAR_DAMPING * mass, true, SOFT_ANGULAR_MAX_TORQUE * mass);
-        joint.setMotor(ConstraintJointAxis.ANGULAR_Z, 0, SOFT_ANGULAR_STIFFNESS * mass,
-                SOFT_ANGULAR_DAMPING * mass, true, SOFT_ANGULAR_MAX_TORQUE * mass);
+        joint.setMotor(ConstraintJointAxis.LINEAR_X, 0, linearStiffness * mass,
+                linearDamping * mass, true, maxForce * mass);
+        joint.setMotor(ConstraintJointAxis.LINEAR_Y, 0, linearStiffness * mass,
+                linearDamping * mass, true, maxForce * mass);
+        joint.setMotor(ConstraintJointAxis.LINEAR_Z, 0, linearStiffness * mass,
+                linearDamping * mass, true, maxForce * mass);
+        joint.setMotor(ConstraintJointAxis.ANGULAR_X, 0, angularStiffness * mass,
+                angularDamping * mass, true, maxTorque * mass);
+        joint.setMotor(ConstraintJointAxis.ANGULAR_Y, 0, angularStiffness * mass,
+                angularDamping * mass, true, maxTorque * mass);
+        joint.setMotor(ConstraintJointAxis.ANGULAR_Z, 0, angularStiffness * mass,
+                angularDamping * mass, true, maxTorque * mass);
         playAttachFeedback(container.getLevel(), thisSubLevel, adhesion.anchorThis());
         return joint;
     }
@@ -245,23 +249,6 @@ public class GiantSlimeBlockEntity extends BlockEntity {
                 && otherSubLevel.getPlot().contains(adhesion.anchorOther());
     }
 
-    private static Quaterniond fixedOrientation(ServerSubLevel thisSubLevel, ServerSubLevel otherSubLevel,
-                                                Vector3d normalThis, Vector3d normalOther) {
-        Quaterniond first = thisSubLevel.logicalPose().orientation();
-        Quaterniond second = otherSubLevel.logicalPose().orientation();
-        Vector3d globalThis = first.transform(new Vector3d(normalThis), new Vector3d());
-        Vector3d globalOther = second.transform(new Vector3d(normalOther).negate(), new Vector3d());
-        double dot = Math.max(-1.0, Math.min(1.0, globalThis.dot(globalOther)));
-        double angle = Math.acos(dot);
-        Vector3d axis = globalThis.cross(globalOther, new Vector3d());
-        Quaterniond alignment = new Quaterniond();
-        if (axis.lengthSquared() > 1.0E-8) {
-            axis.normalize();
-            alignment.rotateAxis(-angle, axis);
-        }
-        return alignment.mul(second).premul(first.conjugate(new Quaterniond()));
-    }
-
     private static double faceAngle(ServerSubLevel thisSubLevel, ServerSubLevel otherSubLevel,
                                     Vector3d normalThis, Vector3d normalOther) {
         Vector3d globalThis = thisSubLevel.logicalPose().orientation().transform(
@@ -278,7 +265,7 @@ public class GiantSlimeBlockEntity extends BlockEntity {
                 new Vector3d(adhesion.anchorThis()), new Vector3d());
         Vector3d otherAnchor = otherSubLevel.logicalPose().transformPosition(
                 new Vector3d(adhesion.anchorOther()), new Vector3d());
-        double maxDistance = adhesion.fixed() ? FIXED_BREAK_DISTANCE : SOFT_BREAK_DISTANCE;
+        double maxDistance = adhesion.strong() ? STRONG_BREAK_DISTANCE : SOFT_BREAK_DISTANCE;
         return thisAnchor.distanceSquared(otherAnchor) > maxDistance * maxDistance;
     }
 
@@ -338,18 +325,18 @@ public class GiantSlimeBlockEntity extends BlockEntity {
     private static final class Adhesion {
         private final UUID targetId;
         private PhysicsConstraintHandle joint;
-        private boolean fixed;
+        private boolean strong;
         private final Vector3d anchorThis;
         private final Vector3d anchorOther;
         private final Vector3d normalThis;
         private final Vector3d normalOther;
 
-        private Adhesion(UUID targetId, @Nullable PhysicsConstraintHandle joint, boolean fixed,
+        private Adhesion(UUID targetId, @Nullable PhysicsConstraintHandle joint, boolean strong,
                          Vector3d anchorThis, Vector3d anchorOther,
                          Vector3d normalThis, Vector3d normalOther) {
             this.targetId = targetId;
             this.joint = joint;
-            this.fixed = fixed;
+            this.strong = strong;
             this.anchorThis = new Vector3d(anchorThis);
             this.anchorOther = new Vector3d(anchorOther);
             this.normalThis = new Vector3d(normalThis);
@@ -364,8 +351,8 @@ public class GiantSlimeBlockEntity extends BlockEntity {
             return joint;
         }
 
-        private boolean fixed() {
-            return fixed;
+        private boolean strong() {
+            return strong;
         }
 
         private Vector3d anchorThis() {
@@ -385,7 +372,7 @@ public class GiantSlimeBlockEntity extends BlockEntity {
         }
 
         private Adhesion withJoint(PhysicsConstraintHandle joint) {
-            return new Adhesion(targetId, joint, fixed, anchorThis, anchorOther, normalThis, normalOther);
+            return new Adhesion(targetId, joint, strong, anchorThis, anchorOther, normalThis, normalOther);
         }
     }
 }

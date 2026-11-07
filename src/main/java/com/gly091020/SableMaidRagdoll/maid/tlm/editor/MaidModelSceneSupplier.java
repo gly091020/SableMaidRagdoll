@@ -3,13 +3,16 @@ package com.gly091020.SableMaidRagdoll.maid.tlm.editor;
 import com.github.tartaricacid.simplebedrockmodel.client.bedrock.model.BedrockPart;
 import com.github.tartaricacid.touhoulittlemaid.client.model.bedrock.BedrockModel;
 import com.github.tartaricacid.touhoulittlemaid.client.resource.models.MaidModels;
+import com.github.tartaricacid.touhoulittlemaid.client.resource.models.PlayerMaidModels;
 import com.github.tartaricacid.touhoulittlemaid.geckolib3.geo.render.built.GeoBone;
 import com.github.tartaricacid.touhoulittlemaid.geckolib3.resource.GeckoLibCache;
 import com.gly091020.SableMaidRagdoll.SableMaidRagdoll;
+import com.gly091020.SableMaidRagdoll.maid.tlm.TLMMaidRagdoll;
 import com.gly091020.SableMaidRagdoll.maid.tlm.util.TLMMixinFunction;
 import com.gly091020.SableRagdollLib.editor.api.AbstractModelSceneObject;
 import com.gly091020.SableRagdollLib.editor.api.IModelSceneSupplier;
 import com.lowdragmc.lowdraglib2.gui.util.TreeNode;
+import net.minecraft.client.Minecraft;
 import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.Nullable;
 
@@ -20,6 +23,7 @@ public class MaidModelSceneSupplier implements IModelSceneSupplier {
     public ResourceLocation getModel(Path path) {
         var id = toRL(path);
         if(id == null)return null;
+        if(id.equals(TLMMaidRagdoll.PLAYER_MAID_MODEL_ID))return id;
         if(MaidModels.getInstance().getModel(id.toString()).isEmpty() &&
                 GeckoLibCache.getInstance().getGeoModels().get(id) == null)return null;
         return id;
@@ -48,6 +52,15 @@ public class MaidModelSceneSupplier implements IModelSceneSupplier {
 
     @Override
     public void buildModelTree(ResourceLocation resourceLocation, TreeNode<String, String> root) {
+        if (resourceLocation.equals(TLMMaidRagdoll.PLAYER_MAID_MODEL_ID)) {
+            var player = Minecraft.getInstance().player;
+            String playerName = player != null ? player.getGameProfile().getName() : "alex";
+            var model = PlayerMaidModels.getPlayerMaidModel(playerName);
+            for (BedrockPart part : TLMMixinFunction.getShouldRender(model)) {
+                addChild(model, part, root);
+            }
+            return;
+        }
         buildGeoModelTree(resourceLocation, root);
         var model = MaidModels.getInstance().getModel(resourceLocation.toString()).orElse(null);
         if(model == null)return;

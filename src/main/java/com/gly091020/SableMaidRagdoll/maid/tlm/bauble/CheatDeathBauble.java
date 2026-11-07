@@ -3,6 +3,7 @@ package com.gly091020.SableMaidRagdoll.maid.tlm.bauble;
 import com.github.tartaricacid.touhoulittlemaid.api.bauble.IMaidBauble;
 import com.github.tartaricacid.touhoulittlemaid.entity.passive.EntityMaid;
 import com.gly091020.SableMaidRagdoll.SableMaidRagdoll;
+import com.gly091020.SableMaidRagdoll.maid.tlm.TLMMaidRagdoll;
 import com.gly091020.SableMaidRagdoll.init.InitSounds;
 import com.gly091020.SableRagdollLib.api.RagdollHelper;
 import com.gly091020.SableRagdollLib.api.RagdollManager;
@@ -20,6 +21,7 @@ import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.phys.Vec3;
 import org.apache.commons.lang3.mutable.MutableFloat;
 import org.joml.Vector3d;
 
@@ -105,10 +107,9 @@ public class CheatDeathBauble implements IMaidBauble {
         var level = (ServerLevel) maid.level();
         var container = SubLevelContainer.getContainer(level);
         if(container == null)return false;
-        var id = ResourceLocation.fromNamespaceAndPath(SableMaidRagdoll.MODID, maid.getModelId().replace(":", "/"));
         var system = container.physicsSystem();
-        var parts = RagdollHelper.createRagdoll(level, maid.position().add(0, 0.5, 0),
-                id);
+        var parts = TLMMaidRagdoll.createMaidRagdoll(level, maid, maid.position().add(0, 0.5, 0),
+                Vec3.ZERO);
         if(parts == null)return false;
         var maidMotion = JOMLConversion.toJOML(maid.getDeltaMovement());
 

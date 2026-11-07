@@ -2,15 +2,18 @@ package com.gly091020.SableMaidRagdoll.maid.tlm.editor;
 
 import com.github.tartaricacid.touhoulittlemaid.client.model.bedrock.BedrockModel;
 import com.github.tartaricacid.touhoulittlemaid.client.resource.models.MaidModels;
+import com.github.tartaricacid.touhoulittlemaid.client.resource.models.PlayerMaidModels;
 import com.github.tartaricacid.touhoulittlemaid.client.resource.pojo.MaidModelInfo;
 import com.github.tartaricacid.touhoulittlemaid.geckolib3.geo.animated.AnimatedGeoModel;
 import com.github.tartaricacid.touhoulittlemaid.geckolib3.geo.render.built.GeoModel;
 import com.github.tartaricacid.touhoulittlemaid.geckolib3.resource.GeckoLibCache;
 import com.gly091020.SableMaidRagdoll.maid.tlm.geo.GeoMaidRenderer;
+import com.gly091020.SableMaidRagdoll.maid.tlm.TLMMaidRagdoll;
 import com.gly091020.SableMaidRagdoll.maid.tlm.util.TLMMaidModelHelper;
 import com.gly091020.SableMaidRagdoll.maid.tlm.util.TLMMixinFunction;
 import com.gly091020.SableRagdollLib.editor.api.AbstractModelSceneObject;
 import com.mojang.blaze3d.vertex.PoseStack;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
@@ -24,6 +27,21 @@ public class MaidModelObject extends AbstractModelSceneObject {
     private AnimatedGeoModel geoModel = null;
 
     public MaidModelObject(ResourceLocation modelID){
+        if (modelID.equals(TLMMaidRagdoll.PLAYER_MAID_MODEL_ID)) {
+            var player = Minecraft.getInstance().player;
+            String playerName = player != null ? player.getGameProfile().getName() : "alex";
+            this.info = new MaidModelInfo() {
+                @Override
+                public ResourceLocation getTexture() {
+                    var currentPlayer = Minecraft.getInstance().player;
+                    return currentPlayer != null
+                            ? currentPlayer.getSkin().texture()
+                            : PlayerMaidModels.getPlayerSkin(playerName);
+                }
+            };
+            this.model = PlayerMaidModels.getPlayerMaidModel(playerName);
+            return;
+        }
         var model = MaidModels.getInstance().getModel(modelID.toString());
         var info = MaidModels.getInstance().getInfo(modelID.toString());
         this.info = info.orElse(null);

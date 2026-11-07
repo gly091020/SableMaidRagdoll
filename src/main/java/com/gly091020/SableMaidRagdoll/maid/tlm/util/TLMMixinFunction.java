@@ -13,8 +13,8 @@ import com.gly091020.SableMaidRagdoll.compat.CompatMods;
 import com.gly091020.SableMaidRagdoll.init.InitSounds;
 import com.gly091020.SableMaidRagdoll.init.InitTags;
 import com.gly091020.SableMaidRagdoll.mixin.tlm.BedrockModelAccessor;
+import com.gly091020.SableMaidRagdoll.maid.tlm.TLMMaidRagdoll;
 import com.gly091020.SableRagdollLib.api.Ragdoll;
-import com.gly091020.SableRagdollLib.api.RagdollHelper;
 import com.gly091020.SableRagdollLib.api.ScheduleManager;
 import com.gly091020.SableRagdollLib.entity.PartSeat;
 import dev.ryanhcode.sable.companion.math.JOMLConversion;
@@ -41,15 +41,11 @@ public class TLMMixinFunction {
     }
 
     public static @Nullable Ragdoll getRagdoll(EntityBox self, EntityMaid maid) {
-        var id = ResourceLocation.fromNamespaceAndPath(
-                SableMaidRagdoll.MODID,
-                maid.getModelId().replace(":", "/")
-        );
-
-        var reg = RagdollHelper.createRagdoll(
+        var reg = TLMMaidRagdoll.createMaidRagdoll(
                 (ServerLevel) maid.level(),
+                maid,
                 maid.position().add(0, 0.5, 0),
-                id
+                Vec3.ZERO
         );
 
         if (reg == null) return null;
@@ -91,9 +87,8 @@ public class TLMMixinFunction {
 
     public static void saddleLaunchCreateRagdoll(ServerLevel level, EntityMaid maid, Vector3d maidMotion, Vector3d rotation, boolean addMaid){
         rotation.add(0, 0, 10);
-        var id = ResourceLocation.fromNamespaceAndPath(SableMaidRagdoll.MODID, maid.getModelId().replace(":", "/"));
-        var parts = RagdollHelper.createRagdoll(level, maid.position().add(0, 0.5, 0), new Vec3(-90, -maid.getYHeadRot(), 0),
-                id);
+        var parts = TLMMaidRagdoll.createMaidRagdoll(level, maid, maid.position().add(0, 0.5, 0),
+                new Vec3(-90, -maid.getYHeadRot(), 0));
         if(parts == null)return;
         // 等待 2tick 是为了等待刚体创建在施加推力
         scheduleDelayed(level, 2, () -> {
@@ -105,9 +100,8 @@ public class TLMMixinFunction {
     }
 
     public static void manCreateRagdoll(ServerLevel level, EntityMaid maid, Vector3d maidMotion, boolean addMaid){
-        var id = ResourceLocation.fromNamespaceAndPath(SableMaidRagdoll.MODID, maid.getModelId().replace(":", "/"));
-        var parts = RagdollHelper.createRagdoll(level, maid.position().add(0, 0.5, 0), new Vec3(0, -maid.getYHeadRot(), 0),
-                id);
+        var parts = TLMMaidRagdoll.createMaidRagdoll(level, maid, maid.position().add(0, 0.5, 0),
+                new Vec3(0, -maid.getYHeadRot(), 0));
         if(parts == null)return;
         // 等待 2tick 是为了等待刚体创建在施加推力
         scheduleDelayed(level, 2, () -> {

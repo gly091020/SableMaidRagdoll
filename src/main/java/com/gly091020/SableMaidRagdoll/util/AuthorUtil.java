@@ -14,6 +14,8 @@ public class AuthorUtil {
     public static final UUID JUMDA5HE = UUID.fromString("3da49788-4b30-45df-b1ca-126ef1757bb4");
     // 我同学
     public static final UUID CHICKEN = UUID.fromString("80714dff-b45e-4524-aa0d-c47906824e30");
+    // 943
+    public static final UUID TARTARIC_ACID = UUID.fromString("992e248e-89c4-4f93-bfae-56b761f00c04");
 
     @OnlyIn(Dist.CLIENT)
     public static boolean isGLY(){

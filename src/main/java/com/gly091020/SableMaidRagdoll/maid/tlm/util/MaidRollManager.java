@@ -2,8 +2,8 @@ package com.gly091020.SableMaidRagdoll.maid.tlm.util;
 
 import com.github.tartaricacid.touhoulittlemaid.entity.passive.EntityMaid;
 import com.gly091020.SableMaidRagdoll.SableMaidRagdoll;
+import com.gly091020.SableMaidRagdoll.maid.tlm.TLMMaidRagdoll;
 import com.gly091020.SableRagdollLib.api.Ragdoll;
-import com.gly091020.SableRagdollLib.api.RagdollHelper;
 import com.gly091020.SableRagdollLib.common.DefFileLoader;
 import dev.ryanhcode.sable.api.sublevel.ServerSubLevelContainer;
 import net.minecraft.resources.ResourceLocation;
@@ -47,8 +47,8 @@ public class MaidRollManager {
     public static void startRolling(EntityMaid maid){
         if(maid.level().isClientSide)return;
         var level = (ServerLevel) maid.level();
-        var id = ResourceLocation.fromNamespaceAndPath(SableMaidRagdoll.MODID, maid.getModelId().replace(":", "/"));
-        var ragdoll = RagdollHelper.createRagdoll(level, maid.position().add(0, 0.5, 0), new Vec3(-90, -maid.getYHeadRot(), 0), id);
+        var ragdoll = TLMMaidRagdoll.createMaidRagdoll(level, maid, maid.position().add(0, 0.5, 0),
+                new Vec3(-90, -maid.getYHeadRot(), 0));
         if(ragdoll == null)return;
         var container = ServerSubLevelContainer.getContainer(level);
         if(container == null)return;
@@ -59,7 +59,7 @@ public class MaidRollManager {
     }
 
     public static boolean canRoll(EntityMaid maid){
-        var id = ResourceLocation.fromNamespaceAndPath(SableMaidRagdoll.MODID, maid.getModelId().replace(":", "/"));
+        var id = TLMMaidRagdoll.getRagdollId(maid);
         return DefFileLoader.getDefFile(id) != null;
     }
 

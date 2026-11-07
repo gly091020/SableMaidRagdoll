@@ -46,12 +46,18 @@ public class MaidPartRenderer extends AbstractPartBlockRenderer<MaidPartBlockEnt
     @Override
     public void renderMain(MaidPartBlockEntity blockEntity, float delta, PoseStack poseStack, MultiBufferSource multiBufferSource, int light, int overlay) {
         var data = blockEntity.getPartData();
-        if (!data.defFile().getNamespace().equals(SableMaidRagdoll.MODID)) return;
-
-        var cache = MaidPartRenderCache.get(data.defFile());
+        String playerSkinName = blockEntity.getPlayerName().orElse(null);
+        if (playerSkinName == null && !data.defFile().getNamespace().equals(SableMaidRagdoll.MODID)) return;
+        var cache = playerSkinName == null
+                ? MaidPartRenderCache.get(data.defFile())
+                : MaidPartRenderCache.player(playerSkinName);
         var modelInfo = cache.info();
         if (modelInfo == null) return;
-        if (GeoMaidModelRenderer.render(blockEntity, delta, poseStack, multiBufferSource, light, overlay, modelInfo, this.itemInHandRenderer)) return;
+        if (playerSkinName == null
+                && GeoMaidModelRenderer.render(blockEntity, delta, poseStack, multiBufferSource, light, overlay,
+                modelInfo, this.itemInHandRenderer)) {
+            return;
+        }
 
         if (cache.model() == null) return;
 
@@ -130,7 +136,7 @@ public class MaidPartRenderer extends AbstractPartBlockRenderer<MaidPartBlockEnt
         var shape = blockEntity.getShape();
         var height = shape.bounds().maxY - shape.bounds().minY;
         poseStack.translate(0.5, 1.5d + (1 - height) / 2, 0.5);
-        if(GeoMaidModelRenderer.isGeo(blockEntity)){
+        if(blockEntity.getPlayerName().isEmpty() && GeoMaidModelRenderer.isGeo(blockEntity)){
             poseStack.mulPose(Axis.YP.rotationDegrees(180));
             return;
         }
