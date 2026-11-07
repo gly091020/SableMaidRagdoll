@@ -56,8 +56,11 @@ public class MaidDollRenderer implements BlockEntityRenderer<MaidDollBlockEntity
         poseStack.translate(1, 0, 1);
 
         double d = (System.currentTimeMillis() - maidDollBlockEntity.lastPat) / 1000D;
-        if(d <= 0.2) {
-            poseStack.scale(1, (float) ((Math.cos(d / 0.1d * Math.PI) + 1) * 0.5 * 0.25 + 0.75), 1);
+        if(d >= 0 && d <= 0.2) {
+            float fatten = 1 + (float) (Math.sin(d / 0.2 * Math.PI) * 0.1);
+            poseStack.scale(fatten,
+                    (float) ((Math.cos(d / 0.1d * Math.PI) + 1) * 0.5 * 0.25 + 0.75),
+                    fatten);
         }
         poseStack.scale(1.3f, 1.3f, 1.3f);
         if(maidDollBlockEntity.triggerPat){
