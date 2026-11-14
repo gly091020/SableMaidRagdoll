@@ -3,6 +3,7 @@ package com.gly091020.SableMaidRagdoll.item.spawn_egg;
 import com.github.tartaricacid.touhoulittlemaid.entity.passive.EntityMaid;
 import com.github.tartaricacid.touhoulittlemaid.init.InitEntities;
 import com.gly091020.SableMaidRagdoll.SableMaidRagdoll;
+import com.gly091020.SableMaidRagdoll.maid.tlm.util.WineFoxUtil;
 import com.gly091020.SableRagdollLib.common.DefFileLoader;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.Entity;
@@ -27,7 +28,7 @@ public class RagdollableWineFoxSpawnEgg extends SMRDeferredSpawnEggItem {
     public static String getRandomMaid(RandomSource randomSource){
         var all = DefFileLoader.getAllKeys().stream()
                 .filter(r -> r.getNamespace().equals(SableMaidRagdoll.MODID))
-                .filter(modelID -> modelID.toString().contains("wine") && modelID.toString().contains("fox"))
+                .filter(WineFoxUtil::isWineFox)
                 .toList();
         if(all.isEmpty())
             return DEFAULT_MODEL_ID;

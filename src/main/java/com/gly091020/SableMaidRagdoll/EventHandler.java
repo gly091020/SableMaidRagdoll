@@ -120,8 +120,6 @@ public class EventHandler {
             WineFoxHurtDancingManager.startDancing(rag);
         if(ownerAttack && SableMaidRagdoll.CONFIG.sounds.watermelonHurt)
             event.getEntity().level().playSound(null, BlockPos.containing(event.getEntity().position()), InitSounds.WATERMELON_HURT.get(), SoundSource.PLAYERS, 1, 1);
-        else if (SableMaidRagdoll.CONFIG.sounds.hungry)
-            event.getEntity().level().playSound(null, BlockPos.containing(event.getEntity().position()), InitSounds.HUNGRY.get(), SoundSource.PLAYERS, 1, 1);
         else if(SableMaidRagdoll.CONFIG.sounds.metalPipe)
             event.getEntity().level().playSound(null, BlockPos.containing(event.getEntity().position()), InitSounds.PIPE.get(), SoundSource.PLAYERS, 1, 1);
         event.setCanceled(true);

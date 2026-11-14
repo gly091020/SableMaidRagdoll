@@ -7,6 +7,7 @@ import com.gly091020.SableMaidRagdoll.compat.CompatMods;
 import com.gly091020.SableMaidRagdoll.compat.maid_spell.MaidSpellUtil;
 import com.gly091020.SableMaidRagdoll.init.InitDataComponents;
 import com.gly091020.SableMaidRagdoll.maid.api.MaidRagdollTypesManager;
+import com.gly091020.SableMaidRagdoll.maid.tlm.util.WineFoxUtil;
 import com.gly091020.SableRagdollLib.api.ScheduleManager;
 import com.gly091020.SableRagdollLib.entity.PartSeat;
 import net.minecraft.ChatFormatting;
@@ -352,7 +353,7 @@ public class RagdollWandItem extends Item implements ITooltipAbleItem {
     private static boolean isWineFox(ItemStack stack){
         var data = stack.get(InitDataComponents.MAID_DOLL_DATA);
         if(data == null)return false;
-        return data.ragdollType().equals("tlm") && data.modelID().contains("wine") && data.modelID().contains("fox");
+        return data.ragdollType().equals("tlm") && WineFoxUtil.isWineFox(data.modelID());
     }
 
     @Override
