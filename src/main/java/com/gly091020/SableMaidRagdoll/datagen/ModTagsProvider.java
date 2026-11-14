@@ -19,6 +19,7 @@ import net.minecraft.world.damagesource.DamageTypes;
 import net.minecraft.world.item.Items;
 import net.neoforged.neoforge.common.data.BlockTagsProvider;
 import net.neoforged.neoforge.common.data.ExistingFileHelper;
+import top.theillusivec4.curios.api.CuriosTags;
 
 import java.util.concurrent.CompletableFuture;
 
@@ -72,6 +73,9 @@ public class ModTagsProvider {
                     .addOptionalTag(ResourceLocation.fromNamespaceAndPath("c", "tools/wrench"))
                     .addOptional(ResourceLocation.fromNamespaceAndPath("iammusicplayer", "boombox"))
                     .addOptional(ResourceLocation.fromNamespaceAndPath("createtreadmill", "treadmill"));
+
+            tag(CuriosTags.RING)
+                    .add(com.gly091020.SableMaidRagdoll.init.InitItems.PLAYER_CHEAT_DEATH_ITEM.get());
         }
     }
 

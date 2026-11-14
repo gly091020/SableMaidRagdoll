@@ -12,7 +12,8 @@ public enum CompatMods {
     REVIVE_MAID("revivemaid"),
     FEAST_WINE_GONE("feastwineallgone"),
     IRON_SPELLBOOKS("irons_spellbooks"),
-    MORE_ANIMATION("moreanimation");
+    MORE_ANIMATION("moreanimation"),
+    CURIOS("curios");
 
     final String modID;
     final boolean isLoaded;

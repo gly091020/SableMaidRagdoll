@@ -1,5 +1,6 @@
 package com.gly091020.SableMaidRagdoll;
 
+import com.gly091020.SableMaidRagdoll.compat.curios_api.MaidRagdollCuriosAPIUtil;
 import com.gly091020.SableMaidRagdoll.compat.player_ragdoll.PlayerRagdollUtil;
 import com.gly091020.SableMaidRagdoll.compat.CompatMods;
 import com.gly091020.SableMaidRagdoll.compat.revive_maid.ReviveMaidUtil;
@@ -36,6 +37,8 @@ public class SableMaidRagdoll {
             PlayerRagdollUtil.init();
         if(CompatMods.REVIVE_MAID.isLoaded())
             ReviveMaidUtil.init();
+        if(CompatMods.CURIOS.isLoaded())
+            MaidRagdollCuriosAPIUtil.init(bus);
 
         bus.addListener(PacketRegistry::onRegisterPayloadHandlers);
         bus.addListener(SableMaidRagdollDatagen::onGatherData);

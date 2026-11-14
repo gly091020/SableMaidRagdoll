@@ -123,7 +123,7 @@ public class PlayerCheatDeathItem extends BlockItem implements ITooltipAbleItem 
         player.getCooldowns().addCooldown(stack.getItem(), 20);
     }
 
-    private boolean toRagdoll(ServerPlayer player, MaidDollData data, boolean control){
+    public static boolean toRagdoll(ServerPlayer player, MaidDollData data, boolean control){
         var rag = MaidRagdollTypesManager.createRagdollFromDoll(player, player.position().add(0, 0.5, 0), new Vec3(0, -player.getYHeadRot(), 0), Vec3.ZERO, Vec3.ZERO, false, data);
         if(rag == null)return false;
         var motion = JOMLConversion.toJOML(player.getDeltaMovement()).mul(10);
