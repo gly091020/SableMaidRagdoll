@@ -11,6 +11,7 @@ import com.gly091020.SableMaidRagdoll.maid.tlm.util.TLMMaidModelHelper;
 import com.gly091020.SableMaidRagdoll.maid.tlm.util.RagdollChatBubbleRenderer;
 import com.gly091020.SableMaidRagdoll.util.RagdollEmoji;
 import com.gly091020.SableRagdollLib.client.renderer.AbstractPartBlockRenderer;
+import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Axis;
@@ -145,7 +146,7 @@ public class MaidPartRenderer extends AbstractPartBlockRenderer<MaidPartBlockEnt
 
     public static final ResourceLocation STAR = ResourceLocation.fromNamespaceAndPath(SableMaidRagdoll.MODID, "textures/star.png");
     public static void renderStars(PoseStack poseStack, MultiBufferSource bufferSource, Vec3 center, float partialTick, int count, float radius, float size, int light) {
-        VertexConsumer consumer = bufferSource.getBuffer(RenderType.entityTranslucent(STAR));
+        VertexConsumer consumer = bufferSource.getBuffer(RenderType.entityCutoutNoCull(STAR));
         poseStack.pushPose();
         poseStack.translate(center.x, center.y, center.z);
         Random random = new Random(114514L);
@@ -174,12 +175,31 @@ public class MaidPartRenderer extends AbstractPartBlockRenderer<MaidPartBlockEnt
     }
 
     @Override
-    public void firstRender(MaidPartBlockEntity blockEntity, float v, PoseStack poseStack, MultiBufferSource multiBufferSource, int i, int i1) {
-        if(blockEntity.getPartData().partName().contains("head") && blockEntity.getEntity() != null) {
-            var height = blockEntity.getShape().max(Direction.Axis.Y) - blockEntity.getShape().min(Direction.Axis.Y);
-            renderChatImage(blockEntity, poseStack, multiBufferSource, new Vec3(0.5, height + 0.5, 0.5), i, v);
-            if(blockEntity.getEntity() instanceof Player)return;
-            renderStars(poseStack, multiBufferSource, Vec3.ZERO.add(0.5, 0.5 - height / 2, 0.5), v, 10, 0.5f, 0.1f, LightTexture.FULL_BRIGHT);
+    public void lastRender(MaidPartBlockEntity blockEntity, float partialTick, PoseStack poseStack,
+                           MultiBufferSource multiBufferSource, int light, int overlay) {
+        if (!blockEntity.getPartData().partName().contains("head") || blockEntity.getEntity() == null) {
+            return;
+        }
+
+        var height = blockEntity.getShape().max(Direction.Axis.Y) - blockEntity.getShape().min(Direction.Axis.Y);
+        if (!(blockEntity.getEntity() instanceof Player)) {
+            renderStars(poseStack, multiBufferSource, Vec3.ZERO.add(0.5, 0.5 - height / 2, 0.5),
+                    partialTick, 10, 0.5f, 0.1f, LightTexture.FULL_BRIGHT);
+            if (multiBufferSource instanceof MultiBufferSource.BufferSource source) {
+                source.endBatch(RenderType.entityTranslucentEmissive(STAR));
+            }
+        }
+
+        RenderSystem.enableBlend();
+        RenderSystem.defaultBlendFunc();
+        RenderSystem.enableDepthTest();
+        RenderSystem.depthMask(false);
+        try {
+            renderChatImage(blockEntity, poseStack, multiBufferSource,
+                    new Vec3(0.5, height + 0.5, 0.5), light, partialTick);
+        } finally {
+            RenderSystem.depthMask(true);
+            RenderSystem.disableBlend();
         }
     }
 

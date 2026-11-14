@@ -54,8 +54,8 @@ public class LittleMaidPartRenderer extends AbstractPartBlockRenderer<LittleMaid
 
     /** 头顶星星，效果与 TLM 女仆布娃娃一致。 */
     @Override
-    public void firstRender(LittleMaidPartBlockEntity blockEntity, float partialTick, PoseStack poseStack,
-                            MultiBufferSource bufferSource, int light, int overlay) {
+    public void lastRender(LittleMaidPartBlockEntity blockEntity, float partialTick, PoseStack poseStack,
+                           MultiBufferSource bufferSource, int light, int overlay) {
         if (blockEntity.getPartData() == null || !blockEntity.getPartData().partName().contains("head"))
             return;
         if (blockEntity.getEntity() == null || blockEntity.getEntity() instanceof Player)
