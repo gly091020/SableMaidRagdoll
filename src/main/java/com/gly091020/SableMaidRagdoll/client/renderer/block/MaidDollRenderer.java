@@ -1,6 +1,7 @@
 package com.gly091020.SableMaidRagdoll.client.renderer.block;
 
 import com.gly091020.SableMaidRagdoll.block.maid_doll.MaidDollBlockEntity;
+import com.gly091020.SableMaidRagdoll.client.VirtualSittingMount;
 import com.gly091020.SableMaidRagdoll.init.InitSounds;
 import com.gly091020.SableMaidRagdoll.maid.api.MaidRagdollTypesManager;
 import com.gly091020.SableMaidRagdoll.maid.api.MaidSoundType;
@@ -91,8 +92,10 @@ public class MaidDollRenderer implements BlockEntityRenderer<MaidDollBlockEntity
         boolean isShowHitBox = render.shouldRenderHitBoxes();
         render.setRenderShadow(false);
         render.setRenderHitBoxes(false);
-        render.render(maid, 0, 0, 0, 0, 0,
-                poseStack, multiBufferSource, light);
+        try (var mount = VirtualSittingMount.attach(maid)) {
+            render.render(maid, 0, 0, 0, 0, 0,
+                    poseStack, multiBufferSource, light);
+        }
         render.setRenderHitBoxes(isShowHitBox);
         render.setRenderShadow(true);
         poseStack.popPose();

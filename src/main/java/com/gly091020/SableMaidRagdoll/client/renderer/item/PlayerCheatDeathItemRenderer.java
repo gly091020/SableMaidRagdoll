@@ -1,6 +1,7 @@
 package com.gly091020.SableMaidRagdoll.client.renderer.item;
 
 import com.gly091020.SableMaidRagdoll.client.model.MaidDollDefaultModel;
+import com.gly091020.SableMaidRagdoll.client.VirtualSittingMount;
 import com.gly091020.SableMaidRagdoll.init.InitDataComponents;
 import com.gly091020.SableMaidRagdoll.maid.api.MaidRagdollTypesManager;
 import com.mojang.blaze3d.vertex.PoseStack;
@@ -56,8 +57,10 @@ public class PlayerCheatDeathItemRenderer extends BlockEntityWithoutLevelRendere
         boolean isShowHitBox = render.shouldRenderHitBoxes();
         render.setRenderShadow(false);
         render.setRenderHitBoxes(false);
-        render.render(entity, 0, 0, 0, 0, 0,
-                poseStack, bufferSource, light);
+        try (var mount = VirtualSittingMount.attach(entity)) {
+            render.render(entity, 0, 0, 0, 0, 0,
+                    poseStack, bufferSource, light);
+        }
         render.setRenderHitBoxes(isShowHitBox);
         render.setRenderShadow(true);
         poseStack.popPose();
