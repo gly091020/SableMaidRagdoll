@@ -6,7 +6,6 @@ import com.gly091020.SableMaidRagdoll.init.InitBlocks;
 import com.gly091020.SableMaidRagdoll.init.InitTags;
 import com.gly091020.SableMaidRagdoll.maid.lmrb.init.LMRBInitBlocks;
 import com.gly091020.SableMaidRagdoll.maid.tlm.init.TLMInitBlocks;
-import dev.leo.sableplayerragdoll.SablePlayerRagdoll;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.PackOutput;
@@ -35,9 +34,9 @@ public class ModTagsProvider {
         @Override
         protected void addTags(HolderLookup.Provider provider) {
             tag(TagKey.create(Registries.BLOCK, ResourceLocation.fromNamespaceAndPath("sableragdolllib", "ragdoll_part")))
-                    .add(TLMInitBlocks.MAID_PART_BLOCK.get())
-                    .add(TLMInitBlocks.MAID_FAIRY_PART_BLOCK.get())
-                    .add(LMRBInitBlocks.LITTLE_MAID_PART_BLOCK.get());
+                    .addOptional(TLMInitBlocks.MAID_PART_BLOCK.getId())
+                    .addOptional(TLMInitBlocks.MAID_FAIRY_PART_BLOCK.getId())
+                    .addOptional(LMRBInitBlocks.LITTLE_MAID_PART_BLOCK.getId());
 
             tag(BlockTags.MINEABLE_WITH_AXE)
                     .add(InitBlocks.MOB_CANNON_BLOCK.get());
