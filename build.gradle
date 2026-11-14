@@ -178,6 +178,10 @@ dependencies {
     // 玩家布娃娃
     implementation("maven.modrinth:I3mWDgfy:${player_ragdoll_version}")
 
+    // 灵活按键显示
+    compileOnly "curse.maven:oelib-1319210:9486535"
+    compileOnly("curse.maven:smart-key-prompts-1300195:$smart_key_prompts_version")
+
     // lib
     implementation "com.gly091020:sableragdolllib"
     // 爱憎分明

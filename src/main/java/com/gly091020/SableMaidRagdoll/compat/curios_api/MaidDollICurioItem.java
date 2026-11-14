@@ -17,12 +17,18 @@ public class MaidDollICurioItem implements ICurioItem {
         var data = stack.get(InitDataComponents.MAID_DOLL_DATA);
         if(data == null)return;
 
+        if(entity.tickCount <= 10)return;
         if(entity.tickCount % 4 == 0)
             PlayerCheatDeathItem.toRagdoll(serverPlayer, data, stack.getOrDefault(InitDataComponents.CONTROL_MODE, false));
     }
 
     @Override
     public boolean canEquipFromUse(SlotContext slotContext, ItemStack stack) {
+        return false;
+    }
+
+    @Override
+    public boolean canEquip(SlotContext slotContext, ItemStack stack) {
         return stack.has(InitDataComponents.MAID_DOLL_DATA);
     }
 

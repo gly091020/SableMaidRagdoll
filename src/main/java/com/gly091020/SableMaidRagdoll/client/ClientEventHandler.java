@@ -33,8 +33,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 
-import static com.gly091020.SableMaidRagdoll.client.SableMaidRagdollClient.AIM_CANNON;
-import static com.gly091020.SableMaidRagdoll.client.SableMaidRagdollClient.OPEN_EMOJI;
+import static com.gly091020.SableMaidRagdoll.client.SableMaidRagdollClient.*;
 
 @EventBusSubscriber(value = Dist.CLIENT, modid = SableMaidRagdoll.MODID)
 public class ClientEventHandler {
@@ -126,6 +125,7 @@ public class ClientEventHandler {
     public static void onRegisterKeyMappings(RegisterKeyMappingsEvent event) {
         event.register(OPEN_EMOJI);
         event.register(AIM_CANNON);
+        event.register(MAKE_SOUND);
     }
 
     @SubscribeEvent

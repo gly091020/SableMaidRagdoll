@@ -4,6 +4,7 @@ import com.gly091020.SableMaidRagdoll.compat.curios_api.MaidRagdollCuriosAPIUtil
 import com.gly091020.SableMaidRagdoll.compat.player_ragdoll.PlayerRagdollUtil;
 import com.gly091020.SableMaidRagdoll.compat.CompatMods;
 import com.gly091020.SableMaidRagdoll.compat.revive_maid.ReviveMaidUtil;
+import com.gly091020.SableMaidRagdoll.compat.smart_key_prompts.SmartKeyPromptsUtil;
 import com.gly091020.SableMaidRagdoll.datagen.SableMaidRagdollDatagen;
 import com.gly091020.SableMaidRagdoll.init.*;
 import com.gly091020.SableMaidRagdoll.network.PacketRegistry;
@@ -39,6 +40,8 @@ public class SableMaidRagdoll {
             ReviveMaidUtil.init();
         if(CompatMods.CURIOS.isLoaded())
             MaidRagdollCuriosAPIUtil.init(bus);
+        if(CompatMods.SMART_KEY_PROMPTS.isLoaded())
+            SmartKeyPromptsUtil.init();
 
         bus.addListener(PacketRegistry::onRegisterPayloadHandlers);
         bus.addListener(SableMaidRagdollDatagen::onGatherData);

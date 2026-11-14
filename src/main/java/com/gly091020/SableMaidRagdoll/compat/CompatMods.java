@@ -13,7 +13,8 @@ public enum CompatMods {
     FEAST_WINE_GONE("feastwineallgone"),
     IRON_SPELLBOOKS("irons_spellbooks"),
     MORE_ANIMATION("moreanimation"),
-    CURIOS("curios");
+    CURIOS("curios"),
+    SMART_KEY_PROMPTS("smartkeyprompts");
 
     final String modID;
     final boolean isLoaded;

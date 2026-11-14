@@ -165,5 +165,7 @@
   "advancements.sablemaidragdoll.big_slime_block.description": "吸特乐粘液块",
   "advancements.sablemaidragdoll.pat_maid_1000.title": "头要秃了……",
   "advancements.sablemaidragdoll.pat_maid_1000.description": "感觉马上就摩擦起火了……",
-  "key.sablemaidragdoll.make_sound": "发出声音"
+  "key.sablemaidragdoll.make_sound": "发出声音",
+  "text.sablemaidragdoll.switch_control.sleep": "倒下装死",
+  "text.sablemaidragdoll.switch_control.stand_up": "站起来（按住）"
 }
